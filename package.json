@@ -1,0 +1,38 @@
+{
+  "author": "Geno Roupsky <geno@roupsky.name>",
+  "name": "bspb-members",
+  "description": "Management system for BSPB members",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "dependencies": {
+    "actionhero": "19.0.0",
+    "ws": "latest",
+    "ioredis": "latest"
+  },
+  "devDependencies": {
+    "jest": "latest",
+    "standard": "latest"
+  },
+  "scripts": {
+    "start": "actionhero start",
+    "actionhero": "actionhero",
+    "pretest": "standard",
+    "test": "jest"
+  },
+  "standard": {
+    "ignore": [
+      "public/javascript/ActionheroWebsocketClient.*"
+    ],
+    "globals": [
+      "describe",
+      "test",
+      "beforeAll",
+      "beforeEach",
+      "afterAll",
+      "afterEach",
+      "expect"
+    ]
+  }
+}
