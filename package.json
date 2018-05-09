@@ -8,11 +8,21 @@
   },
   "dependencies": {
     "actionhero": "19.0.0",
-    "ws": "latest",
-    "ioredis": "latest"
+    "ah-sequelize-plugin": "^1.0.3",
+    "bcrypt": "^2.0.1",
+    "ioredis": "latest",
+    "lodash.omit": "^4.5.0",
+    "parse-database-url": "^0.3.0",
+    "pg": "^7.4.1",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.37.6",
+    "ws": "latest"
   },
   "devDependencies": {
     "jest": "latest",
+    "sequelize-cli": "^4.0.0",
+    "sequelize-fixtures": "^0.7.0",
+    "sqlite3": "^4.0.0",
     "standard": "latest"
   },
   "scripts": {

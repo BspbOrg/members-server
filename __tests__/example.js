@@ -1,3 +1,5 @@
+// eslint-disable-next-line no-unused-vars
+/* globals describe, beforeAll, afterAll, before, after, test, expect */
 'use strict'
 
 const ActionHero = require('actionhero')
