@@ -1,96 +1,117 @@
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const omit = require('lodash.omit')
+const { Model } = require('sequelize')
+const { api } = require('actionhero')
+const config = api.config.auth
 
-module.exports = function (sequelize, DataTypes, api) {
-  const config = api.config.auth
-
-  const model = sequelize.define('user', {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true
-    },
-    username: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
-      unique: { msg: 'The specified username is already in use.' },
-      validate: {
-        len: [ 4, 20 ],
-        is: /^[a-z][a-z0-9_.-]/i
+class User extends Model {
+  static init (sequelize, DataTypes) {
+    return super.init({
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      username: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        unique: { msg: 'The specified username is already in use.' },
+        validate: {
+          len: [ 4, 20 ],
+          is: /^[a-z][a-z0-9_.-]/i
+        }
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: { msg: 'The specified email address is already in use.' },
+        validate: { isEmail: true }
+      },
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      lastLoginAt: {
+        type: DataTypes.DATE,
+        allowNull: true
+      },
+      role: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'user',
+        validate: {
+          isIn: [ [ 'user', 'admin' ] ]
+        }
+      },
+      imported: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      },
+      language: {
+        type: DataTypes.STRING,
+        defaultValue: 'bg'
+      },
+      password: DataTypes.TEXT,
+      passwordTime: DataTypes.DATE,
+      resetToken: DataTypes.TEXT,
+      resetTokenTime: DataTypes.DATE
+    }, {
+      sequelize,
+      modelName: 'user',
+      paranoid: true,
+      indexes: [
+        { unique: true, fields: [ 'email' ] },
+        { unique: true, fields: [ 'username' ] }
+      ],
+      hooks: {
+        beforeBulkCreate: User.beforeBulkCreate,
+        beforeCreate: User.beforeCreate,
+        beforeUpdate: User.beforeUpdate
       }
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: { msg: 'The specified email address is already in use.' },
-      validate: { isEmail: true }
-    },
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    lastName: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    lastLoginAt: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
-    role: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: 'user',
-      validate: {
-        isIn: [ [ 'user', 'admin' ] ]
-      }
-    },
-    imported: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false
-    },
-    language: {
-      type: DataTypes.STRING,
-      defaultValue: 'bg'
-    },
-    password: DataTypes.TEXT,
-    passwordTime: DataTypes.DATE,
-    resetToken: DataTypes.TEXT,
-    resetTokenTime: DataTypes.DATE
-  }, {
-    paranoid: true,
-    indexes: [
-      { unique: true, fields: [ 'email' ] },
-      { unique: true, fields: [ 'username' ] }
-    ]
-  })
-
-  model.associate = function (models) {
-    // associations can be defined here
-    // models.user.hasMany(models.usermeta)
+    })
   }
 
-  model.hook('beforeBulkCreate', async users => Promise.all(users.map(user => user.updatePassword())))
-  model.hook('beforeCreate', async user => user.updatePassword())
-  model.hook('beforeUpdate', async user => user.changed('password') && user.updatePassword())
+  static associate (models) {
 
-  model.prototype.name = function () {
-    return [ this.firstName, this.lastName ].filter(v => v).join(' ')
   }
 
-  model.prototype.authenticate = async function (password) {
-    return bcrypt.compare(password, this.password)
+  static async beforeBulkCreate (users) {
+    return Promise.all(users.map(user => user.updatePassword()))
   }
 
-  model.prototype.updatePassword = async function () {
+  static async beforeCreate (user) {
+    return user.updatePassword()
+  }
+
+  static async beforeUpdate (user) {
+    if (!user.changed('password')) return
+    return user.updatePassword()
+  }
+
+  get name () { return [ this.firstName, this.lastName ].filter(v => v).join(' ') }
+
+  async authenticate (password) {
+    const success = await bcrypt.compare(password, this.password)
+    if (success) {
+      this.clearResetToken()
+      this.lastLoginAt = new Date()
+    }
+    return success
+  }
+
+  async updatePassword () {
     const salt = await bcrypt.genSalt(config.bcryptComplexity)
     this.password = await bcrypt.hash(this.password, salt)
   }
 
-  model.prototype.createResetToken = async function () {
+  async createResetToken () {
     const buf = await crypto.randomBytes(config.resetTokenBytes)
     const pwToken = buf.toString('hex')
     const salt = await bcrypt.genSalt(config.bcryptComplexity)
@@ -101,20 +122,22 @@ module.exports = function (sequelize, DataTypes, api) {
     return pwToken
   }
 
-  model.prototype.checkResetToken = async function (token) {
+  async checkResetToken (token) {
     if (!this.resetToken || !this.resetTokenTime) return false
     if (new Date().getTime() - this.resetTokenTime.getTime() > config.resetTokenTTL) return false
     return bcrypt.compare(token, this.resetToken)
   }
 
-  model.prototype.clearResetToken = function () {
+  clearResetToken () {
     this.resetToken = null
     this.resetTokenTime = null
   }
 
-  model.prototype.toJSON = function () {
-    return omit(this.dataValues, config.excludedAttributes)
+  toJSON () {
+    return omit(super.toJSON(), config.excludedAttributes)
   }
+}
 
-  return model
+module.exports = function (sequelize, DataTypes) {
+  return User.init(sequelize, DataTypes)
 }
