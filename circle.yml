@@ -1,0 +1,7 @@
+---
+machine:
+  services:
+    - redis
+    - postgres
+  node:
+    - version: 8
