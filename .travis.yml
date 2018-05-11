@@ -6,4 +6,16 @@ node_js:
 services:
   - postgresql
   - redis-server
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_081cd9764c51_key -iv $encrypted_081cd9764c51_iv -in github_deploy_key.enc -out github_deploy_key -d
+  - chmod 600 github_deploy_key
+  - eval $(ssh-agent -s)
+  - ssh-add github_deploy_key
+  - '[[ $(node -v) =~ ^v9.*$ ]] || npm install -g npm@latest' # skipped when using node 9
+  - npm install -g greenkeeper-lockfile@1
+before_script:
+  - greenkeeper-lockfile-update
 script: npm test -- --ci --runInBand || npm test -- --ci --runInBand
+after_script:
+  - greenkeeper-lockfile-upload
