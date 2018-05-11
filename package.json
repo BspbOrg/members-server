@@ -1,6 +1,6 @@
 {
   "author": "Geno Roupsky <geno@roupsky.name>",
-  "name": "bspb-members",
+  "name": "bspb-members-server",
   "description": "Management system for BSPB members",
   "version": "0.1.0",
   "engines": {
