@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - 8
+  - 9
+  - 10
+services:
+  - postgresql
+  - redis-server
+script: npm test -- --ci --runInBand || npm test -- --ci --runInBand
