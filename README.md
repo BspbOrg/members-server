@@ -1,5 +1,7 @@
 # BSPB Members management
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/BspbOrg/members-server.svg)](https://greenkeeper.io/)
+
 Management system for [BSPB](http://bspb.org/) members
 
 ## To install:
