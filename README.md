@@ -12,3 +12,9 @@ Management system for [BSPB](http://bspb.org/) members
 
 ## To Test:
 `npm test`
+
+## License
+
+[AGPL-v3.0](LICENSE)
+
+Copyright (c) 2018 [Bulgarian Society for the Protection of Birds](http://bspb.org)
