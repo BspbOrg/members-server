@@ -195,7 +195,8 @@ describe('model user', () => {
     test('should update last login date if successful', async () => {
       user.lastLoginAt = null
       await user.authenticate('secret')
-      expect(user.lastLoginAt).toEqual(new Date())
+      expect(user.lastLoginAt.getTime()).toBeLessThanOrEqual(new Date().getTime())
+      expect(user.lastLoginAt.getTime()).toBeGreaterThanOrEqual(new Date().getTime() - 100)
     })
   })
 

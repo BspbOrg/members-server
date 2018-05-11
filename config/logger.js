@@ -54,7 +54,15 @@ exports['default'] = {
 exports.test = {
   logger: (api) => {
     return {
-      transports: null
+      transports: [
+        // function (api, winston) {
+        //   return new (winston.transports.Console)({
+        //     colorize: true,
+        //     level: 'debug',
+        //     timestamp: function () { return api.id + ' @ ' + new Date().toISOString() }
+        //   })
+        // }
+      ]
     }
   }
 }

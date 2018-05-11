@@ -4,6 +4,7 @@ const omit = require('lodash.omit')
 const { Model } = require('sequelize')
 const { api } = require('actionhero')
 const config = api.config.auth
+const util = require('util')
 
 class User extends Model {
   static init (sequelize, DataTypes) {
@@ -66,10 +67,6 @@ class User extends Model {
       sequelize,
       modelName: 'user',
       paranoid: true,
-      indexes: [
-        { unique: true, fields: [ 'email' ] },
-        { unique: true, fields: [ 'username' ] }
-      ],
       hooks: {
         beforeBulkCreate: User.beforeBulkCreate,
         beforeCreate: User.beforeCreate,
@@ -112,7 +109,7 @@ class User extends Model {
   }
 
   async createResetToken () {
-    const buf = await crypto.randomBytes(config.resetTokenBytes)
+    const buf = await util.promisify(crypto.randomBytes)(config.resetTokenBytes)
     const pwToken = buf.toString('hex')
     const salt = await bcrypt.genSalt(config.bcryptComplexity)
 

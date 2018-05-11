@@ -26,7 +26,7 @@ exports.test = {
   sequelize: function (api) {
     var config = {
       autoMigrate: true,
-      loadFixtures: false,
+      loadFixtures: true,
       database: undefined,
       dialect: 'sqlite',
       storage: ':memory:',
