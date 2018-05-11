@@ -44,9 +44,7 @@ refrences:
 jobs:
   build:
     docker:
-      - image: circleci/node:8
-      - image: redis:4
-      - image: circleci/mysql:5
+      - image: circleci/node:10
     steps:
       - checkout
       - restore_cache:
@@ -64,7 +62,7 @@ jobs:
 
   linter:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:10
     steps:
       - checkout
       - restore_cache:
