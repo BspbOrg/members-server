@@ -28,7 +28,6 @@ deploy:
     master: bspb-members-staging
   on:
     repo: BspbOrg/members-server
-    node: '10'
   run:
   - npm run migrate
 env:
