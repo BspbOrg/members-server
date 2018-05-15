@@ -16,7 +16,7 @@ function parseDatabaseUrl (databaseUrl, options) {
 exports.default = {
   sequelize: (api) => {
     return parseDatabaseUrl(process.env.DATABASE_URL || 'postgres://user:secret@localhost:5432/members', {
-      autoMigrate: true,
+      autoMigrate: false,
       loadFixtures: false
     })
   }
