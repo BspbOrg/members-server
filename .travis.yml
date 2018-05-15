@@ -1,21 +1,29 @@
 language: node_js
 node_js:
-  - 8
-  - 9
-  - 10
+- 8
+- 9
+- 10
 services:
-  - postgresql
-  - redis-server
-
+- postgresql
+- redis-server
 before_install:
-  - openssl aes-256-cbc -K $encrypted_081cd9764c51_key -iv $encrypted_081cd9764c51_iv -in github_deploy_key.enc -out github_deploy_key -d
-  - chmod 600 github_deploy_key
-  - eval $(ssh-agent -s)
-  - ssh-add github_deploy_key
-  - '[[ $(node -v) =~ ^v9.*$ ]] || npm install -g npm@latest' # skipped when using node 9
-  - npm install -g greenkeeper-lockfile@1
+- openssl aes-256-cbc -K $encrypted_081cd9764c51_key -iv $encrypted_081cd9764c51_iv
+  -in github_deploy_key.enc -out github_deploy_key -d
+- chmod 600 github_deploy_key
+- eval $(ssh-agent -s)
+- ssh-add github_deploy_key
+- "[[ $(node -v) =~ ^v9.*$ ]] || npm install -g npm@latest"
+- npm install -g greenkeeper-lockfile@1
 before_script:
-  - greenkeeper-lockfile-update
+- greenkeeper-lockfile-update
 script: npm test -- --ci --runInBand || npm test -- --ci --runInBand
 after_script:
-  - greenkeeper-lockfile-upload
+- greenkeeper-lockfile-upload
+deploy:
+  provider: heroku
+  api_key:
+    secure: jZPjSBhoKgHfddlRJ+9UyMDRI/76l68ShWY7HqqZqmv/PSXdVnoc0d0xmCCMA8p9Cw5oP2iea0b8a3dK8VkqmghnCtmKBWdsWRKavgY5xjn5+bIiH5pTxI/SKGHwg4EAEcXW7VrR6VAFTJ2Ja8ypquOYNLY0VS814dFG5U+2cOhsgY5RTUyoF2dnK150L+fZNiL+67gvlDOrRI0sQzzXTyiExI4z0bYQ4KMKuVG5NS8ReBEyXkeIEfY/R3i3j95+qB4b5vpuHTsoNYgc8jGn/iHEgxhFvFX0h+UolohK1tWUrkqcdWpGtzQ98U3f07WxC2StDWowzNtzAgUCJ5nCS4syZCbhxrIE0dGKpHRvnkGmBztItXmnH9SJ/RacreIMtJvYLZpJAb9QYVw2ibsl19a0HFBNaQ1eA8MIdBR+XCKjXmCDJ9r4DQwBfr+qVur2G+qBS3Ticae2aj1qm6F7d5MeV9k/9vLoDTDOtZD9uuwXCadecupc8mqxWoHLMgZUPxzY39YmK8OwFXualh0LqfYf7Y5RzWG7hkwyMYhh0lWHSJr4IThDFnFf73QZIR/pvIwa74Se4TpG74Xg0vmp3F4fUqpizP5S3BS3FEigKAr+MmKrrs1K6EK51T7dIUGuTeMpf3nIJAdbA596hcuxa8k/6u8/K94mMS3uKBUYbpM=
+  app:
+    master: bspb-members-staging
+  on:
+    repo: BspbOrg/members-server
