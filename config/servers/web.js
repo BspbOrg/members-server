@@ -25,7 +25,7 @@ exports['default'] = {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Credentials': 'true',
           'Access-Control-Allow-Methods': 'HEAD, GET, POST, PUT, PATCH, DELETE, OPTIONS, TRACE',
-          'Access-Control-Allow-Headers': 'Content-Type, X-CSRF-Token'
+          'Access-Control-Allow-Headers': 'Content-Type, X-CSRF-Token, Language'
         },
         // Route that actions will be served from; secondary route against this route will be treated as actions,
         //  IE: /api/?action=test == /api/test/
