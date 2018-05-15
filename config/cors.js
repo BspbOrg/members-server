@@ -12,6 +12,7 @@ exports[ 'default' ] = {
 exports.staging = {
   cors: () => {
     return {
+      enabled: true,
       allowedOrigins: '*'
     }
   }
