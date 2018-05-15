@@ -28,6 +28,7 @@
   "scripts": {
     "start": "actionhero start",
     "actionhero": "actionhero",
+    "migrate": "sequelize db:migrate",
     "pretest": "standard",
     "test": "jest"
   },
