@@ -44,9 +44,9 @@ const merge = (overlayFn) => {
   let mergeObj = Object.assign({}, exports.default.sequelize())
   if (typeof (overlayFn) !== 'undefined') {
     mergeObj = Object.assign(mergeObj, overlayFn.sequelize())
+    // Map over AH's sequelize fn
+    mergeObj.sequelize = overlayFn.sequelize
   }
-  // Map over AH's sequelize fn
-  mergeObj.sequelize = overlayFn.sequelize
   return mergeObj
 }
 
@@ -54,5 +54,6 @@ const merge = (overlayFn) => {
 // Add to the exports below, if you have setup additional environment-specific settings
 
 exports.development = exports.default.sequelize()
+exports.staging = merge(exports.staging)
 exports.test = merge(exports.test)
 // exports.production = merge(exports.production);
