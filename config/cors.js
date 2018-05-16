@@ -2,9 +2,9 @@ exports[ 'default' ] = {
   cors: () => {
     return {
       // Should the plugin be enabled
-      enabled: false,
+      enabled: true,
       // List of origins that are allowed, all the rest will get `null` as `Access-Control-Allow-Origin`
-      allowedOrigins: [ 'http://localhost:5000' ]
+      allowedOrigins: '*'
     }
   }
 }
@@ -22,6 +22,14 @@ exports.production = {
   cors: () => {
     return {
       enabled: true
+    }
+  }
+}
+
+exports.test = {
+  cors: () => {
+    return {
+      enabled: false
     }
   }
 }
