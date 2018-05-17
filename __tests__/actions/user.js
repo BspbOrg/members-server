@@ -2,50 +2,21 @@
 /* globals jest, describe, beforeAll, afterAll, beforeEach, afterEach, test, expect */
 'use strict'
 
-const ActionHero = require('actionhero')
-const actionhero = new ActionHero.Process()
-let api
-let user
-let mockHasRoleAdmin
-let mockIsAuthenticated
+const ah = require('../../test/ah-setup')
+const { snapshot, testActionPermissions } = require('../../test/helpers')
 
 describe('action user', () => {
-  beforeAll(async () => {
-    api = await actionhero.start()
-    await api.models.user.sync()
-    api.models.user.destroy({ where: {}, force: true })
-
-    user = api.models.user.build({
-      username: 'test',
-      email: 'test@bspb.org',
-      password: 'secret',
-      firstName: 'Test',
-      lastName: 'User'
-    })
-
-    return user.save()
-  })
-  afterAll(async () => {
-    user.destroy({ where: {}, force: true })
-    await actionhero.stop()
-  })
-
-  beforeEach(() => {
-    mockHasRoleAdmin = jest.fn().mockName('auth.hasRole.admin')
-    api.actions.addMiddleware({ name: 'auth.hasRole.admin', preProcessor: mockHasRoleAdmin })
-    mockIsAuthenticated = jest.fn().mockName('auth.isAuthenticated')
-    mockIsAuthenticated.mockImplementation(data => { data.session = { user } })
-    api.actions.addMiddleware({ name: 'auth.isAuthenticated', preProcessor: mockIsAuthenticated })
-  })
+  beforeAll(ah.start)
+  afterAll(ah.stop)
 
   describe('#list', () => {
-    test('should require admin role', async () => {
-      await api.specHelper.runAction('user:list')
-      expect(mockHasRoleAdmin).toHaveBeenCalled()
-    })
+    const action = 'user:list'
+
+    testActionPermissions(action, {}, { guest: false, user: false, admin: true })
 
     test('should return list of users', async () => {
-      const res = await api.specHelper.runAction('user:list')
+      const user = await ah.api.models.user.findOne({})
+      const res = await ah.runAdminAction(action)
       expect(res).toHaveProperty('data', expect.arrayContaining([
         expect.objectContaining({
           id: user.id,
@@ -64,72 +35,85 @@ describe('action user', () => {
             username: `test${idx}`,
             email: `test${idx}@bspb.org`,
             password: 'secret',
-            firstName: `Test${idx}`,
+            firstName: 'TEMPORARY',
             lastName: `User${idx}`
           }
         })
-        await api.models.user.bulkCreate(records)
+        await ah.api.models.user.bulkCreate(records)
+      })
+
+      afterAll(async () => {
+        ah.api.models.user.destroy({ where: { firstName: 'TEMPORARY' }, force: true })
       })
 
       test('should return only 20 records', async () => {
-        const res = await api.specHelper.runAction('user:list')
-        expect(res.data).toHaveLength(20)
+        expect((await ah.runAdminAction(action)).data).toHaveLength(20)
       })
 
       test('should return only specified records', async () => {
-        const res = await api.specHelper.runAction('user:list', { limit: 30 })
-        expect(res.data).toHaveLength(30)
+        expect((await ah.runAdminAction(action, { limit: 30 })).data).toHaveLength(30)
       })
 
       test('should return different records with offset', async () => {
         expect.assertions(20)
-        const first = await api.specHelper.runAction('user:list', { limit: 20 })
-        const res = await api.specHelper.runAction('user:list', { offset: 20 })
+        const first = await ah.runAdminAction(action, { limit: 20 })
+        const res = await ah.runAdminAction(action, { offset: 20 })
         first.data.forEach(u => expect(res.data).not.toContainEqual(u))
       })
     })
   })
 
   describe('#destroy', () => {
-    test('should require admin role', async () => {
-      await api.specHelper.runAction('user:destroy')
-      expect(mockHasRoleAdmin).toHaveBeenCalled()
+    let user
+    const action = 'user:destroy'
+    const params = async () => { return { userId: user.id } }
+
+    beforeEach(async () => {
+      user = await ah.api.models.user.create({
+        username: 'testdelete',
+        email: 'testdelete@bspb.org',
+        firstName: 'Delete',
+        lastName: 'User',
+        password: 'secret'
+      })
     })
+
+    afterEach(async () => {
+      await ah.api.models.user.destroy({ where: { id: user.id }, force: true })
+    })
+
+    testActionPermissions(action, params, { guest: false, user: false, admin: true })
   })
 
   describe('#me', () => {
-    test('should require authenticated user', async () => {
-      await api.specHelper.runAction('user:me')
-      expect(mockIsAuthenticated).toHaveBeenCalled()
-      expect(mockHasRoleAdmin).not.toHaveBeenCalled()
+    const action = 'user:me'
+
+    testActionPermissions(action, {}, { guest: false, user: true, admin: true })
+
+    test('should respond with an user profile when authenticated', async () => {
+      const response = await ah.runUserAction(action)
+      expect(response).toHaveProperty('data')
+      snapshot(response.data)
     })
 
-    test('should respond with a user profile when authenticated', async () => {
-      const res = await api.specHelper.runAction('user:me')
-      expect(res).toHaveProperty('data', expect.objectContaining({ id: user.id }))
-    })
-
-    test('should respond with error when not authenticated', async () => {
-      mockIsAuthenticated.mockImplementation(() => { throw new Error('Unauthenticated') })
-      const res = await api.specHelper.runAction('user:me')
-      expect(res).not.toHaveProperty('data')
-      expect(res).toHaveProperty('error', expect.stringContaining('Unauthenticated'))
+    test('should respond with an admin profile when authenticated', async () => {
+      const response = await ah.runAdminAction(action)
+      expect(response).toHaveProperty('data')
+      snapshot(response.data)
     })
   })
 
   describe('#changePassword', () => {
-    test('should require authenticated user', async () => {
-      await api.specHelper.runAction('user:changePassword')
-      expect(mockIsAuthenticated).toHaveBeenCalled()
-      expect(mockHasRoleAdmin).not.toHaveBeenCalled()
-    })
+    const action = 'user:changePassword'
+    const params = { oldPassword: 'secret', newPassword: 'new secret' }
+
+    testActionPermissions(action, params, { guest: false, user: true, admin: true })
   })
 
   describe('#show', () => {
-    test('should require authenticated user', async () => {
-      await api.specHelper.runAction('user:show')
-      expect(mockIsAuthenticated).toHaveBeenCalled()
-      expect(mockHasRoleAdmin).not.toHaveBeenCalled()
-    })
+    const action = 'user:show'
+    const params = async () => { return { userId: (await ah.api.models.user.findOne({})).id } }
+
+    testActionPermissions(action, params, { guest: false, user: false, admin: true })
   })
 })

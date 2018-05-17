@@ -5,12 +5,12 @@ let password = process.env.REDIS_PASSWORD || null
 const maxBackoff = 1000
 
 if (process.env.REDIS_URL) {
-  password = process.env.REDIS_URL.match(/redis:\/\/.*:(.*)@.*:\d*$/i)[1]
-  host = process.env.REDIS_URL.match(/redis:\/\/.*:.*@(.*):\d*$/i)[1]
-  port = parseInt(process.env.REDIS_URL.match(/redis:\/\/.*:.*@.*:(\d*)$/i)[1])
+  password = process.env.REDIS_URL.match(/redis:\/\/.*:(.*)@.*:\d*$/i)[ 1 ]
+  host = process.env.REDIS_URL.match(/redis:\/\/.*:.*@(.*):\d*$/i)[ 1 ]
+  port = parseInt(process.env.REDIS_URL.match(/redis:\/\/.*:.*@.*:(\d*)$/i)[ 1 ])
 }
 
-exports['default'] = {
+exports[ 'default' ] = {
   redis: (api) => {
     // konstructor: The redis client constructor method.  All redis methods must be promises
     // args: The arguments to pass to the constructor
@@ -31,17 +31,17 @@ exports['default'] = {
       '_toExpand': false,
       client: {
         konstructor: require('ioredis'),
-        args: [{ port: port, host: host, password: password, db: db, retryStrategy: retryStrategy }],
+        args: [ { port: port, host: host, password: password, db: db, retryStrategy: retryStrategy } ],
         buildNew: true
       },
       subscriber: {
         konstructor: require('ioredis'),
-        args: [{ port: port, host: host, password: password, db: db, retryStrategy: retryStrategy }],
+        args: [ { port: port, host: host, password: password, db: db, retryStrategy: retryStrategy } ],
         buildNew: true
       },
       tasks: {
         konstructor: require('ioredis'),
-        args: [{ port: port, host: host, password: password, db: db, retryStrategy: retryStrategy }],
+        args: [ { port: port, host: host, password: password, db: db, retryStrategy: retryStrategy } ],
         buildNew: true
       }
     }

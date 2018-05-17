@@ -24,7 +24,7 @@ exports.list = class List extends Action {
       offset: params.offset,
       limit: params.limit
     })
-    response.data = res.rows.map(u => u.toJSON())
+    response.data = await Promise.all(res.rows.map(u => u.toJSON()))
     response.count = res.count
   }
 }
@@ -34,10 +34,14 @@ exports.destroy = class Destroy extends Action {
     super()
     this.name = 'user:destroy'
     this.description = 'Delete user. Requires admin role'
-    this.middleware = [ 'auth.hasRole.admin' ]
+    this.middleware = [ 'auth.hasRole.admin', 'user.params' ]
+    this.inputs = { userId: { required: true } }
   }
 
-  async run () {
+  async run ({ user, response }) {
+    response.success = false
+    await user.destroy()
+    response.success = true
   }
 }
 
@@ -53,11 +57,13 @@ exports.me = class Me extends Action {
       username: 'admin',
       email: 'admin@bspb.org'
     }
-    this.middleware = [ 'auth.isAuthenticated' ]
+    this.middleware = [ 'auth.isAuthenticated', 'user.session' ]
   }
 
-  async run ({ session, response }) {
-    response.data = session.user.toJSON()
+  async run ({ user, response }) {
+    response.success = false
+    response.data = await user.toJSON()
+    response.success = true
   }
 }
 
@@ -66,10 +72,22 @@ exports.changePassword = class ChangePassword extends Action {
     super()
     this.name = 'user:changePassword'
     this.description = 'Update password for the currently authenticated user'
-    this.middleware = [ 'auth.isAuthenticated' ]
+    this.middleware = [ 'auth.isAuthenticated', 'user.session' ]
+    this.inputs = {
+      oldPassword: { required: true },
+      newPassword: { required: true }
+    }
   }
 
-  async run () {
+  async run ({ params: { oldPassword, newPassword }, response, user }) {
+    response.success = false
+
+    if (!await user.validatePassword(newPassword)) throw new Error('Invalid password')
+    if (!await user.checkPassword(oldPassword)) throw new Error('Wrong password')
+
+    await user.updateAttributes({ password: newPassword })
+
+    response.success = true
   }
 }
 
@@ -85,9 +103,13 @@ exports.show = class Show extends Action {
       username: 'admin',
       email: 'admin@bspb.org'
     }
-    this.middleware = [ 'auth.isAuthenticated' ]
+    this.middleware = [ 'auth.hasRole.admin', 'user.params' ]
+    this.inputs = { userId: { required: true } }
   }
 
-  async run () {
+  async run ({ user, response }) {
+    response.success = false
+    response.data = await user.toJSON()
+    response.success = true
   }
 }

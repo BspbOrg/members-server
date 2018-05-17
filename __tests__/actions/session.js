@@ -2,29 +2,22 @@
 /* globals jest, describe, beforeAll, afterAll, beforeEach, afterEach, test, expect */
 'use strict'
 
-const ActionHero = require('actionhero')
-const actionhero = new ActionHero.Process()
-let api
-
-const auth = {
-  email: 'test@bspb.org',
-  password: 'secret'
-}
+const ah = require('../../test/ah-setup')
 
 describe('action session', () => {
-  beforeAll(async () => {
-    api = await actionhero.start()
-  })
-  afterAll(async () => {
-    await actionhero.stop()
-  })
+  beforeAll(ah.start)
+  afterAll(ah.stop)
 
   describe('#auth', function () {
     describe('on successful auth', () => {
       let response
 
       beforeAll(async () => {
-        response = await api.specHelper.runAction('session:auth', auth)
+        response = await ah.runAction('session:auth', ah.userAuth)
+      })
+
+      test('should be successful', () => {
+        expect(response).toBeSuccessAction()
       })
 
       test('should return token', async () => {
@@ -33,7 +26,7 @@ describe('action session', () => {
 
       test('should return user info', async () => {
         expect(response).toHaveProperty('data', expect.objectContaining({
-          username: 'test',
+          username: 'user',
           email: expect.any(String),
           firstName: expect.any(String),
           lastName: expect.any(String)
@@ -51,15 +44,23 @@ describe('action session', () => {
     })
 
     test('should return error on unknown username', async () => {
-      const res = await api.specHelper.runAction('session:auth', { email: 'unknown', password: 'secret' })
+      const res = await ah.runAction('session:auth', { email: 'unknown', password: 'secret' })
       expect(res).not.toHaveProperty('token')
       expect(res).toHaveProperty('error', expect.any(String))
     })
 
     test('should return error on wrong password', async () => {
-      const res = await api.specHelper.runAction('session:auth', { email: 'test', password: 'wrong' })
+      const res = await ah.runAction('session:auth', { email: 'test', password: 'wrong' })
       expect(res).not.toHaveProperty('token')
       expect(res).toHaveProperty('error', expect.any(String))
+    })
+  })
+
+  describe('#logout', () => {
+    beforeEach(ah.loginUser)
+
+    test('should succeed when logged in', async () => {
+      expect(await ah.runUserAction('session:destroy')).toBeSuccessAction()
     })
   })
 })

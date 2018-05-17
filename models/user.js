@@ -95,7 +95,7 @@ class User extends Model {
   get name () { return [ this.firstName, this.lastName ].filter(v => v).join(' ') }
 
   async authenticate (password) {
-    const success = await bcrypt.compare(password, this.password)
+    const success = await this.checkPassword(password)
     if (success) {
       this.clearResetToken()
       this.lastLoginAt = new Date()
@@ -103,9 +103,17 @@ class User extends Model {
     return success
   }
 
+  async checkPassword (password) {
+    return bcrypt.compare(password, this.password)
+  }
+
   async updatePassword () {
     const salt = await bcrypt.genSalt(config.bcryptComplexity)
     this.password = await bcrypt.hash(this.password, salt)
+  }
+
+  async validatePassword (password) {
+    return password.length >= 6
   }
 
   async createResetToken () {

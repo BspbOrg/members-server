@@ -18,7 +18,6 @@ module.exports = class SessionInitializer extends Initializer {
 
       load: async (connection) => {
         const key = api.session.sessionKey(connection)
-
         const data = await redis.get(key)
         if (!data) return false
         return JSON.parse(data)
@@ -62,9 +61,27 @@ module.exports = class SessionInitializer extends Initializer {
             const sessionData = await api.session.load(data.connection)
             if (!sessionData) return
 
-            const csrfToken = data.connection.rawConnection.req
-              ? data.connection.rawConnection.req.headers[ 'x-csrf-token' ] || data.params.csrfToken
-              : data.params.csrfToken
+            let csrfToken
+
+            if (!csrfToken &&
+              data.connection.rawConnection &&
+              data.connection.rawConnection.req &&
+              data.connection.rawConnection.req.headers &&
+              data.connection.rawConnection.req.headers[ 'x-csrf-token' ]) {
+              csrfToken = data.connection.rawConnection.req.headers[ 'x-csrf-token' ]
+            }
+
+            if (!csrfToken &&
+              data.cookies &&
+              data.cookies[ 'csrf-token' ]) {
+              csrfToken = data.cookies[ 'csrf-token' ]
+            }
+
+            if (!csrfToken &&
+              data.params &&
+              data.params.csrfToken) {
+              csrfToken = data.params.csrfToken
+            }
 
             if (!csrfToken || csrfToken !== sessionData.csrfToken) {
               throw new Error('CSRF error')

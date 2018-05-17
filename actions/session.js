@@ -34,3 +34,19 @@ exports.auth = class Auth extends Action {
     response.success = true
   }
 }
+
+exports.logout = class Logout extends Action {
+  constructor () {
+    super()
+    this.name = 'session:destroy'
+    this.description = 'Destroy active session'
+    this.middleware = [ 'auth.isAuthenticated' ]
+  }
+
+  async run ({ connection, response }) {
+    response.success = false
+    await api.session.destroy(connection)
+    response.data = true
+    response.success = true
+  }
+}

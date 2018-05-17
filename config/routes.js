@@ -26,7 +26,7 @@ exports[ 'default' ] = {
       ],
 
       delete: [
-        // { path: '/session', action: 'session:destroy' },
+        { path: '/session', action: 'session:destroy' },
         { path: '/user/:id', action: 'user:destroy' }
       ]
     }
