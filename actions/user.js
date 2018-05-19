@@ -132,7 +132,9 @@ exports.update = class Update extends Action {
       firstName: {},
       lastName: {},
       username: {},
-      email: {}
+      email: {},
+      language: {},
+      role: {}
     }
   }
 

@@ -121,10 +121,10 @@ describe('action user', () => {
   describe('#update', () => {
     let user
     const action = 'user:update'
-    const params = async () => { return assign({ userId: user.id }, generateUser()) }
+    const params = async () => { return assign({ userId: user.id }, generateUser({ language: 'en', role: 'user' })) }
 
     beforeEach(async () => {
-      user = await ah.api.models.user.create(generateUser())
+      user = await ah.api.models.user.create(generateUser({ language: 'bg', role: 'admin' }))
     })
 
     afterEach(async () => {
@@ -137,5 +137,7 @@ describe('action user', () => {
     testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'lastName')
     testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'username')
     testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'email')
+    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'language')
+    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'role')
   })
 })
