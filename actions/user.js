@@ -113,3 +113,33 @@ exports.show = class Show extends Action {
     response.success = true
   }
 }
+
+exports.update = class Update extends Action {
+  constructor () {
+    super()
+    this.name = 'user:update'
+    this.description = 'Update user info'
+    this.outputExample = {
+      id: 1,
+      firstName: 'Test',
+      lastName: 'Admin',
+      username: 'admin',
+      email: 'admin@bspb.org'
+    }
+    this.middleware = [ 'auth.isAuthenticated', 'user.params', 'auth.hasRole.admin or auth.user == user' ]
+    this.inputs = {
+      userId: { required: true },
+      firstName: {},
+      lastName: {},
+      username: {},
+      email: {}
+    }
+  }
+
+  async run ({ params, response, user }) {
+    response.success = false
+    await user.updateAttributes(params)
+    response.data = user.toJSON()
+    response.success = true
+  }
+}

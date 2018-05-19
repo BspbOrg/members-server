@@ -31,5 +31,21 @@ module.exports = {
       if (prepared[ field ]) prepared[ field ] = 'skipped'
     })
     expect(prepared).toMatchSnapshot(label)
+  },
+  testFieldChange: (getAction, getParams, updateAction, updateParams, field) => {
+    test(`should update ${field}`, async () => {
+      const original = await ah.runAdminAction(getAction, await getParams())
+      expect(original).toBeSuccessAction()
+
+      const update = await ah.runAdminAction(updateAction, await updateParams())
+      expect(update).toBeSuccessAction()
+      expect(update.data[ field ]).not.toEqual(original.data[ field ])
+
+      const updated = await ah.runAdminAction(getAction, await getParams())
+      expect(updated).toBeSuccessAction()
+      expect(updated.data[ field ]).not.toEqual(original.data[ field ])
+
+      expect(update.data[ field ]).toEqual(updated.data[ field ])
+    })
   }
 }

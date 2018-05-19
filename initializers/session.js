@@ -124,6 +124,17 @@ module.exports = class SessionInitializer extends Initializer {
             data.connection.rawConnection.responseHttpCode = 403
             throw new Error('Admin required')
           }
+        },
+        owner: {
+          name: 'auth.hasRole.admin or auth.user == user',
+          global: false,
+          priority: 20000,
+          preProcessor: async (data) => {
+            if (!data.user) throw new Error('No user specified in input')
+            await api.session.middleware.auth.preProcessor(data)
+            if (data.session.userId === data.user.id) return
+            await api.session.middleware.admin.preProcessor(data)
+          }
         }
       }
     }
@@ -132,6 +143,7 @@ module.exports = class SessionInitializer extends Initializer {
     api.actions.addMiddleware(api.session.middleware.auth)
     api.actions.addMiddleware(api.session.middleware.user)
     api.actions.addMiddleware(api.session.middleware.admin)
+    api.actions.addMiddleware(api.session.middleware.owner)
 
     api.params.globalSafeParams.push('csrfToken')
   }

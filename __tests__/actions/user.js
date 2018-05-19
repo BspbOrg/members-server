@@ -3,7 +3,9 @@
 'use strict'
 
 const ah = require('../../test/ah-setup')
-const { snapshot, testActionPermissions } = require('../../test/helpers')
+const { snapshot, testActionPermissions, testFieldChange } = require('../../test/helpers')
+const { assign } = Object
+const { generateUser } = require('../../test/generators')
 
 describe('action user', () => {
   beforeAll(ah.start)
@@ -30,14 +32,8 @@ describe('action user', () => {
 
     describe('with many records', () => {
       beforeAll(async () => {
-        const records = (Array.apply(null, { length: 100 })).map((dummy, idx) => {
-          return {
-            username: `test${idx}`,
-            email: `test${idx}@bspb.org`,
-            password: 'secret',
-            firstName: 'TEMPORARY',
-            lastName: `User${idx}`
-          }
+        const records = (Array.apply(null, { length: 100 })).map(() => {
+          return generateUser({ firstName: 'TEMPORARY' })
         })
         await ah.api.models.user.bulkCreate(records)
       })
@@ -69,13 +65,7 @@ describe('action user', () => {
     const params = async () => { return { userId: user.id } }
 
     beforeEach(async () => {
-      user = await ah.api.models.user.create({
-        username: 'testdelete',
-        email: 'testdelete@bspb.org',
-        firstName: 'Delete',
-        lastName: 'User',
-        password: 'secret'
-      })
+      user = await ah.api.models.user.create(generateUser())
     })
 
     afterEach(async () => {
@@ -115,5 +105,37 @@ describe('action user', () => {
     const params = async () => { return { userId: (await ah.api.models.user.findOne({})).id } }
 
     testActionPermissions(action, params, { guest: false, user: false, admin: true })
+  })
+
+  describe('#update self', () => {
+    const action = 'user:update'
+    const params = async () => {
+      const user = (await ah.runUserAction('user:me')).data
+      if (!user) return {}
+      return assign({ userId: user.id }, user)
+    }
+
+    testActionPermissions(action, params, { guest: false, user: true, admin: true })
+  })
+
+  describe('#update', () => {
+    let user
+    const action = 'user:update'
+    const params = async () => { return assign({ userId: user.id }, generateUser()) }
+
+    beforeEach(async () => {
+      user = await ah.api.models.user.create(generateUser())
+    })
+
+    afterEach(async () => {
+      await ah.api.models.user.destroy({ where: { id: user.id }, force: true })
+    })
+
+    testActionPermissions(action, params, { guest: false, user: false, admin: true })
+
+    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'firstName')
+    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'lastName')
+    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'username')
+    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'email')
   })
 })
