@@ -12,7 +12,7 @@ exports[ 'default' ] = {
       post: [
         { path: '/session', action: 'session:auth' },
         { path: '/user', action: 'user:create' },
-        { path: '/user/:userId', action: 'user:edit' }
+        { path: '/user/:userId', action: 'user:update' }
         // { path: '/session/:email/resetpw', action: 'user:lost' },
         // { path: '/session/:email/resetpw2', action: 'user:reset' }
       ],
