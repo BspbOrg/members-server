@@ -6,6 +6,7 @@ const ah = require('../../test/ah-setup')
 const { snapshot, testActionPermissions, testFieldChange } = require('../../test/helpers')
 const { assign } = Object
 const { generateUser } = require('../../test/generators')
+const omit = require('lodash.omit')
 
 describe('action user', () => {
   beforeAll(ah.start)
@@ -139,5 +140,42 @@ describe('action user', () => {
     testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'email')
     testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'language')
     testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'role')
+  })
+
+  describe('#create', () => {
+    const action = 'user:create'
+    const params = generateUser({ firstName: 'TEMPORARY' })
+
+    afterEach(async () => {
+      ah.api.models.user.destroy({ where: { firstName: 'TEMPORARY' }, force: true })
+    })
+
+    testActionPermissions(action, params, { guest: false, user: false, admin: true })
+
+    describe('when created new user', () => {
+      let response
+      beforeEach(async () => {
+        response = await ah.runAdminAction(action, params)
+      })
+
+      test('should assign id', async () => {
+        expect(response).toHaveProperty('data.id', expect.anything())
+      })
+
+      describe('and later retrieved', async () => {
+        let getResponse
+        beforeEach(async () => {
+          getResponse = await ah.runAdminAction('user:show', { userId: response.data.id })
+        })
+
+        test('should succeed', async () => {
+          expect(getResponse).toBeSuccessAction()
+        })
+
+        test('should have the provided properties', async () => {
+          expect(getResponse.data).toEqual(expect.objectContaining(omit(params, [ 'password' ])))
+        })
+      })
+    })
   })
 })

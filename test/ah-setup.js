@@ -20,7 +20,7 @@ const ah = module.exports = {
   },
   runAction: async (action, params, token, connection) => {
     if (!connection) connection = new ah.api.specHelper.Connection()
-    connection.params = params || {}
+    connection.params = assign({}, params || {})
     if (token) {
       connection.params = assign({}, connection.params, { csrfToken: token })
     }

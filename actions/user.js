@@ -145,3 +145,35 @@ exports.update = class Update extends Action {
     response.success = true
   }
 }
+
+exports.create = class Create extends Action {
+  constructor () {
+    super()
+    this.name = 'user:create'
+    this.description = 'Create user'
+    this.outputExample = {
+      id: 1,
+      firstName: 'Test',
+      lastName: 'Admin',
+      username: 'admin',
+      email: 'admin@bspb.org'
+    }
+    this.middleware = [ 'auth.hasRole.admin' ]
+    this.inputs = {
+      firstName: {required: true},
+      lastName: {required: true},
+      username: {required: true},
+      email: {},
+      language: {},
+      role: {},
+      password: {required: true}
+    }
+  }
+
+  async run ({ params, response }) {
+    response.success = false
+    const user = await api.models.user.create(params)
+    response.data = user.toJSON()
+    response.success = true
+  }
+}
