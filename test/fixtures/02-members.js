@@ -7,7 +7,7 @@ module.exports = [
       lastName: 'Member',
       username: 'member',
       email: 'member@bspb.org',
-      membershipExpire: new Date(9999, 11, 30, 23, 59, 59, 999),
+      membershipExpire: new Date(Date.UTC(9999, 11, 30, 23, 59, 59, 999)),
       originalSource: 'fixtures',
       accessId: '543210',
       cardId: '12345',

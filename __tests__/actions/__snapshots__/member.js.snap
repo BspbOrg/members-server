@@ -14,7 +14,7 @@ Object {
   "firstName": "Completely",
   "id": 1,
   "lastName": "Member",
-  "membershipExpire": 9999-12-30T21:59:59.999Z,
+  "membershipExpire": 9999-12-30T23:59:59.999Z,
   "middleName": "Populated",
   "originalSource": "fixtures",
   "phone": "+35989000",
