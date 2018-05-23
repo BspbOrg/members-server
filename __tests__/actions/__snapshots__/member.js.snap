@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`action member #show should match snapshot 1`] = `
+Object {
+  "accessId": "543210",
+  "address": "Central square #1",
+  "cardId": "12345",
+  "category": "regular",
+  "city": "Plovdiv",
+  "country": "Bulgaria",
+  "createdAt": "skipped",
+  "deletedAt": null,
+  "email": "member@bspb.org",
+  "firstName": "Completely",
+  "id": 1,
+  "lastName": "Member",
+  "membershipExpire": 9999-12-30T23:59:59.999Z,
+  "middleName": "Populated",
+  "originalSource": "fixtures",
+  "phone": "+35989000",
+  "postalCode": "4000",
+  "updatedAt": "skipped",
+  "username": "member",
+}
+`;
