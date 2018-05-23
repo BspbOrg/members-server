@@ -1,7 +1,7 @@
 const { Initializer, api } = require('actionhero')
 
 async function resolveMember (memberId, data) {
-  if (data.user) return
+  if (data.member) return
 
   const { connection: { rawConnection } } = data
 
