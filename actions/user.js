@@ -11,10 +11,10 @@ exports.list = class List extends Action {
       { id: 1, firstName: 'Test', lastName: 'Admin', username: 'admin', email: 'admin@bspb.org' },
       { id: 2, firstName: 'Test', lastName: 'User', username: 'test', email: 'test@bspb.org' }
     ]
-    this.middleware = [ 'auth.hasRole.admin' ]
+    this.middleware = [ 'auth.hasRole.admin', 'paging' ]
     this.inputs = {
-      limit: { default: 20 },
-      offset: { default: 0 }
+      limit: {},
+      offset: {}
     }
   }
 
@@ -160,13 +160,13 @@ exports.create = class Create extends Action {
     }
     this.middleware = [ 'auth.hasRole.admin' ]
     this.inputs = {
-      firstName: {required: true},
-      lastName: {required: true},
-      username: {required: true},
+      firstName: { required: true },
+      lastName: { required: true },
+      username: { required: true },
       email: {},
       language: {},
       role: {},
-      password: {required: true}
+      password: { required: true }
     }
   }
 

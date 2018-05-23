@@ -34,7 +34,7 @@ describe('action member', () => {
 
     describe('with many records', () => {
       beforeAll(async () => {
-        const records = (Array.apply(null, { length: 100 })).map(() => {
+        const records = (Array.apply(null, { length: 3 })).map(() => {
           return generateMember({ firstName: 'TEMPORARY' })
         })
         await ah.api.models.member.bulkCreate(records)
@@ -44,18 +44,18 @@ describe('action member', () => {
         ah.api.models.member.destroy({ where: { firstName: 'TEMPORARY' }, force: true })
       })
 
-      test('should return only 20 records', async () => {
-        expect((await ah.runAdminAction(action)).data).toHaveLength(20)
+      test('should return only 2 records', async () => {
+        expect((await ah.runAdminAction(action)).data).toHaveLength(2)
       })
 
       test('should return only specified records', async () => {
-        expect((await ah.runAdminAction(action, { limit: 30 })).data).toHaveLength(30)
+        expect((await ah.runAdminAction(action, { limit: 1 })).data).toHaveLength(1)
       })
 
       test('should return different records with offset', async () => {
-        expect.assertions(20)
-        const first = await ah.runAdminAction(action, { limit: 20 })
-        const res = await ah.runAdminAction(action, { offset: 20 })
+        expect.assertions(1)
+        const first = await ah.runAdminAction(action, { limit: 1 })
+        const res = await ah.runAdminAction(action, { offset: 1 })
         first.data.forEach(u => expect(res.data).not.toContainEqual(u))
       })
     })
@@ -75,6 +75,12 @@ describe('action member', () => {
     })
 
     testActionPermissions(action, params, { guest: false, user: false, admin: true })
+
+    test('should delete from db', async () => {
+      await ah.runAdminAction(action, await params())
+      const record = await ah.api.models.member.findOne({ where: { id: member.id } })
+      expect(record).toBeFalsy()
+    })
   })
 
   describe('#show', () => {
@@ -110,7 +116,10 @@ describe('action member', () => {
       updatedParams = generateMember()
       for (let key in updatedParams) {
         if (!updatedParams.hasOwnProperty(key)) continue
-        if (['category'].indexOf(key) !== -1) continue
+        // category is different everytime
+        if (key === 'category') continue
+        // email could be null and we need to provide valid email
+        if (key === 'email' && !updatedParams.email) updatedParams.email = 'old@email.com'
         updatedParams[ key ] = `Updated${updatedParams[ key ]}`
       }
     })
@@ -121,19 +130,19 @@ describe('action member', () => {
 
     testActionPermissions(action, params, { guest: false, user: false, admin: true })
 
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'firstName')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'middleName')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'lastName')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'username')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'email')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'accessId')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'cardId')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'country')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'city')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'postalCode')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'address')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'phone')
-    testFieldChange('member:show', () => { return { memberId: member.id } }, action, params, 'category')
+    const fields = [
+      'firstName', 'middleName', 'lastName', 'username', 'email', 'accessId', 'cardId',
+      'country', 'city', 'postalCode', 'address', 'phone', 'category'
+    ]
+    fields.forEach(field =>
+      testFieldChange(
+        // get request
+        'member:show', () => { return { memberId: member.id } },
+        // update request
+        action, params,
+        // field that should change
+        field)
+    )
   })
 
   describe('#create', () => {

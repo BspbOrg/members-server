@@ -33,7 +33,7 @@ describe('action user', () => {
 
     describe('with many records', () => {
       beforeAll(async () => {
-        const records = (Array.apply(null, { length: 100 })).map(() => {
+        const records = (Array.apply(null, { length: 3 })).map(() => {
           return generateUser({ firstName: 'TEMPORARY' })
         })
         await ah.api.models.user.bulkCreate(records)
@@ -43,18 +43,18 @@ describe('action user', () => {
         ah.api.models.user.destroy({ where: { firstName: 'TEMPORARY' }, force: true })
       })
 
-      test('should return only 20 records', async () => {
-        expect((await ah.runAdminAction(action)).data).toHaveLength(20)
+      test('should return only 2 records', async () => {
+        expect((await ah.runAdminAction(action)).data).toHaveLength(2)
       })
 
       test('should return only specified records', async () => {
-        expect((await ah.runAdminAction(action, { limit: 30 })).data).toHaveLength(30)
+        expect((await ah.runAdminAction(action, { limit: 1 })).data).toHaveLength(1)
       })
 
       test('should return different records with offset', async () => {
-        expect.assertions(20)
-        const first = await ah.runAdminAction(action, { limit: 20 })
-        const res = await ah.runAdminAction(action, { offset: 20 })
+        expect.assertions(1)
+        const first = await ah.runAdminAction(action, { limit: 1 })
+        const res = await ah.runAdminAction(action, { offset: 1 })
         first.data.forEach(u => expect(res.data).not.toContainEqual(u))
       })
     })
@@ -134,12 +134,18 @@ describe('action user', () => {
 
     testActionPermissions(action, params, { guest: false, user: false, admin: true })
 
-    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'firstName')
-    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'lastName')
-    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'username')
-    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'email')
-    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'language')
-    testFieldChange('user:show', () => { return { userId: user.id } }, action, params, 'role')
+    const fields = [
+      'firstName', 'lastName', 'username', 'email', 'language', 'role'
+    ]
+    fields.forEach(field =>
+      testFieldChange(
+        // get request
+        'user:show', () => { return { userId: user.id } },
+        // update request
+        action, params,
+        // field that should change
+        field)
+    )
   })
 
   describe('#create', () => {

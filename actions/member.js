@@ -7,10 +7,10 @@ exports.list = class List extends Action {
     super()
     this.name = 'member:list'
     this.description = 'List Members. Requires admin role'
-    this.middleware = [ 'auth.hasRole.admin' ]
+    this.middleware = [ 'auth.hasRole.admin', 'paging' ]
     this.inputs = {
-      limit: { default: 20 },
-      offset: { default: 0 }
+      limit: {},
+      offset: {}
     }
   }
 
@@ -95,9 +95,9 @@ exports.create = class Create extends Action {
     this.description = 'Create member'
     this.middleware = [ 'auth.hasRole.admin' ]
     this.inputs = {
-      firstName: {required: true},
+      firstName: { required: true },
       middleName: {},
-      lastName: {required: true},
+      lastName: { required: true },
       category: {},
       username: {},
       email: {},
