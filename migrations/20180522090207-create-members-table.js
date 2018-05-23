@@ -11,18 +11,11 @@ module.exports = {
       },
       username: {
         type: DataTypes.STRING(20),
-        allowNull: true,
-        unique: { msg: 'The specified username is already in use.' },
-        validate: {
-          len: [ 4, 20 ],
-          is: /^[a-z][a-z0-9_.-]/i
-        }
+        allowNull: true
       },
       email: {
         type: DataTypes.STRING,
-        allowNull: true,
-        unique: { msg: 'The specified email address is already in use.' },
-        validate: { isEmail: true }
+        allowNull: true
       },
       firstName: {
         type: DataTypes.STRING,
@@ -46,13 +39,11 @@ module.exports = {
       },
       accessId: {
         type: DataTypes.STRING,
-        allowNull: true,
-        unique: { msg: 'The specified access ID is already in use.' }
+        allowNull: true
       },
       cardId: {
         type: DataTypes.STRING,
-        allowNull: true,
-        unique: { msg: 'The specified card ID is already in use.' }
+        allowNull: true
       },
       country: {
         type: DataTypes.STRING,
@@ -72,16 +63,12 @@ module.exports = {
       },
       phone: {
         type: DataTypes.STRING,
-        allowNull: true,
-        unique: { msg: 'The specified phone number is already in use.' }
+        allowNull: true
       },
       category: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'regular',
-        validate: {
-          isIn: [ [ 'student', 'regular', 'retired' ] ]
-        }
+        defaultValue: 'regular'
       },
       // system columns
       createdAt: {
