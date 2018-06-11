@@ -20,7 +20,14 @@ npm run migrate
 ```
 npm start
 npx actionhero console
-  --> api.models.user.create ({username: "admin", firstName: "admin", lastName: "admin", password: "admin", email: "admin@admin.admin"})
+  --> api.models.user.create ({
+        username: "admin",
+        firstName: "admin",
+        lastName: "admin",
+        password: "admin",
+        email: "admin@admin.admin",
+        role: "admin"
+        })
 ```
 ## To Run:
 
