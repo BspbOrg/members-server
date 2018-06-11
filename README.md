@@ -9,10 +9,25 @@ Management system for [BSPB](http://bspb.org/) members
 ## To install:
 (assuming you have [node](http://nodejs.org/) and NPM installed)
 
-`npm install`
+```
+npm install
+docker-compose up -d db redis dbadmin
+npm run migrate
+```
 
+## To create user:
+
+```
+npm start
+npx actionhero console
+  --> api.models.user.create ({username: "admin", firstName: "admin", lastName: "admin", password: "admin", email: "admin@admin.admin"})
+```
 ## To Run:
-`npm start`
+
+```
+docker-compose start db redis dbadmin
+npm start
+```
 
 ## To Test:
 `npm test`
