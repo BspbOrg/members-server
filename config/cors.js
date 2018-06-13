@@ -21,7 +21,8 @@ exports.staging = {
 exports.production = {
   cors: () => {
     return {
-      enabled: true
+      enabled: true,
+      allowedOrigins: 'https://members.bspb.org'
     }
   }
 }
