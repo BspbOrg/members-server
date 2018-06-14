@@ -3,7 +3,12 @@
 const ah = require('./ah-setup')
 const { assign } = Object
 
+function resolveArg (arg) {
+  return typeof arg === 'function' ? arg.apply(this, Array.prototype.slice(arguments, 1)) : arg
+}
+
 module.exports = {
+  resolveArg,
   snapshotSkipFields: [ 'createdAt', 'lastLoginAt', 'updatedAt', 'deletedAt' ],
   testActionPermissions: (action, params, permissions) => {
     for (let role in permissions) {
@@ -34,29 +39,34 @@ module.exports = {
   },
   testFieldChange: (getAction, getParams, updateAction, updateParams, field) => {
     test(`should update ${field}`, async () => {
-      const original = await ah.runAdminAction(getAction, await getParams())
+      const getp = await resolveArg(getParams)
+      const updatep = await resolveArg(updateParams)
+
+      const original = await ah.runAdminAction(getAction, getp)
       expect(original).toBeSuccessAction()
 
-      const update = await ah.runAdminAction(updateAction, await updateParams())
+      const update = await ah.runAdminAction(updateAction, updatep)
       expect(update).toBeSuccessAction()
       expect(update.data[ field ]).not.toEqual(original.data[ field ])
 
-      const updated = await ah.runAdminAction(getAction, await getParams())
+      const updated = await ah.runAdminAction(getAction, getp)
       expect(updated).toBeSuccessAction()
       expect(updated.data[ field ]).not.toEqual(original.data[ field ])
 
       expect(update.data[ field ]).toEqual(updated.data[ field ])
     })
   },
-  testPaging: (action, model, creator, destroyWhere) => {
+  testPaging: (action, model, creator) => {
     describe('with many records', () => {
+      let records
+
       beforeAll(async () => {
-        const records = (Array.apply(null, { length: 3 })).map(creator)
-        await ah.api.models[model].bulkCreate(records)
+        records = await Promise.all((Array.apply(null, { length: 3 })).map(resolveArg.bind(null, creator)))
+        records = await ah.api.models[ model ].bulkCreate(records)
       })
 
       afterAll(async () => {
-        ah.api.models[model].destroy({ where: destroyWhere, force: true })
+        await Promise.all(records.map(r => r.destroy({ force: true })))
       })
 
       test('should return only 2 records', async () => {
@@ -72,6 +82,15 @@ module.exports = {
         const first = await ah.runAdminAction(action, { limit: 1 })
         const res = await ah.runAdminAction(action, { offset: 1 })
         first.data.forEach(u => expect(res.data).not.toContainEqual(u))
+      })
+    })
+  },
+  testRequiredFields: (model, modelData, requiredFields) => {
+    requiredFields.forEach(field => {
+      test(`should require ${field}`, async () => {
+        const data = assign({}, await resolveArg(modelData))
+        delete data[ field ]
+        return expect(ah.api.models[ model ].create(data)).rejects.toThrowErrorMatchingSnapshot()
       })
     })
   }

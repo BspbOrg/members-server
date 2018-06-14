@@ -4,6 +4,7 @@
 
 const ah = require('../../test/ah-setup')
 const { generatePayment, generateMember } = require('../../test/generators')
+const { testRequiredFields } = require('../../test/helpers')
 
 describe('model payment', () => {
   beforeAll(async () => {
@@ -24,13 +25,7 @@ describe('model payment', () => {
       payment = generatePayment()
     })
 
-    const requiredFields = [ 'paymentDate', 'amount', 'billingMemberId' ]
-    requiredFields.forEach(field => {
-      test(`should require ${field}`, async () => {
-        delete payment[ field ]
-        return expect(ah.api.models.payment.create(payment)).rejects.toThrowErrorMatchingSnapshot()
-      })
-    })
+    testRequiredFields('payment', () => payment, [ 'paymentDate', 'amount', 'billingMemberId' ])
 
     test('should properly store currency amount', async () => {
       payment.amount = 1.23
@@ -84,17 +79,17 @@ describe('model payment', () => {
     })
 
     test('member scope should include billing member', async () => {
-      const payments = await ah.api.models.payment.scope({ method: [ 'member', member1.id ] }).findAll({})
+      const payments = await ah.api.models.payment.scopeMember(member1.id).findAll({})
       expect(payments).toEqual(expect.arrayContaining([ expect.objectContaining({ id: payment1.id }) ]))
     })
 
     test('member scope should include members', async () => {
-      const payments = await ah.api.models.payment.scope({ method: [ 'member', member1.id ] }).findAll({})
+      const payments = await ah.api.models.payment.scopeMember(member1.id).findAll({})
       expect(payments).toEqual(expect.arrayContaining([ expect.objectContaining({ id: payment2.id }) ]))
     })
 
     test('member scope should not duplicate', async () => {
-      const payments = await ah.api.models.payment.scope({ method: [ 'member', member1.id ] }).findAll({})
+      const payments = await ah.api.models.payment.scopeMember(member1.id).findAll({})
       expect(payments).toHaveLength(2)
     })
   })

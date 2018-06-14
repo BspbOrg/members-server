@@ -91,8 +91,36 @@ class Member extends Model {
     })
   }
 
-  static associate (models) {
+  static associate ({ member }) {
+    member.belongsToMany(member, {
+      as: 'familyMembers',
+      through: 'member_families'
+    })
+    member.belongsToMany(member, {
+      as: 'familyMasters',
+      through: 'member_families',
+      foreignKey: 'familyMemberId',
+      otherKey: 'memberId'
+    })
+  }
 
+  static loadScopes ({ member }) {
+    member.addScope('family', function (memberId) {
+      return {
+        where: { '$familyMasters.id$': memberId },
+        include: [ {
+          association: member.associations.familyMasters,
+          attributes: [ 'id' ],
+          through: {
+            attributes: [ 'memberId' ]
+          }
+        } ]
+      }
+    })
+  }
+
+  static scopeFamily (memberId) {
+    return this.scope({ method: [ 'family', memberId ] })
   }
 
   get name () { return [ this.firstName, this.middleName, this.lastName ].filter(v => v).join(' ') }

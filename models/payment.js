@@ -59,6 +59,10 @@ class Payment extends Model {
     })
   }
 
+  static scopeMember (memberId) {
+    return this.scope({ method: [ 'member', memberId ] })
+  }
+
   toJSON () {
     const json = super.toJSON()
     json.members = this.members.map(m => m ? m.toJSON('short') : m)

@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`model member creating should require firstName 1`] = `"notNull Violation: member.firstName cannot be null"`;
+
+exports[`model member creating should require lastName 1`] = `"notNull Violation: member.lastName cannot be null"`;
