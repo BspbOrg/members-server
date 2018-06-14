@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`model payment creating should not allow amount=0 1`] = `"Validation error: Validation min on amount failed"`;
+
+exports[`model payment creating should not allow negative amount 1`] = `"Validation error: Validation min on amount failed"`;
+
+exports[`model payment creating should require amount 1`] = `"notNull Violation: payment.amount cannot be null"`;
+
+exports[`model payment creating should require billingMemberId 1`] = `"notNull Violation: payment.billingMemberId cannot be null"`;
+
+exports[`model payment creating should require paymentDate 1`] = `"notNull Violation: payment.paymentDate cannot be null"`;

@@ -31,3 +31,15 @@ exports.generateMember = (opts) => {
   }, opts)
 }
 exports.generateMember.index = 0
+
+exports.generatePayment = (opts) => {
+  const i = exports.generatePayment.index++
+  return assign({
+    paymentDate: 1514764800000 + i,
+    paymentType: 'cash',
+    amount: 1 + i,
+    membershipType: 'individial',
+    billingMemberId: 1
+  }, opts)
+}
+exports.generatePayment.index = 0
