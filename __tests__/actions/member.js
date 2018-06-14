@@ -3,7 +3,7 @@
 'use strict'
 
 const ah = require('../../test/ah-setup')
-const { snapshot, testActionPermissions, testFieldChange } = require('../../test/helpers')
+const { snapshot, testActionPermissions, testFieldChange, testPaging } = require('../../test/helpers')
 const { assign } = Object
 const { generateMember } = require('../../test/generators')
 
@@ -32,33 +32,9 @@ describe('action member', () => {
       ]))
     })
 
-    describe('with many records', () => {
-      beforeAll(async () => {
-        const records = (Array.apply(null, { length: 3 })).map(() => {
-          return generateMember({ firstName: 'TEMPORARY' })
-        })
-        await ah.api.models.member.bulkCreate(records)
-      })
-
-      afterAll(async () => {
-        ah.api.models.member.destroy({ where: { firstName: 'TEMPORARY' }, force: true })
-      })
-
-      test('should return only 2 records', async () => {
-        expect((await ah.runAdminAction(action)).data).toHaveLength(2)
-      })
-
-      test('should return only specified records', async () => {
-        expect((await ah.runAdminAction(action, { limit: 1 })).data).toHaveLength(1)
-      })
-
-      test('should return different records with offset', async () => {
-        expect.assertions(1)
-        const first = await ah.runAdminAction(action, { limit: 1 })
-        const res = await ah.runAdminAction(action, { offset: 1 })
-        first.data.forEach(u => expect(res.data).not.toContainEqual(u))
-      })
-    })
+    testPaging(action, 'member', () => {
+      return generateMember({ firstName: 'TEMPORARY' })
+    }, { firstName: 'TEMPORARY' })
   })
 
   describe('#destroy', () => {

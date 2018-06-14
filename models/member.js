@@ -96,6 +96,19 @@ class Member extends Model {
   }
 
   get name () { return [ this.firstName, this.middleName, this.lastName ].filter(v => v).join(' ') }
+
+  toJSON (context) {
+    switch (context) {
+      case 'short':
+        return {
+          id: this.id,
+          firstName: this.firstName,
+          lastName: this.lastName
+        }
+      default:
+        return super.toJSON()
+    }
+  }
 }
 
 module.exports = function (sequelize, DataTypes) {

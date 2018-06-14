@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`action payment #show should match snapshot 1`] = `
+Object {
+  "amount": 15,
+  "billingMemberId": 2,
+  "createdAt": "skipped",
+  "deletedAt": null,
+  "id": 1,
+  "members": Array [
+    Object {
+      "firstName": "Completely",
+      "id": 1,
+      "lastName": "Member",
+    },
+    Object {
+      "firstName": "Minimal",
+      "id": 2,
+      "lastName": "Member",
+    },
+  ],
+  "membershipType": null,
+  "paymentDate": "2020-03-20",
+  "paymentType": null,
+  "updatedAt": "skipped",
+}
+`;

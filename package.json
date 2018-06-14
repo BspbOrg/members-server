@@ -35,6 +35,7 @@
     "ws": "latest"
   },
   "devDependencies": {
+    "date-fns": "^1.29.0",
     "jest": "latest",
     "jest-matcher-utils": "^23.0.0",
     "sequelize-fixtures": "^0.7.0",

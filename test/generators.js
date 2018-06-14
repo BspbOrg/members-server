@@ -35,11 +35,12 @@ exports.generateMember.index = 0
 exports.generatePayment = (opts) => {
   const i = exports.generatePayment.index++
   return assign({
-    paymentDate: 1514764800000 + i,
-    paymentType: 'cash',
+    paymentDate: 1514764800000 + 86400000 * i,
+    paymentType: `cash${i}`,
     amount: 1 + i,
-    membershipType: 'individial',
-    billingMemberId: 1
+    membershipType: `individial${i}`,
+    billingMemberId: (i % 2) + 1,
+    members: [ ((i + 1) % 2) + 1 ]
   }, opts)
 }
 exports.generatePayment.index = 0
