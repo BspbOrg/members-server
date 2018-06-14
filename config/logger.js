@@ -12,7 +12,7 @@ exports['default'] = {
       logger.transports.push(function (api, winston) {
         return new (winston.transports.Console)({
           colorize: true,
-          level: 'info',
+          level: process.env.LOG_LEVEL || 'info',
           timestamp: function () { return api.id + ' @ ' + new Date().toISOString() }
         })
       })
@@ -54,15 +54,15 @@ exports['default'] = {
 exports.test = {
   logger: (api) => {
     return {
-      transports: [
-        // function (api, winston) {
-        //   return new (winston.transports.Console)({
-        //     colorize: true,
-        //     level: 'debug',
-        //     timestamp: function () { return api.id + ' @ ' + new Date().toISOString() }
-        //   })
-        // }
-      ]
+      transports: process.env.LOG_LEVEL ? [
+        function (api, winston) {
+          return new (winston.transports.Console)({
+            colorize: true,
+            level: process.env.LOG_LEVEL,
+            timestamp: function () { return api.id + ' @ ' + new Date().toISOString() }
+          })
+        }
+      ] : null
     }
   }
 }
