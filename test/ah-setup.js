@@ -1,5 +1,26 @@
 const ActionHero = require('actionhero')
-const actionhero = new ActionHero.Process()
+let api
+
+class AHProcess extends ActionHero.Process {
+  async fatalError (errors, type) {
+    if (errors && !(errors instanceof Array)) { errors = [errors] }
+    if (errors) {
+      if (api && api.log) {
+        api.log(`Error with initializer step: ${type}`, 'emerg')
+        errors.forEach((error) => { api.log(error.stack, 'emerg') })
+      } else {
+        console.error('Error with initializer step: ' + type)
+        errors.forEach((error) => { console.error(error.stack) })
+      }
+      if (api) {
+        await api.commands.stop.call(api)
+      }
+    }
+    return Promise.reject(errors)
+  }
+}
+
+const actionhero = new AHProcess()
 const { assign } = Object
 
 const ah = module.exports = {
@@ -11,7 +32,7 @@ const ah = module.exports = {
   userAuth: { email: 'user@bspb.org', password: 'secret' },
   adminAuth: { email: 'admin@bspb.org', password: 'secret' },
   start: async () => {
-    ah.api = await actionhero.start()
+    api = ah.api = await actionhero.start()
     ah.userConnection = new ah.api.specHelper.Connection()
     ah.adminConnection = new ah.api.specHelper.Connection()
   },
