@@ -17,7 +17,8 @@ exports.list = class List extends Action {
   async run ({ params, response }) {
     const res = await api.models.member.findAndCountAll({
       offset: params.offset,
-      limit: params.limit
+      limit: params.limit,
+      include: [ 'familyMembers' ]
     })
     response.data = await Promise.all(res.rows.map(u => u.toJSON()))
     response.count = res.count
@@ -40,7 +41,7 @@ exports.destroy = class Destroy extends Action {
   }
 }
 
-exports.show = class Show extends Action {
+exports.Show = class Show extends Action {
   constructor () {
     super()
     this.name = 'member:show'
@@ -51,12 +52,14 @@ exports.show = class Show extends Action {
 
   async run ({ member, response }) {
     response.success = false
-    response.data = await member.toJSON()
+    response.data = member.toJSON()
+    const familyMembers = await member.getFamilyMembers()
+    response.data.familyMembers = familyMembers.map(m => m.toJSON())
     response.success = true
   }
 }
 
-exports.update = class Update extends Action {
+exports.update = class Update extends exports.Show {
   constructor () {
     super()
     this.name = 'member:update'
@@ -76,19 +79,22 @@ exports.update = class Update extends Action {
       postalCode: {},
       address: {},
       phone: {},
-      category: {}
+      category: {},
+      familyMembers: {}
     }
   }
 
   async run ({ params, response, member }) {
     response.success = false
     await member.updateAttributes(params)
-    response.data = member.toJSON()
-    response.success = true
+    if (params.familyMembers) {
+      await member.setFamilyMembers(params.familyMembers)
+    }
+    return super.run(arguments[0])
   }
 }
 
-exports.create = class Create extends Action {
+exports.create = class Create extends exports.Show {
   constructor () {
     super()
     this.name = 'member:create'
@@ -107,14 +113,17 @@ exports.create = class Create extends Action {
       city: {},
       postalCode: {},
       address: {},
-      phone: {}
+      phone: {},
+      familyMembers: {}
     }
   }
 
-  async run ({ params, response }) {
+  async run ({ member, params, response }) {
     response.success = false
-    const member = await api.models.member.create(params)
-    response.data = member.toJSON()
-    response.success = true
+    member = arguments[0].member = await api.models.member.create(params)
+    if (params.familyMembers) {
+      await member.setFamilyMembers(params.familyMembers)
+    }
+    return super.run(arguments[0])
   }
 }

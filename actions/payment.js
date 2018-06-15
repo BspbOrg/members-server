@@ -40,7 +40,7 @@ exports.destroy = class Destroy extends Action {
   }
 }
 
-exports.show = class Show extends Action {
+exports.Show = class Show extends Action {
   constructor () {
     super()
     this.name = 'payment:show'
