@@ -1,4 +1,6 @@
-const { Model } = require('sequelize')
+const {Model} = require('sequelize')
+const PNF = require('google-libphonenumber').PhoneNumberFormat
+const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance()
 
 class Member extends Model {
   static init (sequelize, DataTypes) {
@@ -12,17 +14,17 @@ class Member extends Model {
       username: {
         type: DataTypes.STRING(20),
         allowNull: true,
-        unique: { msg: 'The specified username is already in use.' },
+        unique: {msg: 'The specified username is already in use.'},
         validate: {
-          len: [ 4, 20 ],
+          len: [4, 20],
           is: /^[a-z][a-z0-9_.-]/i
         }
       },
       email: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: { msg: 'The specified email address is already in use.' },
-        validate: { isEmail: true }
+        unique: {msg: 'The specified email address is already in use.'},
+        validate: {isEmail: true}
       },
       firstName: {
         type: DataTypes.STRING,
@@ -47,12 +49,12 @@ class Member extends Model {
       accessId: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: { msg: 'The specified access ID is already in use.' }
+        unique: {msg: 'The specified access ID is already in use.'}
       },
       cardId: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: { msg: 'The specified card ID is already in use.' }
+        unique: {msg: 'The specified card ID is already in use.'}
       },
       country: {
         type: DataTypes.STRING,
@@ -73,14 +75,42 @@ class Member extends Model {
       phone: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: { msg: 'The specified phone number is already in use.' }
+        unique: {msg: 'The specified phone number is already in use.'},
+        set (phone) {
+          if (phone) {
+            phone = phone.replace(/[^\d^+]/g, '')
+            try {
+              let parsed
+              if (phone.startsWith('0')) {
+                parsed = phoneUtil.parseAndKeepRawInput(phone, 'BG')
+              } else {
+                parsed = phoneUtil.parseAndKeepRawInput(phone)
+              }
+              this.setDataValue('phone', phoneUtil.format(parsed, PNF.E164))
+            } catch (error) {
+              this.setDataValue('phone', phone)
+            }
+          }
+        },
+        validate: {
+          isValidPhoneNumber (phone) {
+            try {
+              const parsed = phoneUtil.parse(phone)
+              if (!phoneUtil.isValidNumber(parsed)) {
+                throw new Error('Phone number is invalid.')
+              }
+            } catch (err) {
+              throw new Error('Phone number is invalid.')
+            }
+          }
+        }
       },
       category: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'regular',
         validate: {
-          isIn: [ [ 'student', 'regular', 'retired' ] ]
+          isIn: [['student', 'regular', 'retired']]
         }
       }
     }, {
@@ -91,7 +121,7 @@ class Member extends Model {
     })
   }
 
-  static associate ({ member }) {
+  static associate ({member}) {
     member.belongsToMany(member, {
       as: 'familyMembers',
       through: 'member_families'
@@ -104,26 +134,26 @@ class Member extends Model {
     })
   }
 
-  static loadScopes ({ member }) {
+  static loadScopes ({member}) {
     member.addScope('family', function (memberId) {
       return {
-        where: { '$familyMasters.id$': memberId },
-        include: [ {
+        where: {'$familyMasters.id$': memberId},
+        include: [{
           association: member.associations.familyMasters,
-          attributes: [ 'id' ],
+          attributes: ['id'],
           through: {
-            attributes: [ 'memberId' ]
+            attributes: ['memberId']
           }
-        } ]
+        }]
       }
     })
   }
 
   static scopeFamily (memberId) {
-    return this.scope({ method: [ 'family', memberId ] })
+    return this.scope({method: ['family', memberId]})
   }
 
-  get name () { return [ this.firstName, this.middleName, this.lastName ].filter(v => v).join(' ') }
+  get name () { return [this.firstName, this.middleName, this.lastName].filter(v => v).join(' ') }
 
   toJSON (context) {
     switch (context) {

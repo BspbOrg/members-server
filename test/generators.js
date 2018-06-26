@@ -26,7 +26,7 @@ exports.generateMember = (opts) => {
     city: `City ${i}`,
     postalCode: `Postal code ${i}`,
     address: `Address ${i}`,
-    phone: (i % 11 === 0) ? `'+359899${i}` : null,
+    phone: (i % 11 === 0) ? `+35989911122${i % 9 + 1}` : null,
     category: (i % 3 === 0) ? 'student' : ((i % 3 === 1) ? 'regular' : 'retired')
   }, opts)
 }

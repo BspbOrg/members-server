@@ -3,3 +3,11 @@
 exports[`model member creating should require firstName 1`] = `"notNull Violation: member.firstName cannot be null"`;
 
 exports[`model member creating should require lastName 1`] = `"notNull Violation: member.lastName cannot be null"`;
+
+exports[`model member creating should transform phone number should fail on phone number 044 772 0883 757 1`] = `"Validation error: Phone number is invalid."`;
+
+exports[`model member creating should transform phone number should format phone number +44 772 0883 757 1`] = `"Validation error: Phone number is invalid."`;
+
+exports[`model member creating should transform phone number should format phone number +44 1322 342988 1`] = `"Validation error: Phone number is invalid."`;
+
+exports[`model member creating should transform phone number should format phone number +4915206276967 1`] = `"Validation error: Phone number is invalid."`;
