@@ -15,7 +15,7 @@ module.exports = [
       city: 'Plovdiv',
       postalCode: '4000',
       address: 'Central square #1',
-      phone: '+35989000',
+      phone: '+359890111222',
       category: 'regular'
     }
   },

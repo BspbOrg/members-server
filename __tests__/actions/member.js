@@ -3,9 +3,9 @@
 'use strict'
 
 const ah = require('../../test/ah-setup')
-const { snapshot, testActionPermissions, testFieldChange, testPaging } = require('../../test/helpers')
-const { assign } = Object
-const { generateMember } = require('../../test/generators')
+const {snapshot, testActionPermissions, testFieldChange, testPaging} = require('../../test/helpers')
+const {assign} = Object
+const {generateMember} = require('../../test/generators')
 
 describe('action member', () => {
   beforeAll(ah.start)
@@ -14,7 +14,7 @@ describe('action member', () => {
   describe('#list', () => {
     const action = 'member:list'
 
-    testActionPermissions(action, {}, { guest: false, user: false, admin: true })
+    testActionPermissions(action, {}, {guest: false, user: false, admin: true})
 
     test('should return list of members', async () => {
       const member = await ah.api.models.member.findOne({})
@@ -33,50 +33,50 @@ describe('action member', () => {
     })
 
     testPaging(action, 'member', () => {
-      return generateMember({ firstName: 'TEMPORARY' })
-    }, { firstName: 'TEMPORARY' })
+      return generateMember({firstName: 'TEMPORARY'})
+    }, {firstName: 'TEMPORARY'})
   })
 
   describe('#destroy', () => {
     let member
     const action = 'member:destroy'
-    const params = async () => { return { memberId: member.id } }
+    const params = async () => { return {memberId: member.id} }
 
     beforeEach(async () => {
       member = await ah.api.models.member.create(generateMember())
     })
 
     afterEach(async () => {
-      await ah.api.models.member.destroy({ where: { id: member.id }, force: true })
+      await ah.api.models.member.destroy({where: {id: member.id}, force: true})
     })
 
-    testActionPermissions(action, params, { guest: false, user: false, admin: true })
+    testActionPermissions(action, params, {guest: false, user: false, admin: true})
 
     test('should delete from db', async () => {
       await ah.runAdminAction(action, await params())
-      const record = await ah.api.models.member.findOne({ where: { id: member.id } })
+      const record = await ah.api.models.member.findOne({where: {id: member.id}})
       expect(record).toBeFalsy()
     })
   })
 
   describe('#show', () => {
     const action = 'member:show'
-    const params = async () => { return { memberId: (await ah.api.models.member.findOne({})).id } }
+    const params = async () => { return {memberId: (await ah.api.models.member.findOne({})).id} }
 
-    testActionPermissions(action, params, { guest: false, user: false, admin: true })
+    testActionPermissions(action, params, {guest: false, user: false, admin: true})
 
     test('should contain all initial fields', async () => {
       const rawData = generateMember()
       const member = await ah.api.models.member.create(rawData)
 
-      const response = await ah.runAdminAction(action, { memberId: member.id })
+      const response = await ah.runAdminAction(action, {memberId: member.id})
 
       expect(response).toHaveProperty('data', expect.objectContaining(rawData))
     })
 
     test('should match snapshot', async () => {
-      const member = await ah.api.models.member.findOne({ order: [ [ 'id', 'ASC' ] ] })
-      const response = await ah.runAdminAction(action, { memberId: member.id })
+      const member = await ah.api.models.member.findOne({order: [['id', 'ASC']]})
+      const response = await ah.runAdminAction(action, {memberId: member.id})
       snapshot(response.data)
     })
   })
@@ -85,7 +85,7 @@ describe('action member', () => {
     let member
     let updatedParams
     const action = 'member:update'
-    const params = async () => { return assign({ memberId: member.id }, updatedParams) }
+    const params = async () => { return assign({memberId: member.id}, updatedParams) }
 
     beforeEach(async () => {
       member = await ah.api.models.member.create(generateMember())
@@ -96,15 +96,19 @@ describe('action member', () => {
         if (key === 'category') continue
         // email could be null and we need to provide valid email
         if (key === 'email' && !updatedParams.email) updatedParams.email = 'old@email.com'
-        updatedParams[ key ] = `Updated${updatedParams[ key ]}`
+        if (key === 'phone') {
+          updatedParams.phone = '+359896222111'
+          continue
+        }
+        updatedParams[key] = `Updated${updatedParams[key]}`
       }
     })
 
     afterEach(async () => {
-      await ah.api.models.member.destroy({ where: { id: member.id }, force: true })
+      await ah.api.models.member.destroy({where: {id: member.id}, force: true})
     })
 
-    testActionPermissions(action, params, { guest: false, user: false, admin: true })
+    testActionPermissions(action, params, {guest: false, user: false, admin: true})
 
     const fields = [
       'firstName', 'middleName', 'lastName', 'username', 'email', 'accessId', 'cardId',
@@ -113,7 +117,7 @@ describe('action member', () => {
     fields.forEach(field =>
       testFieldChange(
         // get request
-        'member:show', () => { return { memberId: member.id } },
+        'member:show', () => { return {memberId: member.id} },
         // update request
         action, params,
         // field that should change
@@ -123,13 +127,13 @@ describe('action member', () => {
 
   describe('#create', () => {
     const action = 'member:create'
-    const params = generateMember({ firstName: 'TEMPORARY' })
+    const params = generateMember({firstName: 'TEMPORARY'})
 
     afterEach(async () => {
-      ah.api.models.member.destroy({ where: { firstName: 'TEMPORARY' }, force: true })
+      ah.api.models.member.destroy({where: {firstName: 'TEMPORARY'}, force: true})
     })
 
-    testActionPermissions(action, params, { guest: false, user: false, admin: true })
+    testActionPermissions(action, params, {guest: false, user: false, admin: true})
 
     describe('when created new member', () => {
       let response
@@ -144,7 +148,7 @@ describe('action member', () => {
       describe('and later retrieved', async () => {
         let getResponse
         beforeEach(async () => {
-          getResponse = await ah.runAdminAction('member:show', { memberId: response.data.id })
+          getResponse = await ah.runAdminAction('member:show', {memberId: response.data.id})
         })
 
         test('should succeed', async () => {
