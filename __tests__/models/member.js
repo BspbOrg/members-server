@@ -28,6 +28,34 @@ describe('model member', () => {
 
     testRequiredFields('member', () => member, ['firstName', 'lastName'])
 
+    describe('should validate fields', async () => {
+      beforeEach(async () => {
+        await ah.api.models.payment.destroy({where: {}, force: true})
+        await ah.api.models.member.destroy({where: {}, force: true})
+      })
+
+      test('not allow duplicate access ids', async () => {
+        await expect(ah.api.models.member.create(generateMember({accessId: '111'}))).resolves.toBeDefined()
+        await expect(ah.api.models.member.create(generateMember({accessId: '111'}))).rejects.toThrowErrorMatchingSnapshot()
+      })
+
+      test('not allow duplicate card ids', async () => {
+        await expect(ah.api.models.member.create(generateMember({cardId: '111'}))).resolves.toBeDefined()
+        await expect(ah.api.models.member.create(generateMember({cardId: '111'}))).rejects.toThrowErrorMatchingSnapshot()
+      })
+
+      test('not allow duplicate username', async () => {
+        await expect(ah.api.models.member.create(generateMember({username: 'user'}))).resolves.toBeDefined()
+        await expect(ah.api.models.member.create(generateMember({username: 'user'}))).rejects.toThrowErrorMatchingSnapshot()
+      })
+
+      test('not allow invalid email', async () => {
+        await expect(ah.api.models.member.create(generateMember({email: 'adsd.443'}))).rejects.toThrowErrorMatchingSnapshot()
+        await expect(ah.api.models.member.create(generateMember({email: 'test@test'}))).rejects.toThrowErrorMatchingSnapshot()
+        await expect(ah.api.models.member.create(generateMember({email: 'test@test@test.test'}))).rejects.toThrowErrorMatchingSnapshot()
+      })
+    })
+
     describe('should transform phone number', async () => {
       beforeEach(async () => {
         await ah.api.models.payment.destroy({where: {}, force: true})
