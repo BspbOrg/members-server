@@ -38,8 +38,8 @@ class Member extends Model {
         type: DataTypes.STRING,
         allowNull: false
       },
-      membershipExpire: {
-        type: DataTypes.DATE,
+      membershipEndDate: {
+        type: DataTypes.DATEONLY,
         allowNull: true
       },
       originalSource: {
@@ -112,6 +112,10 @@ class Member extends Model {
         validate: {
           isIn: [['student', 'regular', 'retired']]
         }
+      },
+      membershipStartDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: true
       }
     }, {
       sequelize,
