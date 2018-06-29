@@ -5,6 +5,7 @@
 const ah = require('../../test/ah-setup')
 const {generateMember} = require('../../test/generators')
 const {testRequiredFields} = require('../../test/helpers')
+const dateFormat = require('date-fns/format')
 
 describe('model member', () => {
   beforeAll(async () => {
@@ -49,10 +50,64 @@ describe('model member', () => {
         await expect(ah.api.models.member.create(generateMember({username: 'user'}))).rejects.toThrowErrorMatchingSnapshot()
       })
 
-      test('not allow invalid email', async () => {
-        await expect(ah.api.models.member.create(generateMember({email: 'adsd.443'}))).rejects.toThrowErrorMatchingSnapshot()
-        await expect(ah.api.models.member.create(generateMember({email: 'test@test'}))).rejects.toThrowErrorMatchingSnapshot()
-        await expect(ah.api.models.member.create(generateMember({email: 'test@test@test.test'}))).rejects.toThrowErrorMatchingSnapshot()
+      test('allow date object for membershipStartDate', async () => {
+        const date = new Date()
+        member = await ah.api.models.member.create(generateMember({membershipStartDate: date}))
+        console.log(typeof member.membershipStartDate)
+        expect(member.membershipStartDate).toBe(dateFormat(date, 'YYYY-MM-DD'))
+      })
+
+      test('allow string with proper format for membershipStartDate', async () => {
+        const date = '2017-05-20'
+        member = await ah.api.models.member.create(generateMember({membershipStartDate: date}))
+        expect(dateFormat(member.membershipStartDate, 'YYYY-MM-DD')).toBe(date)
+      })
+
+      test('not allow string with wrong format for membershipStartDate', async () => {
+        const date = '20/05/2017'
+        await expect(ah.api.models.member.create(generateMember({membershipStartDate: date}))).rejects.toThrowErrorMatchingSnapshot()
+      })
+
+      test('fail on invalid age category', async () => {
+        await expect(ah.api.models.member.create(generateMember({category: 'unsupported category'}))).rejects.toThrowErrorMatchingSnapshot()
+      })
+
+      describe('allow strange but valid emails', async () => {
+        const emails = [
+          '"Abc@def"@example.com',
+          '"Fred Bloggs"@example.com',
+          'customer/department=shipping@example.com',
+          '$A12345@example.com',
+          '!def!xyz%abc@example.com',
+          '_somename@example.com',
+          'user+mailbox@example.com'
+        ]
+
+        emails.forEach(email => {
+          test(`allow following email: ${email}`, async () => {
+            await expect(ah.api.models.member.create(generateMember({email: email}))).resolves.toBeDefined()
+          })
+        })
+      })
+
+      describe('not allow invalid emails', async () => {
+        const emails = [
+          'Abc\\@def@example.com', // actually valid but still not supported by sequelize validation
+          'Fred\\ Bloggs@example.com', // actually valid but still not supported by sequelize validation
+          'Joe.\\\\Blow@example.com', // actually valid but still not supported by sequelize validation
+          'user@[192.168.0.1]', // actually valid but still not supported by sequelize validation
+          'joe@[::1]', // actually valid but still not supported by sequelize validation
+          'joe@[2001:db8::ff00:42:8329]', // actually valid but still not supported by sequelize validation
+          'adsd.443',
+          'test@test',
+          'test@test@test.test'
+        ]
+
+        emails.forEach(email => {
+          test(`not allow following email: ${email}`, async () => {
+            await expect(ah.api.models.member.create(generateMember({email: email}))).rejects.toThrowErrorMatchingSnapshot()
+          })
+        })
       })
     })
 

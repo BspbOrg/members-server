@@ -40,7 +40,10 @@ class Member extends Model {
       },
       membershipEndDate: {
         type: DataTypes.DATEONLY,
-        allowNull: true
+        allowNull: true,
+        validate: {
+          isDate: true
+        }
       },
       originalSource: {
         type: DataTypes.STRING,
@@ -115,7 +118,10 @@ class Member extends Model {
       },
       membershipStartDate: {
         type: DataTypes.DATEONLY,
-        allowNull: true
+        allowNull: true,
+        validate: {
+          isDate: true
+        }
       }
     }, {
       sequelize,
