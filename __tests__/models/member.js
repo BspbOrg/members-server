@@ -53,7 +53,6 @@ describe('model member', () => {
       test('allow date object for membershipStartDate', async () => {
         const date = new Date()
         member = await ah.api.models.member.create(generateMember({membershipStartDate: date}))
-        console.log(typeof member.membershipStartDate)
         expect(member.membershipStartDate).toBe(dateFormat(date, 'YYYY-MM-DD'))
       })
 

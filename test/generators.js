@@ -27,7 +27,8 @@ exports.generateMember = (opts) => {
     postalCode: `Postal code ${i}`,
     address: `Address ${i}`,
     phone: (i % 11 === 0) ? `+35989911122${i % 9 + 1}` : null,
-    category: (i % 3 === 0) ? 'student' : ((i % 3 === 1) ? 'regular' : 'retired')
+    category: (i % 3 === 0) ? 'student' : ((i % 3 === 1) ? 'regular' : 'retired'),
+    membershipStartDate: '2017-0' + (i % 9 + 1) + '-20'
   }, opts)
 }
 exports.generateMember.index = 0
@@ -44,3 +45,16 @@ exports.generatePayment = (opts) => {
   }, opts)
 }
 exports.generatePayment.index = 0
+
+exports.generateImportData = (opts) => {
+  return assign({
+    createNew: false,
+    updateExisting: false,
+    failOnError: false,
+    dryRun: false,
+    category: 'regular',
+    data: [
+      this.generateMember()
+    ]
+  }, opts)
+}

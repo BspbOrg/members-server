@@ -80,7 +80,8 @@ exports.update = class Update extends exports.Show {
       address: {},
       phone: {},
       category: {},
-      familyMembers: {}
+      familyMembers: {},
+      membershipStartDate: {}
     }
   }
 
@@ -114,7 +115,8 @@ exports.create = class Create extends exports.Show {
       postalCode: {},
       address: {},
       phone: {},
-      familyMembers: {}
+      familyMembers: {},
+      membershipStartDate: {}
     }
   }
 
