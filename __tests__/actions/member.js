@@ -100,6 +100,10 @@ describe('action member', () => {
           updatedParams.phone = '+359896222111'
           continue
         }
+        if (key === 'membershipStartDate') {
+          updatedParams.membershipStartDate = '2016-05-20'
+          continue
+        }
         updatedParams[key] = `Updated${updatedParams[key]}`
       }
     })
@@ -112,7 +116,7 @@ describe('action member', () => {
 
     const fields = [
       'firstName', 'middleName', 'lastName', 'username', 'email', 'accessId', 'cardId',
-      'country', 'city', 'postalCode', 'address', 'phone', 'category'
+      'country', 'city', 'postalCode', 'address', 'phone', 'category', 'membershipStartDate'
     ]
     fields.forEach(field =>
       testFieldChange(
