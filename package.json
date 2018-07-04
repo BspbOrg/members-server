@@ -34,7 +34,9 @@
     "sequelize-cli": "^4.0.0",
     "ws": "latest",
     "google-libphonenumber": "^3.1.8",
-    "date-fns": "^1.29.0"
+    "date-fns": "^1.29.0",
+    "csv-parser": "^1.12.1",
+    "event-stream": "^3.3.4"
   },
   "devDependencies": {
     "date-fns": "^1.29.0",
