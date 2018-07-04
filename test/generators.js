@@ -45,18 +45,3 @@ exports.generatePayment = (opts) => {
   }, opts)
 }
 exports.generatePayment.index = 0
-
-exports.generateImportData = (opts) => {
-  return assign({
-    createNew: false,
-    updateExisting: false,
-    failOnError: false,
-    dryRun: false,
-    defaultValues: {
-      category: 'regular'
-    },
-    data: [
-      this.generateMember()
-    ]
-  }, opts)
-}
