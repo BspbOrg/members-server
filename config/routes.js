@@ -20,7 +20,8 @@ exports[ 'default' ] = {
         { path: '/payment/:paymentId', action: 'member:update' },
         { path: '/session', action: 'session:auth' },
         { path: '/user', action: 'user:create' },
-        { path: '/user/:userId', action: 'user:update' }
+        { path: '/user/:userId', action: 'user:update' },
+        { path: '/import/member', action: 'import:member' }
         // { path: '/session/:email/resetpw', action: 'user:lost' },
         // { path: '/session/:email/resetpw2', action: 'user:reset' }
       ],

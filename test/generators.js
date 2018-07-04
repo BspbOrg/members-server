@@ -1,4 +1,4 @@
-const { assign } = Object
+const {assign} = Object
 
 exports.generateUser = (opts) => {
   const i = exports.generateUser.index++
@@ -41,7 +41,7 @@ exports.generatePayment = (opts) => {
     amount: 1 + i,
     membershipType: `individial${i}`,
     billingMemberId: (i % 2) + 1,
-    members: [ ((i + 1) % 2) + 1 ]
+    members: [((i + 1) % 2) + 1]
   }, opts)
 }
 exports.generatePayment.index = 0
@@ -52,7 +52,9 @@ exports.generateImportData = (opts) => {
     updateExisting: false,
     failOnError: false,
     dryRun: false,
-    category: 'regular',
+    defaultValues: {
+      category: 'regular'
+    },
     data: [
       this.generateMember()
     ]

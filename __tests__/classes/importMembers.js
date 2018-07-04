@@ -3,12 +3,12 @@
 'use strict'
 
 const ah = require('../../test/ah-setup')
-const ImportMembers = require('../../classes/ImportMembers')
+const ImportTool = require('../../classes/ImportTool')
 const {generateMember} = require('../../test/generators')
 const {generateImportData} = require('../../test/generators')
 
 describe('import members', () => {
-  const importer = new ImportMembers()
+  const importer = new ImportTool()
 
   beforeAll(async () => {
     await ah.start()
@@ -21,7 +21,7 @@ describe('import members', () => {
       success: true,
       totalRows: importData.data.length
     }, expectedResult)
-    const result = await importer.import(importData)
+    const result = await importer.import(ah.api.models.member, importData)
     expect(result).toEqual(expect.objectContaining(checkResult))
   }
 
@@ -31,7 +31,7 @@ describe('import members', () => {
   })
 
   test('should import members', async () => {
-    await importer.import(generateImportData({createNew: true}))
+    await importer.import(ah.api.models.member, generateImportData({createNew: true}))
     await expect(ah.api.models.member.count()).resolves.toBe(1)
   })
 
@@ -174,7 +174,9 @@ describe('import members', () => {
     test('should use default category setting if set in input setting and missing in row data', async () => {
       await checkImportResult(generateImportData({
         createNew: true,
-        category: 'student',
+        defaultValues: {
+          category: 'student'
+        },
         data: [
           generateMember({category: null})
         ]
@@ -187,7 +189,9 @@ describe('import members', () => {
     test('should use row value for category if existing instead of using default set in input settings', async () => {
       await checkImportResult(generateImportData({
         createNew: true,
-        category: 'student',
+        defaultValues: {
+          category: 'student'
+        },
         data: [
           generateMember({category: 'regular'})
         ]
