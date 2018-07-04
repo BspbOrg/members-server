@@ -7,7 +7,7 @@ module.exports = [
       lastName: 'Member',
       username: 'member',
       email: 'member@bspb.org',
-      membershipEndDate: new Date(Date.UTC(9999, 11, 30, 23, 59, 59, 999)),
+      membershipEndDate: '9999-12-31',
       originalSource: 'fixtures',
       accessId: '543210',
       cardId: '12345',
@@ -17,7 +17,7 @@ module.exports = [
       address: 'Central square #1',
       phone: '+359890111222',
       category: 'regular',
-      membershipStartDate: new Date(Date.UTC(2018, 5, 5, 23, 59, 59, 999))
+      membershipStartDate: '2018-06-06'
     }
   },
   {
