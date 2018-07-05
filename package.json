@@ -25,6 +25,10 @@
     "ah-cors-plugin": "^0.1.1",
     "ah-sequelize-plugin": "^1.0.3",
     "bcrypt": "^2.0.1",
+    "csv-parser": "^1.12.1",
+    "date-fns": "^1.29.0",
+    "event-stream": "^3.3.4",
+    "google-libphonenumber": "^3.1.8",
     "ioredis": "latest",
     "lodash.omit": "^4.5.0",
     "parse-database-url": "^0.3.0",
@@ -32,11 +36,7 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.37.6",
     "sequelize-cli": "^4.0.0",
-    "ws": "latest",
-    "google-libphonenumber": "^3.1.8",
-    "date-fns": "^1.29.0",
-    "csv-parser": "^1.12.1",
-    "event-stream": "^3.3.4"
+    "ws": "latest"
   },
   "devDependencies": {
     "date-fns": "^1.29.0",
