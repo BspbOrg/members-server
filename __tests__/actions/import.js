@@ -22,7 +22,9 @@ describe('action import', () => {
         updateExisting: false,
         failOnError: false,
         dryRun: false,
-        category: 'regular',
+        defaultValues: {
+          category: 'regular'
+        },
         importFile: {path: path.join('test/files', 'import_members.csv')}
       }
       const res = await ah.runAdminAction(action, params)
