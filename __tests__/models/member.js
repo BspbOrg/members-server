@@ -179,6 +179,16 @@ describe('model member', () => {
           given: '+44 1322 342988', // GB
           expected: '+441322342988',
           success: true
+        },
+        {
+          given: '+359^896^111^222',
+          expected: '+359896111222',
+          success: true
+        },
+        {
+          given: '+359+896+111+222',
+          expected: '+359896111222',
+          success: true
         }
       ]
 

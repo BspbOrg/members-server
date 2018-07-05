@@ -8,23 +8,25 @@ const es = require('event-stream')
 module.exports = class ImportTool {
   async import (model, input) {
     const result = {
-      totalRows: input.data.length,
+      totalRows: 0,
       inserts: 0,
       updates: 0,
       errors: 0,
       ignored: 0,
-      dryRun: input.dryRun && input.dryRun,
+      dryRun: !!input.dryRun,
       errorDetails: [],
       success: false
     }
 
+    // find all unique fields for the model
+    const uniqueFields = Object.values(model.attributes)
+      .filter(attribute => attribute.unique || attribute.primaryKey)
+      .map(attribute => attribute.fieldName)
+
     const t = await api.sequelize.sequelize.transaction()
     await Promise.all(input.data.map(async (params, rowIndex) => {
       try {
-        // find all unique fields for the model
-        const uniqueFields = Object.values(model.attributes)
-          .filter(attribute => attribute.unique || attribute.primaryKey)
-          .map(attribute => attribute.fieldName)
+        result.totalRows++
 
         // prepare the query
         const queryParams = uniqueFields
@@ -35,6 +37,7 @@ module.exports = class ImportTool {
 
         const records = await model.findAll({
           transaction: t,
+          limit: 2,
           where: {
             [Op.or]: queryParams
           }
@@ -47,9 +50,10 @@ module.exports = class ImportTool {
           existing = true
         }
 
+        const item = this.applyDefaultValues(input.defaultValues, params)
+
         if (existing) {
           if (input.updateExisting) {
-            const item = this.applyDefaultValues(input.defaultValues, params)
             await records[0].update(item, {transaction: t})
             result.updates++
           } else {
@@ -57,7 +61,6 @@ module.exports = class ImportTool {
           }
         } else {
           if (input.createNew) {
-            const item = this.applyDefaultValues(input.defaultValues, params)
             await model.create(item, {transaction: t})
             result.inserts++
           } else {
@@ -95,11 +98,11 @@ module.exports = class ImportTool {
     const res = Object.assign({}, params)
 
     if (defaultValues) {
-      Object.keys(defaultValues).forEach(key => {
-        if (typeof params[key] === 'undefined' || params[key] === '' || params[key] === null) {
+      Object.keys(defaultValues)
+        .filter(key => typeof params[key] === 'undefined' || params[key] === '' || params[key] === null)
+        .forEach(key => {
           res[key] = defaultValues[key]
-        }
-      })
+        })
     }
 
     return res

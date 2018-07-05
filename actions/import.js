@@ -7,7 +7,7 @@ exports.members = class Members extends Action {
     super()
     this.name = 'import:member'
     this.description = 'Import members. Requires admin role'
-    // this.middleware = ['auth.hasRole.admin']
+    this.middleware = ['auth.hasRole.admin']
     this.inputs = {
       importFile: {},
       createNew: {},
