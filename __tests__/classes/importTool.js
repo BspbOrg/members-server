@@ -313,31 +313,49 @@ describe('import models', () => {
     }
 
     test('should match record by internal id', async () => {
-      const record = generateImportModel(modelParams)
+      const record = generateImportModel()
+      const record2 = generateImportModel()
+
       const recordId = (await model.create(record)).id
+      const record2Id = (await model.create(record2)).id
 
       expect(await importModel(generateImportData({
         updateExisting: true,
         data: [
-          generateImportModel({id: recordId})
+          generateImportModel({
+            id: recordId,
+            field1: 'new value'
+          })
         ]
       }))).toEqual(importResult({
         updates: 1
       }))
+
+      expect((await model.findById(recordId)).field1).toEqual('new value')
+      expect((await model.findById(record2Id)).field1).toEqual(record2.field1)
     })
 
     test('should match model by unique field', async () => {
       const record = generateImportModel(Object.assign({}, modelParams, {unique1: 999}))
-      await model.create(record)
+      const record2 = generateImportModel(Object.assign({}, modelParams, {unique1: 998}))
+
+      const recordId = (await model.create(record)).id
+      const record2Id = (await model.create(record2)).id
 
       expect(await importModel(generateImportData({
         updateExisting: true,
         data: [
-          generateImportModel({unique1: record.unique1})
+          generateImportModel({
+            unique1: record.unique1,
+            field1: 'new value'
+          })
         ]
       }))).toEqual(importResult({
         updates: 1
       }))
+
+      expect((await model.findById(recordId)).field1).toEqual('new value')
+      expect((await model.findById(record2Id)).field1).toEqual(record2.field1)
     })
 
     test('should not match record if none unique field is matching', async () => {
