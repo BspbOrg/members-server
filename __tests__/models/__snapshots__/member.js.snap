@@ -1,41 +1,41 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`model member creating format phone number should fail on phone number 044 772 0883 757 1`] = `"Validation error: Phone number is invalid."`;
+
+exports[`model member creating format phone number should fail on phone number 01322 342988 1`] = `"Validation error: Phone number is invalid."`;
+
+exports[`model member creating format phone number should fail on phone number 01322 342988 2`] = `"Validation error: Phone number is invalid."`;
+
+exports[`model member creating format phone number should fail on phone number 015206 276967 1`] = `"Validation error: Phone number is invalid."`;
+
 exports[`model member creating should require firstName 1`] = `"notNull Violation: member.firstName cannot be null"`;
 
 exports[`model member creating should require lastName 1`] = `"notNull Violation: member.lastName cannot be null"`;
 
-exports[`model member creating should transform phone number should fail on phone number 044 772 0883 757 1`] = `"Validation error: Phone number is invalid."`;
+exports[`model member creating validation email field should not allow following email: Abc\\@def@example.com 1`] = `"Validation error: Validation isEmail on email failed"`;
 
-exports[`model member creating should transform phone number should format phone number +44 772 0883 757 1`] = `"Validation error: Phone number is invalid."`;
+exports[`model member creating validation email field should not allow following email: Fred\\ Bloggs@example.com 1`] = `"Validation error: Validation isEmail on email failed"`;
 
-exports[`model member creating should transform phone number should format phone number +44 1322 342988 1`] = `"Validation error: Phone number is invalid."`;
+exports[`model member creating validation email field should not allow following email: Joe.\\\\Blow@example.com 1`] = `"Validation error: Validation isEmail on email failed"`;
 
-exports[`model member creating should transform phone number should format phone number +4915206276967 1`] = `"Validation error: Phone number is invalid."`;
+exports[`model member creating validation email field should not allow following email: adsd.443 1`] = `"Validation error: Validation isEmail on email failed"`;
 
-exports[`model member creating should validate fields fail on invalid age category 1`] = `"Validation error: Validation isIn on category failed"`;
+exports[`model member creating validation email field should not allow following email: joe@[::1] 1`] = `"Validation error: Validation isEmail on email failed"`;
 
-exports[`model member creating should validate fields not allow duplicate access ids 1`] = `"The specified access ID is already in use."`;
+exports[`model member creating validation email field should not allow following email: joe@[2001:db8::ff00:42:8329] 1`] = `"Validation error: Validation isEmail on email failed"`;
 
-exports[`model member creating should validate fields not allow duplicate card ids 1`] = `"The specified card ID is already in use."`;
+exports[`model member creating validation email field should not allow following email: test@test 1`] = `"Validation error: Validation isEmail on email failed"`;
 
-exports[`model member creating should validate fields not allow duplicate username 1`] = `"The specified username is already in use."`;
+exports[`model member creating validation email field should not allow following email: test@test@test.test 1`] = `"Validation error: Validation isEmail on email failed"`;
 
-exports[`model member creating should validate fields not allow invalid emails not allow following email: Abc\\@def@example.com 1`] = `"Validation error: Validation isEmail on email failed"`;
+exports[`model member creating validation email field should not allow following email: user@[192.168.0.1] 1`] = `"Validation error: Validation isEmail on email failed"`;
 
-exports[`model member creating should validate fields not allow invalid emails not allow following email: Fred\\ Bloggs@example.com 1`] = `"Validation error: Validation isEmail on email failed"`;
+exports[`model member creating validation should fail on invalid age category 1`] = `"Validation error: Validation isIn on category failed"`;
 
-exports[`model member creating should validate fields not allow invalid emails not allow following email: Joe.\\\\Blow@example.com 1`] = `"Validation error: Validation isEmail on email failed"`;
+exports[`model member creating validation should not allow duplicate access ids 1`] = `"The specified access ID is already in use."`;
 
-exports[`model member creating should validate fields not allow invalid emails not allow following email: adsd.443 1`] = `"Validation error: Validation isEmail on email failed"`;
+exports[`model member creating validation should not allow duplicate card ids 1`] = `"The specified card ID is already in use."`;
 
-exports[`model member creating should validate fields not allow invalid emails not allow following email: joe@[::1] 1`] = `"Validation error: Validation isEmail on email failed"`;
+exports[`model member creating validation should not allow duplicate username 1`] = `"The specified username is already in use."`;
 
-exports[`model member creating should validate fields not allow invalid emails not allow following email: joe@[2001:db8::ff00:42:8329] 1`] = `"Validation error: Validation isEmail on email failed"`;
-
-exports[`model member creating should validate fields not allow invalid emails not allow following email: test@test 1`] = `"Validation error: Validation isEmail on email failed"`;
-
-exports[`model member creating should validate fields not allow invalid emails not allow following email: test@test@test.test 1`] = `"Validation error: Validation isEmail on email failed"`;
-
-exports[`model member creating should validate fields not allow invalid emails not allow following email: user@[192.168.0.1] 1`] = `"Validation error: Validation isEmail on email failed"`;
-
-exports[`model member creating should validate fields not allow string with wrong format for membershipStartDate 1`] = `"Validation error: Validation isDate on membershipStartDate failed"`;
+exports[`model member creating validation should not allow string with wrong format for membershipStartDate 1`] = `"Validation error: Validation isDate on membershipStartDate failed"`;

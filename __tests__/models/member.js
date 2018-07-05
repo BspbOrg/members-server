@@ -29,50 +29,50 @@ describe('model member', () => {
 
     testRequiredFields('member', () => member, ['firstName', 'lastName'])
 
-    describe('should validate fields', async () => {
+    describe('validation', async () => {
       beforeEach(async () => {
         await ah.api.models.payment.destroy({where: {}, force: true})
         await ah.api.models.member.destroy({where: {}, force: true})
       })
 
-      test('not allow duplicate access ids', async () => {
+      test('should not allow duplicate access ids', async () => {
         await expect(ah.api.models.member.create(generateMember({accessId: '111'}))).resolves.toBeDefined()
         await expect(ah.api.models.member.create(generateMember({accessId: '111'}))).rejects.toThrowErrorMatchingSnapshot()
       })
 
-      test('not allow duplicate card ids', async () => {
+      test('should not allow duplicate card ids', async () => {
         await expect(ah.api.models.member.create(generateMember({cardId: '111'}))).resolves.toBeDefined()
         await expect(ah.api.models.member.create(generateMember({cardId: '111'}))).rejects.toThrowErrorMatchingSnapshot()
       })
 
-      test('not allow duplicate username', async () => {
+      test('should not allow duplicate username', async () => {
         await expect(ah.api.models.member.create(generateMember({username: 'user'}))).resolves.toBeDefined()
         await expect(ah.api.models.member.create(generateMember({username: 'user'}))).rejects.toThrowErrorMatchingSnapshot()
       })
 
-      test('allow date object for membershipStartDate', async () => {
+      test('should allow date object for membershipStartDate', async () => {
         const date = new Date()
         member = await ah.api.models.member.create(generateMember({membershipStartDate: date}))
         expect(member.membershipStartDate).toBe(dateFormat(date, 'YYYY-MM-DD'))
       })
 
-      test('allow string with proper format for membershipStartDate', async () => {
+      test('should allow string with proper format for membershipStartDate', async () => {
         const date = '2017-05-20'
         member = await ah.api.models.member.create(generateMember({membershipStartDate: date}))
         expect(dateFormat(member.membershipStartDate, 'YYYY-MM-DD')).toBe(date)
       })
 
-      test('not allow string with wrong format for membershipStartDate', async () => {
+      test('should not allow string with wrong format for membershipStartDate', async () => {
         const date = '20/05/2017'
         await expect(ah.api.models.member.create(generateMember({membershipStartDate: date}))).rejects.toThrowErrorMatchingSnapshot()
       })
 
-      test('fail on invalid age category', async () => {
+      test('should fail on invalid age category', async () => {
         await expect(ah.api.models.member.create(generateMember({category: 'unsupported category'}))).rejects.toThrowErrorMatchingSnapshot()
       })
 
-      describe('allow strange but valid emails', async () => {
-        const emails = [
+      describe('email field', async () => {
+        const validEmails = [
           '"Abc@def"@example.com',
           '"Fred Bloggs"@example.com',
           'customer/department=shipping@example.com',
@@ -82,15 +82,13 @@ describe('model member', () => {
           'user+mailbox@example.com'
         ]
 
-        emails.forEach(email => {
-          test(`allow following email: ${email}`, async () => {
+        validEmails.forEach(email => {
+          test(`should allow following email: ${email}`, async () => {
             await expect(ah.api.models.member.create(generateMember({email: email}))).resolves.toBeDefined()
           })
         })
-      })
 
-      describe('not allow invalid emails', async () => {
-        const emails = [
+        const invalidEmails = [
           'Abc\\@def@example.com', // actually valid but still not supported by sequelize validation
           'Fred\\ Bloggs@example.com', // actually valid but still not supported by sequelize validation
           'Joe.\\\\Blow@example.com', // actually valid but still not supported by sequelize validation
@@ -102,15 +100,15 @@ describe('model member', () => {
           'test@test@test.test'
         ]
 
-        emails.forEach(email => {
-          test(`not allow following email: ${email}`, async () => {
+        invalidEmails.forEach(email => {
+          test(`should not allow following email: ${email}`, async () => {
             await expect(ah.api.models.member.create(generateMember({email: email}))).rejects.toThrowErrorMatchingSnapshot()
           })
         })
       })
     })
 
-    describe('should transform phone number', async () => {
+    describe('format phone number', async () => {
       beforeEach(async () => {
         await ah.api.models.payment.destroy({where: {}, force: true})
         await ah.api.models.member.destroy({where: {}, force: true})
@@ -184,17 +182,17 @@ describe('model member', () => {
         }
       ]
 
-      phoneNumberScenarios.forEach((scenario, index) => {
-        if (scenario.success) {
-          test(`should format phone number ${scenario.given}`, async () => {
-            const createdMember = await ah.api.models.member.create(generateMember({phone: scenario.given}))
-            expect(createdMember.phone).toBe(scenario.expected)
-          })
-        } else {
-          test(`should fail on phone number ${scenario.given}`, async () => {
-            expect(ah.api.models.member.create(generateMember({phone: scenario.given}))).rejects.toThrowErrorMatchingSnapshot()
-          })
-        }
+      phoneNumberScenarios.filter(scenario => scenario.success).forEach((scenario) => {
+        test(`should format phone number ${scenario.given}`, async () => {
+          const createdMember = await ah.api.models.member.create(generateMember({phone: scenario.given}))
+          expect(createdMember.phone).toBe(scenario.expected)
+        })
+      })
+
+      phoneNumberScenarios.filter(scenario => !scenario.success).forEach((scenario) => {
+        test(`should fail on phone number ${scenario.given}`, async () => {
+          expect(ah.api.models.member.create(generateMember({phone: scenario.given}))).rejects.toThrowErrorMatchingSnapshot()
+        })
       })
     })
   })
