@@ -96,7 +96,7 @@ module.exports = class ImportTool {
 
     if (defaultValues) {
       Object.keys(defaultValues).forEach(key => {
-        if (!params[key]) {
+        if (typeof params[key] === 'undefined' || params[key] === '' || params[key] === null) {
           res[key] = defaultValues[key]
         }
       })

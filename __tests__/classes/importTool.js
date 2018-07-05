@@ -73,6 +73,10 @@ describe('import models', () => {
         type: DataTypes.STRING,
         allowNull: true,
         unique: {msg: 'The specified value is already in use.'}
+      },
+      number1: {
+        type: DataTypes.INTEGER,
+        allowNull: true
       }
     })
     await model.sync()
@@ -239,34 +243,66 @@ describe('import models', () => {
   })
 
   describe('consider defaultValues in input settings', () => {
-    test('should use default values if set in input setting and missing in row data', async () => {
-      expect(await importModel(generateImportData({
-        createNew: true,
-        defaultValues: {
-          field2: 'some default value'
-        },
-        data: [
-          generateImportModel({field2: null})
-        ]
-      }))).toEqual(importResult())
+    const invalidValues = [
+      {field1: null},
+      {field1: undefined},
+      {field1: ''}
+    ]
 
-      const importedRecord = await model.findOne()
-      expect(importedRecord.field2).toBe('some default value')
+    const validValues = [
+      {field1: 'row value'},
+      {field1: '0'}
+    ]
+
+    invalidValues.forEach(value => {
+      test(`should use default value if row value is ${value.field1}`, async () => {
+        expect(await importModel(generateImportData({
+          createNew: true,
+          defaultValues: {
+            field1: 'some default value'
+          },
+          data: [
+            generateImportModel(value)
+          ]
+        }))).toEqual(importResult())
+
+        const importedRecord = await model.findOne()
+        expect(importedRecord.field1).toBe('some default value')
+      })
     })
 
-    test('should use row value if existing instead of using default set in input settings', async () => {
+    validValues.forEach(value => {
+      test(`should use row value if row value is ${value.field1}`, async () => {
+        expect(await importModel(generateImportData({
+          createNew: true,
+          defaultValues: {
+            field1: 'some default value'
+          },
+          data: [
+            generateImportModel(value)
+          ]
+        }))).toEqual(importResult())
+
+        const importedRecord = await model.findOne()
+        expect(importedRecord.field1).toBe(value.field1)
+      })
+    })
+
+    test(`should use row value if is 0 for integer field`, async () => {
       expect(await importModel(generateImportData({
         createNew: true,
         defaultValues: {
-          field2: 'some default value'
+          number1: 1
         },
         data: [
-          generateImportModel({field2: 'row value'})
+          generateImportModel({
+            number1: 0
+          })
         ]
       }))).toEqual(importResult())
 
       const importedRecord = await model.findOne()
-      expect(importedRecord.field2).toBe('row value')
+      expect(importedRecord.number1).toBe(0)
     })
   })
 
