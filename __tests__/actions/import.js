@@ -18,14 +18,14 @@ describe('action import', () => {
     const action = 'import:member'
     test('should import members', async () => {
       const params = {
-        createNew: true,
-        updateExisting: false,
+        create: true,
+        update: false,
         failOnError: false,
         dryRun: false,
-        defaultValues: {
+        defaults: {
           category: 'regular'
         },
-        importFile: {path: path.join('test/files', 'import_members.csv')}
+        file: {path: path.join('test/files', 'import_members.csv')}
       }
       const res = await ah.runAdminAction(action, params)
 

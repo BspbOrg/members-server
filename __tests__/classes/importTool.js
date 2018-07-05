@@ -36,8 +36,8 @@ describe('import models', () => {
 
   const generateImportData = (opts) => {
     return assign({
-      createNew: false,
-      updateExisting: false,
+      create: false,
+      update: false,
       failOnError: false,
       dryRun: false,
       data: [
@@ -88,14 +88,14 @@ describe('import models', () => {
   })
 
   test('should import model', async () => {
-    await importer.import(model, generateImportData({createNew: true}))
+    await importer.import(model, generateImportData({create: true}))
     await expect(model.count()).resolves.toBe(1)
   })
 
-  describe('consider createNew in input settings', () => {
+  describe('consider create in input settings', () => {
     test('should insert new records', async () => {
       expect(await importModel(generateImportData({
-        createNew: true
+        create: true
       }))).toEqual(importResult({
         inserts: 1
       }))
@@ -108,7 +108,7 @@ describe('import models', () => {
 
       // try import the same record
       expect(await importModel(generateImportData({
-        createNew: true,
+        create: true,
         data: [record]
       }))).toEqual(importResult({
         inserts: 0,
@@ -118,7 +118,7 @@ describe('import models', () => {
 
     test('should skip new records if disabled', async () => {
       expect(await importModel(generateImportData({
-        createNew: false
+        create: false
       }))).toEqual(importResult({
         inserts: 0,
         ignored: 1
@@ -126,7 +126,7 @@ describe('import models', () => {
     })
   })
 
-  describe('consider updateExisting in input settings', () => {
+  describe('consider update in input settings', () => {
     test('should update existing records', async () => {
       // create new record
       const record = generateImportModel()
@@ -137,7 +137,7 @@ describe('import models', () => {
 
       // check import result
       expect(await importModel(generateImportData({
-        updateExisting: true,
+        update: true,
         data: [recordForImport]
       }))).toEqual(importResult({
         updates: 1,
@@ -155,7 +155,7 @@ describe('import models', () => {
       await model.create(record)
 
       expect(await importModel(generateImportData({
-        updateExisting: true
+        update: true
       }))).toEqual(importResult({
         updates: 0,
         ignored: 1
@@ -174,7 +174,7 @@ describe('import models', () => {
 
       // check import result
       expect(await importModel(generateImportData({
-        updateExisting: false,
+        update: false,
         data: [recordForImport]
       }))).toEqual(importResult({
         updates: 0,
@@ -190,7 +190,7 @@ describe('import models', () => {
   describe('consider failOnError in input settings', () => {
     test('should not modify database on error when enabled', async () => {
       expect(await importModel(generateImportData({
-        createNew: true,
+        create: true,
         failOnError: true,
         data: [
           generateImportModel({unique1: '999'}),
@@ -207,7 +207,7 @@ describe('import models', () => {
 
     test('should insert only valid rows without error when disabled', async () => {
       expect(await importModel(generateImportData({
-        createNew: true,
+        create: true,
         failOnError: false,
         data: [
           generateImportModel({unique1: '999'}),
@@ -225,7 +225,7 @@ describe('import models', () => {
   describe('consider dryRun in input settings', () => {
     test('should not modify database when enabled', async () => {
       expect(await importModel(generateImportData({
-        createNew: true,
+        create: true,
         dryRun: true,
         data: [
           generateImportModel()
@@ -242,7 +242,7 @@ describe('import models', () => {
     })
   })
 
-  describe('consider defaultValues in input settings', () => {
+  describe('consider defaults in input settings', () => {
     const invalidValues = [
       {field1: null},
       {field1: undefined},
@@ -257,8 +257,8 @@ describe('import models', () => {
     invalidValues.forEach(value => {
       test(`should use default value if row value is ${value.field1}`, async () => {
         expect(await importModel(generateImportData({
-          createNew: true,
-          defaultValues: {
+          create: true,
+          defaults: {
             field1: 'some default value'
           },
           data: [
@@ -274,8 +274,8 @@ describe('import models', () => {
     validValues.forEach(value => {
       test(`should use row value if row value is ${value.field1}`, async () => {
         expect(await importModel(generateImportData({
-          createNew: true,
-          defaultValues: {
+          create: true,
+          defaults: {
             field1: 'some default value'
           },
           data: [
@@ -290,8 +290,8 @@ describe('import models', () => {
 
     test(`should use row value if is 0 for integer field`, async () => {
       expect(await importModel(generateImportData({
-        createNew: true,
-        defaultValues: {
+        create: true,
+        defaults: {
           number1: 1
         },
         data: [
@@ -320,7 +320,7 @@ describe('import models', () => {
       const record2Id = (await model.create(record2)).id
 
       expect(await importModel(generateImportData({
-        updateExisting: true,
+        update: true,
         data: [
           generateImportModel({
             id: recordId,
@@ -343,7 +343,7 @@ describe('import models', () => {
       const record2Id = (await model.create(record2)).id
 
       expect(await importModel(generateImportData({
-        updateExisting: true,
+        update: true,
         data: [
           generateImportModel({
             unique1: record.unique1,
@@ -363,7 +363,7 @@ describe('import models', () => {
       await model.create(record)
 
       expect(await importModel(generateImportData({
-        updateExisting: true,
+        update: true,
         data: [
           generateImportModel()
         ]
@@ -381,7 +381,7 @@ describe('import models', () => {
       await model.create(record2)
 
       expect(await importModel(generateImportData({
-        updateExisting: true,
+        update: true,
         data: [
           generateImportModel({unique1: record.unique1, unique2: record2.unique2})
         ]
@@ -395,7 +395,7 @@ describe('import models', () => {
   describe('result', () => {
     test('should show number of rows inserted', async () => {
       expect(await importModel(generateImportData({
-        createNew: true
+        create: true
       }))).toEqual(importResult({
         inserts: 1,
         updates: 0,
@@ -409,7 +409,7 @@ describe('import models', () => {
       await model.create(record)
 
       expect(await importModel(generateImportData({
-        updateExisting: true,
+        update: true,
         data: [
           record
         ]
@@ -426,7 +426,7 @@ describe('import models', () => {
       await model.create(record)
 
       expect(await importModel(generateImportData({
-        updateExisting: false,
+        update: false,
         data: [
           record
         ]
@@ -440,7 +440,7 @@ describe('import models', () => {
 
     test('should show number of total rows in the file', async () => {
       expect(await importModel(generateImportData({
-        updateExisting: false,
+        update: false,
         data: [
           generateImportModel(),
           generateImportModel(),
@@ -453,7 +453,7 @@ describe('import models', () => {
 
     test('should show number of errors', async () => {
       expect(await importModel(generateImportData({
-        createNew: true,
+        create: true,
         data: [
           generateImportModel({unique1: '999'}),
           generateImportModel({unique1: '999'})
@@ -465,7 +465,7 @@ describe('import models', () => {
 
     test('should show errors per row', async () => {
       expect(await importModel(generateImportData({
-        createNew: true,
+        create: true,
         data: [
           generateImportModel({unique1: '999'}),
           generateImportModel({unique1: '999'})

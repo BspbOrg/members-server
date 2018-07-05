@@ -50,17 +50,17 @@ module.exports = class ImportTool {
           existing = true
         }
 
-        const item = this.applyDefaultValues(input.defaultValues, params)
+        const item = this.applyDefaultValues(input.defaults, params)
 
         if (existing) {
-          if (input.updateExisting) {
+          if (input.update) {
             await records[0].update(item, {transaction: t})
             result.updates++
           } else {
             result.ignored++
           }
         } else {
-          if (input.createNew) {
+          if (input.create) {
             await model.create(item, {transaction: t})
             result.inserts++
           } else {
