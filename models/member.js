@@ -81,7 +81,10 @@ class Member extends Model {
         unique: {msg: 'The specified phone number is already in use.'},
         set (phone) {
           if (phone) {
-            phone = phone.replace(/[^\d^+]/g, '')
+            phone = phone.replace(/[^\d+]/g, '')
+            if (phone.includes('+')) {
+              phone = phone.substring(0, 1) + phone.substring(1).replace(/\+/g, '')
+            }
             try {
               let parsed
               if (phone.startsWith('0')) {
