@@ -482,4 +482,115 @@ describe('import models', () => {
       }))
     })
   })
+
+  describe('manage model relations', async () => {
+    let modelB
+
+    beforeAll(async () => {
+      modelB = ah.api.sequelize.sequelize.define('TestImportModelB', {
+        id: {
+          type: DataTypes.INTEGER.UNSIGNED,
+          allowNull: false,
+          autoIncrement: true,
+          primaryKey: true
+        },
+        modelRelationId: {
+          type: DataTypes.INTEGER.UNSIGNED,
+          allowNull: false
+        },
+        field: {
+          type: DataTypes.STRING,
+          allowNull: true
+        }
+      })
+      modelB.belongsTo(model, {as: 'modelRelation'})
+      await modelB.sync()
+    })
+
+    afterEach(async () => {
+      await modelB.destroy({where: {}, force: true})
+      await model.destroy({where: {}, force: true})
+    })
+
+    test('should match model by given relation', async () => {
+      const recordA = generateImportModel({unique1: '999'})
+      const recordAId = (await model.create(recordA)).id
+
+      const recordB = {
+        field: 'some value',
+        'modelRelation.unique1': recordA.unique1
+      }
+
+      expect(await importer.import(modelB, generateImportData({
+        create: true,
+        data: [
+          recordB
+        ]
+      }))).toEqual(importResult({
+        inserts: 1
+      }))
+
+      const importedRecordB = await modelB.findOne()
+      expect(importedRecordB).toEqual(expect.objectContaining({modelRelationId: recordAId}))
+    })
+
+    test('should fail if related model is not found', async () => {
+      const recordA = generateImportModel({unique1: '999'})
+      await model.create(recordA)
+      const recordB = {
+        field: 'some value',
+        'modelRelation.unique1': '888'
+      }
+
+      expect(await importer.import(modelB, generateImportData({
+        create: true,
+        data: [
+          recordB
+        ]
+      }))).toEqual(importResult({
+        errors: 1
+      }))
+
+      expect(await modelB.count()).toBe(0)
+    })
+
+    test('should fail if more than one relation model found', async () => {
+      await model.create(generateImportModel({field1: 'value'}))
+      await model.create(generateImportModel({field1: 'value'}))
+      const recordB = {
+        field: 'some value',
+        'modelRelation.field1': 'value'
+      }
+
+      expect(await importer.import(modelB, generateImportData({
+        create: true,
+        data: [
+          recordB
+        ]
+      }))).toEqual(importResult({
+        errors: 1
+      }))
+
+      expect(await modelB.count()).toBe(0)
+    })
+
+    test('should fail if relationship is non existing', async () => {
+      await model.create(generateImportModel({field1: 'value'}))
+      const recordB = {
+        field: 'some value',
+        'missingRelation.field1': 'value'
+      }
+
+      expect(await importer.import(modelB, generateImportData({
+        create: true,
+        data: [
+          recordB
+        ]
+      }))).toEqual(importResult({
+        errors: 1
+      }))
+
+      expect(await modelB.count()).toBe(0)
+    })
+  })
 })
