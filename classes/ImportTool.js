@@ -28,11 +28,14 @@ module.exports = class ImportTool {
       try {
         result.totalRows++
 
+        let item = this.applyDefaultValues(input.defaults, params)
+        item = await this.applyRelations(model, item, t)
+
         // prepare the query
         const queryParams = uniqueFields
-          .filter(field => params[field])
+          .filter(field => item[field])
           .map(field => {
-            return {[field]: params[field]}
+            return {[field]: item[field]}
           })
 
         const records = await model.findAll({
@@ -49,8 +52,6 @@ module.exports = class ImportTool {
         } else if (records.length === 1) {
           existing = true
         }
-
-        const item = this.applyDefaultValues(input.defaults, params)
 
         if (existing) {
           if (input.update) {
@@ -104,6 +105,39 @@ module.exports = class ImportTool {
           res[key] = defaultValues[key]
         })
     }
+
+    return res
+  }
+
+  async applyRelations (model, item, transaction) {
+    const res = Object.assign({}, item)
+
+    await Promise.all(Object.keys(res)
+      .filter(key => !!key.includes('.'))
+      .map(async key => {
+        const relationshipName = key.split('.')[0]
+        const relationshipField = key.split('.')[1]
+
+        if (!model.associations[relationshipName]) {
+          throw new Error(`non existing relationship: ${relationshipName}`)
+        }
+
+        const relationshipResult = await model.associations[relationshipName].target.findAll({
+          transaction: transaction,
+          limit: 2,
+          where: {
+            [relationshipField]: res[key]
+          }
+        })
+
+        if (relationshipResult.length === 1) {
+          res[model.associations[relationshipName].identifier] = relationshipResult[0].id
+        } else if (relationshipResult.length === 0) {
+          throw new Error('relation not found')
+        } else {
+          throw new Error('found more than one relation')
+        }
+      }))
 
     return res
   }
