@@ -306,13 +306,13 @@ describe('import models', () => {
     })
   })
 
-  describe('match record by unique field', () => {
+  describe('identify record', () => {
     const modelParams = {
       unique1: null,
       unique2: null
     }
 
-    test('should match record by internal id', async () => {
+    test('should match model by internal id', async () => {
       const record = generateImportModel()
       const record2 = generateImportModel()
 
@@ -389,6 +389,93 @@ describe('import models', () => {
         updates: 0,
         errors: 1
       }))
+    })
+
+    describe('by composite key', async () => {
+      let modelWithComposite
+
+      beforeAll(async () => {
+        modelWithComposite = ah.api.sequelize.sequelize.define('TestImportModelWithComposite', {
+          field1: {
+            type: DataTypes.STRING,
+            allowNull: true
+          },
+          keyPart1: {
+            type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false,
+            unique: 'compostiteKey'
+          },
+          keyPart2: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: 'compostiteKey'
+          }
+        })
+        await modelWithComposite.sync()
+      })
+
+      afterEach(async () => {
+        await modelWithComposite.destroy({where: {}, force: true})
+      })
+
+      test('should match model by composite key', async () => {
+        await modelWithComposite.create({
+          field1: 'some value',
+          keyPart1: 'part1 val1',
+          keyPart2: 'part2 val1'
+        })
+        const createdRecord2 = await modelWithComposite.create({
+          field1: 'some value 2',
+          keyPart1: 'part1 val1',
+          keyPart2: 'part2 val2'
+        })
+        await modelWithComposite.create({
+          field1: 'some value 2',
+          keyPart1: 'part1 val2',
+          keyPart2: 'part2 val2'
+        })
+
+        expect(await importer.import(modelWithComposite, generateImportData({
+          update: true,
+          data: [
+            {
+              field1: 'some updated value',
+              keyPart1: 'part1 val1',
+              keyPart2: 'part2 val2'
+            }
+          ]
+        }))).toEqual(importResult({
+          updates: 1
+        }))
+
+        await createdRecord2.reload()
+        expect(createdRecord2.field1).toBe('some updated value')
+      })
+
+      test('should fail if provide partial composite key', async () => {
+        await modelWithComposite.create({
+          field1: 'some value',
+          keyPart1: 'part1 val1',
+          keyPart2: 'part2 val1'
+        })
+        await modelWithComposite.create({
+          field1: 'some value 2',
+          keyPart1: 'part1 val2',
+          keyPart2: 'part2 val2'
+        })
+
+        expect(await importer.import(modelWithComposite, generateImportData({
+          update: true,
+          data: [
+            {
+              field1: 'some updated value',
+              keyPart1: 'part1 val1'
+            }
+          ]
+        }))).toEqual(importResult({
+          errors: 1
+        }))
+      })
     })
   })
 
