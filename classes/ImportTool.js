@@ -18,24 +18,46 @@ module.exports = class ImportTool {
       success: false
     }
 
-    // find all unique fields for the model
-    const uniqueFields = Object.values(model.attributes)
-      .filter(attribute => attribute.unique || attribute.primaryKey)
-      .map(attribute => attribute.fieldName)
+    // find all matching fields for the model
+    const matchingFields = []
+    matchingFields.push(model.primaryKeyAttributes)
+
+    Object.values(model.uniqueKeys)
+      .forEach(uniqueKey => {
+        matchingFields.push(uniqueKey.fields)
+      })
 
     const t = await api.sequelize.sequelize.transaction()
     await Promise.all(input.data.map(async (params, rowIndex) => {
       try {
         result.totalRows++
 
-        let item = this.applyDefaultValues(input.defaults, params)
-        item = await this.applyRelations(model, item, t)
+        let row = this.applyDefaultValues(input.defaults, params)
+        row = await this.applyRelations(model, row, t)
+        const rowKeys = Object.keys(row)
 
         // prepare the query
-        const queryParams = uniqueFields
-          .filter(field => item[field])
+        const queryParams = matchingFields
+          .filter(field => {
+            if (field.length === 1) {
+              return rowKeys.includes(field[0])
+            }
+            return true
+          })
           .map(field => {
-            return {[field]: item[field]}
+            if (field.length > 1) {
+              return {
+                [Op.and]: field.map(fieldName => {
+                  if (!rowKeys.includes(fieldName)) {
+                    throw new Error('missing part of composite identifier')
+                  }
+                  return {[fieldName]: row[fieldName]}
+                })
+
+              }
+            } else {
+              return {[field[0]]: row[field[0]]}
+            }
           })
 
         const records = await model.findAll({
@@ -55,14 +77,14 @@ module.exports = class ImportTool {
 
         if (existing) {
           if (input.update) {
-            await records[0].update(item, {transaction: t})
+            await records[0].update(row, {transaction: t})
             result.updates++
           } else {
             result.ignored++
           }
         } else {
           if (input.create) {
-            await model.create(item, {transaction: t})
+            await model.create(row, {transaction: t})
             result.inserts++
           } else {
             result.ignored++
@@ -109,8 +131,8 @@ module.exports = class ImportTool {
     return res
   }
 
-  async applyRelations (model, item, transaction) {
-    const res = Object.assign({}, item)
+  async applyRelations (model, row, transaction) {
+    const res = Object.assign({}, row)
 
     await Promise.all(Object.keys(res)
       .filter(key => !!key.includes('.'))

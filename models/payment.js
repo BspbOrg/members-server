@@ -1,4 +1,4 @@
-const { Model, or } = require('sequelize')
+const {Model, or} = require('sequelize')
 
 class Payment extends Model {
   static init (sequelize, DataTypes) {
@@ -11,18 +11,20 @@ class Payment extends Model {
       },
       paymentDate: {
         type: DataTypes.DATEONLY,
-        allowNull: false
+        allowNull: false,
+        unique: 'compositeKeyBillingMemberPaymentDate'
       },
       amount: {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
-        validate: { min: 1 }
+        validate: {min: 1}
       },
       membershipType: DataTypes.STRING,
       paymentType: DataTypes.STRING,
       billingMemberId: {
         type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: false
+        allowNull: false,
+        unique: 'compositeKeyBillingMemberPaymentDate'
       }
     }, {
       sequelize,
@@ -39,28 +41,28 @@ class Payment extends Model {
     return model
   }
 
-  static associate ({ member, payment }) {
-    payment.belongsTo(member, { as: 'billingMember' })
-    payment.belongsToMany(member, { as: 'members', through: 'payment_members' })
+  static associate ({member, payment}) {
+    payment.belongsTo(member, {as: 'billingMember'})
+    payment.belongsToMany(member, {as: 'members', through: 'payment_members'})
   }
 
-  static loadScopes ({ member, payment }) {
+  static loadScopes ({member, payment}) {
     payment.addScope('defaultScope', {
-      include: [ payment.associations.members ]
-    }, { override: true })
+      include: [payment.associations.members]
+    }, {override: true})
     payment.addScope('member', function (memberId) {
       return {
         where: or(
-          { '$members->payment_members.memberId$': memberId },
-          { billingMemberId: memberId }
+          {'$members->payment_members.memberId$': memberId},
+          {billingMemberId: memberId}
         ),
-        include: [ payment.associations.members ]
+        include: [payment.associations.members]
       }
     })
   }
 
   static scopeMember (memberId) {
-    return this.scope({ method: [ 'member', memberId ] })
+    return this.scope({method: ['member', memberId]})
   }
 
   toJSON () {
