@@ -1,4 +1,5 @@
 const {assign} = Object
+const addDays = require('date-fns/add_days')
 
 exports.generateUser = (opts) => {
   const i = exports.generateUser.index++
@@ -36,10 +37,10 @@ exports.generateMember.index = 0
 exports.generatePayment = (opts) => {
   const i = exports.generatePayment.index++
   return assign({
-    paymentDate: 1514764800000 + 86400000 * i,
+    paymentDate: addDays('2017-05-10', i + 1),
     paymentType: `cash${i}`,
     amount: 1 + i,
-    membershipType: `individial${i}`,
+    membershipType: (i % 2 === 0) ? `individual` : 'family',
     billingMemberId: (i % 2) + 1,
     members: [((i + 1) % 2) + 1]
   }, opts)

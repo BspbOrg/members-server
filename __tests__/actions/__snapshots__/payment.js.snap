@@ -19,7 +19,7 @@ Object {
       "lastName": "Member",
     },
   ],
-  "membershipType": null,
+  "membershipType": "family",
   "paymentDate": "2020-03-20",
   "paymentType": null,
   "updatedAt": "skipped",
