@@ -27,7 +27,7 @@ describe('payments preprocessor', async () => {
     const member2 = await ah.api.models.member.create(generateMember())
     const payment = generatePayment({
       billingMemberId: member2.id,
-      membershipType: 'individual'
+      membershipType: 'single'
     })
     delete payment.members
     const processed = await preprocessor.execute(payment)
@@ -44,7 +44,7 @@ describe('payments preprocessor', async () => {
 
     const payment = generatePayment({
       billingMemberId: billingMember.id,
-      membershipType: 'individual'
+      membershipType: 'single'
     })
     delete payment.members
 

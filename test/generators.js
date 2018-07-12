@@ -40,7 +40,7 @@ exports.generatePayment = (opts) => {
     paymentDate: addDays('2017-05-10', i + 1),
     paymentType: `cash${i}`,
     amount: 1 + i,
-    membershipType: (i % 2 === 0) ? `individual` : 'family',
+    membershipType: (i % 2 === 0) ? `single` : 'family',
     billingMemberId: (i % 2) + 1,
     members: [((i + 1) % 2) + 1]
   }, opts)

@@ -33,7 +33,7 @@ class Payment extends Model {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          isIn: [['individual', 'family']]
+          isIn: [['single', 'family']]
         }
       },
       paymentType: DataTypes.STRING,
