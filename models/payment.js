@@ -1,4 +1,5 @@
 const {Model, or} = require('sequelize')
+const isFuture = require('date-fns/is_future')
 
 class Payment extends Model {
   static init (sequelize, DataTypes) {
@@ -13,7 +14,13 @@ class Payment extends Model {
         type: DataTypes.DATEONLY,
         allowNull: false,
         validate: {
-          isDate: true
+          isDate: true,
+          isAfter: '1999-12-31',
+          isBeforeToday (value) {
+            if (isFuture(value)) {
+              throw new Error('Only past dates are allowed!')
+            }
+          }
         },
         unique: 'compositeKeyBillingMemberPaymentDate'
       },

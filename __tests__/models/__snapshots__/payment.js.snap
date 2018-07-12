@@ -4,6 +4,10 @@ exports[`model payment creating should not allow amount=0 1`] = `"Validation err
 
 exports[`model payment creating should not allow negative amount 1`] = `"Validation error: Validation min on amount failed"`;
 
+exports[`model payment creating should not allow payment date after current date 1`] = `"Validation error: Only past dates are allowed!"`;
+
+exports[`model payment creating should not allow payment date before 2000-01-01 1`] = `"Validation error: Validation isAfter on paymentDate failed"`;
+
 exports[`model payment creating should require amount 1`] = `"notNull Violation: payment.amount cannot be null"`;
 
 exports[`model payment creating should require billingMemberId 1`] = `"notNull Violation: payment.billingMemberId cannot be null"`;
