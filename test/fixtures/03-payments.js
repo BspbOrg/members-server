@@ -5,7 +5,8 @@ module.exports = [
       paymentDate: new Date(Date.UTC(2020, 2, 20, 2, 22, 22, 222)),
       amount: 15,
       billingMemberId: 2,
-      members: [ 1, 2 ]
+      members: [1, 2],
+      membershipType: 'family'
     }
   },
   {
@@ -13,7 +14,8 @@ module.exports = [
     data: {
       paymentDate: new Date(Date.UTC(2020, 2, 20, 2, 22, 22, 222)),
       amount: 10,
-      billingMemberId: 1
+      billingMemberId: 1,
+      membershipType: 'individual'
     }
   }
 ]

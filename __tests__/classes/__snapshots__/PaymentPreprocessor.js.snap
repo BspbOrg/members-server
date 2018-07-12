@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`payments preprocessor should fail when process family payment and billing member has no family 1`] = `"cannot create family payment without family members"`;

@@ -12,6 +12,9 @@ class Payment extends Model {
       paymentDate: {
         type: DataTypes.DATEONLY,
         allowNull: false,
+        validate: {
+          isDate: true
+        },
         unique: 'compositeKeyBillingMemberPaymentDate'
       },
       amount: {
@@ -19,7 +22,13 @@ class Payment extends Model {
         allowNull: false,
         validate: {min: 1}
       },
-      membershipType: DataTypes.STRING,
+      membershipType: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          isIn: [['individual', 'family']]
+        }
+      },
       paymentType: DataTypes.STRING,
       billingMemberId: {
         type: DataTypes.INTEGER.UNSIGNED,
