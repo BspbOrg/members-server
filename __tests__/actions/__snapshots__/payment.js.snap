@@ -7,6 +7,7 @@ Object {
   "createdAt": "skipped",
   "deletedAt": null,
   "id": 1,
+  "info": null,
   "members": Array [
     Object {
       "firstName": "Completely",

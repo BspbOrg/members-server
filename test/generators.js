@@ -42,7 +42,8 @@ exports.generatePayment = (opts) => {
     amount: 1 + i,
     membershipType: (i % 2 === 0) ? `single` : 'family',
     billingMemberId: (i % 2) + 1,
-    members: [((i + 1) % 2) + 1]
+    members: [((i + 1) % 2) + 1],
+    info: 'info ' + i
   }, opts)
 }
 exports.generatePayment.index = 0
