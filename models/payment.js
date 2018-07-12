@@ -41,7 +41,8 @@ class Payment extends Model {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
         unique: 'compositeKeyBillingMemberPaymentDate'
-      }
+      },
+      info: DataTypes.STRING
     }, {
       sequelize,
       modelName: 'payment',

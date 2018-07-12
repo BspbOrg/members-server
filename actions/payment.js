@@ -1,20 +1,20 @@
 'use strict'
 
-const { api, Action } = require('actionhero')
+const {api, Action} = require('actionhero')
 
 exports.list = class List extends Action {
   constructor () {
     super()
     this.name = 'payment:list'
     this.description = 'List Payments. Requires admin role'
-    this.middleware = [ 'auth.hasRole.admin', 'paging' ]
+    this.middleware = ['auth.hasRole.admin', 'paging']
     this.inputs = {
       limit: {},
       offset: {}
     }
   }
 
-  async run ({ params, response }) {
+  async run ({params, response}) {
     const res = await api.models.payment.findAndCountAll({
       offset: params.offset,
       limit: params.limit
@@ -29,11 +29,11 @@ exports.destroy = class Destroy extends Action {
     super()
     this.name = 'payment:destroy'
     this.description = 'Delete payment. Requires admin role'
-    this.middleware = [ 'auth.hasRole.admin', 'payment.params' ]
-    this.inputs = { paymentId: { required: true } }
+    this.middleware = ['auth.hasRole.admin', 'payment.params']
+    this.inputs = {paymentId: {required: true}}
   }
 
-  async run ({ payment, response }) {
+  async run ({payment, response}) {
     response.success = false
     await payment.destroy()
     response.success = true
@@ -45,11 +45,11 @@ exports.Show = class Show extends Action {
     super()
     this.name = 'payment:show'
     this.description = 'Retrieve information regarding specific payment'
-    this.middleware = [ 'auth.hasRole.admin', 'payment.params' ]
-    this.inputs = { paymentId: { required: true } }
+    this.middleware = ['auth.hasRole.admin', 'payment.params']
+    this.inputs = {paymentId: {required: true}}
   }
 
-  async run ({ payment, response }) {
+  async run ({payment, response}) {
     response.success = false
     response.data = await payment.toJSON()
     response.success = true
@@ -61,19 +61,20 @@ exports.update = class Update extends Action {
     super()
     this.name = 'payment:update'
     this.description = 'Update payment info'
-    this.middleware = [ 'auth.hasRole.admin', 'payment.params' ]
+    this.middleware = ['auth.hasRole.admin', 'payment.params']
     this.inputs = {
-      paymentId: { required: true },
+      paymentId: {required: true},
       amount: {},
       paymentDate: {},
       membershipType: {},
       paymentType: {},
       billingMemberId: {},
-      members: {}
+      members: {},
+      info: {}
     }
   }
 
-  async run ({ params, response, payment }) {
+  async run ({params, response, payment}) {
     response.success = false
     await payment.updateAttributes(params)
     if (params.members) {
@@ -90,18 +91,19 @@ exports.create = class Create extends Action {
     super()
     this.name = 'payment:create'
     this.description = 'Create payment'
-    this.middleware = [ 'auth.hasRole.admin' ]
+    this.middleware = ['auth.hasRole.admin']
     this.inputs = {
-      amount: { required: true },
-      paymentDate: { required: true },
+      amount: {required: true},
+      paymentDate: {required: true},
       membershipType: {},
       paymentType: {},
-      billingMemberId: { required: true },
-      members: {}
+      billingMemberId: {required: true},
+      members: {},
+      info: {}
     }
   }
 
-  async run ({ params, response }) {
+  async run ({params, response}) {
     response.success = false
     const payment = await api.models.payment.create(params)
     if (params.members) {
