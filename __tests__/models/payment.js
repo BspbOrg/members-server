@@ -3,14 +3,16 @@
 'use strict'
 
 const ah = require('../../test/ah-setup')
-const { generatePayment, generateMember } = require('../../test/generators')
-const { testRequiredFields } = require('../../test/helpers')
+const {generatePayment, generateMember} = require('../../test/generators')
+const {testRequiredFields} = require('../../test/helpers')
+const dateFormat = require('date-fns/format')
+const addDays = require('date-fns/add_days')
 
 describe('model payment', () => {
   beforeAll(async () => {
     await ah.start()
     // await ah.api.sequelize.sequelize.sync({logging: ah.api.log})
-    await ah.api.models.payment.destroy({ where: {}, force: true })
+    await ah.api.models.payment.destroy({where: {}, force: true})
   })
   afterAll(ah.stop)
 
@@ -25,7 +27,7 @@ describe('model payment', () => {
       payment = generatePayment()
     })
 
-    testRequiredFields('payment', () => payment, [ 'paymentDate', 'amount', 'billingMemberId' ])
+    testRequiredFields('payment', () => payment, ['paymentDate', 'amount', 'billingMemberId'])
 
     test('should properly store currency amount', async () => {
       payment.amount = 1.23
@@ -41,6 +43,16 @@ describe('model payment', () => {
 
     test('should not allow negative amount', async () => {
       payment.amount = -1
+      return expect(ah.api.models.payment.create(payment)).rejects.toThrowErrorMatchingSnapshot()
+    })
+
+    test('should not allow payment date before 2000-01-01', async () => {
+      payment.paymentDate = '1999-12-31'
+      return expect(ah.api.models.payment.create(payment)).rejects.toThrowErrorMatchingSnapshot()
+    })
+
+    test('should not allow payment date after current date', async () => {
+      payment.paymentDate = dateFormat(addDays(new Date(), 1), 'YYYY-MM-DD')
       return expect(ah.api.models.payment.create(payment)).rejects.toThrowErrorMatchingSnapshot()
     })
   })
@@ -59,33 +71,33 @@ describe('model payment', () => {
       payment2 = await ah.api.models.payment.create(generatePayment({
         billingMemberId: member2.id
       }))
-      await payment2.setMembers([ member1, member2 ])
+      await payment2.setMembers([member1, member2])
     })
     afterAll(async () => {
-      payment1.destroy({ force: true })
-      payment2.destroy({ force: true })
-      member1.destroy({ force: true })
-      member2.destroy({ force: true })
+      payment1.destroy({force: true})
+      payment2.destroy({force: true})
+      member1.destroy({force: true})
+      member2.destroy({force: true})
     })
 
     test('should have billingMember association', async () => {
       const billingMember = await payment1.getBillingMember()
-      expect(billingMember).toEqual(expect.objectContaining({ id: member1.id }))
+      expect(billingMember).toEqual(expect.objectContaining({id: member1.id}))
     })
 
     test('should have members association', async () => {
       const members = await payment2.getMembers()
-      expect(members).toEqual(expect.arrayContaining([ expect.objectContaining({ id: member1.id }) ]))
+      expect(members).toEqual(expect.arrayContaining([expect.objectContaining({id: member1.id})]))
     })
 
     test('member scope should include billing member', async () => {
       const payments = await ah.api.models.payment.scopeMember(member1.id).findAll({})
-      expect(payments).toEqual(expect.arrayContaining([ expect.objectContaining({ id: payment1.id }) ]))
+      expect(payments).toEqual(expect.arrayContaining([expect.objectContaining({id: payment1.id})]))
     })
 
     test('member scope should include members', async () => {
       const payments = await ah.api.models.payment.scopeMember(member1.id).findAll({})
-      expect(payments).toEqual(expect.arrayContaining([ expect.objectContaining({ id: payment2.id }) ]))
+      expect(payments).toEqual(expect.arrayContaining([expect.objectContaining({id: payment2.id})]))
     })
 
     test('member scope should not duplicate', async () => {
