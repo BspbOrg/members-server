@@ -15,7 +15,7 @@ module.exports = [
       paymentDate: new Date(Date.UTC(2015, 2, 20, 2, 22, 22, 222)),
       amount: 10,
       billingMemberId: 1,
-      membershipType: 'individual'
+      membershipType: 'single'
     }
   }
 ]
