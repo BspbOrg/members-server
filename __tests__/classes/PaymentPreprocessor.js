@@ -3,12 +3,10 @@
 'use strict'
 
 const ah = require('../../test/ah-setup')
-const PaymentPreprocessor = require('../../classes/PaymentPreprocessor')
+const processPayment = require('../../classes/PaymentPreprocessor')
 const {generateMember, generatePayment} = require('../../test/generators')
 
 describe('payments preprocessor', async () => {
-  const preprocessor = new PaymentPreprocessor()
-
   beforeAll(async () => {
     await ah.start()
     await ah.api.models.payment.destroy({where: {}, force: true})
@@ -30,7 +28,7 @@ describe('payments preprocessor', async () => {
       membershipType: 'single'
     })
     delete payment.members
-    const processed = await preprocessor.execute(payment)
+    const processed = await processPayment(payment)
     expect(processed.members.length).toBe(1)
     expect(processed.members[0]).toBe(member2.id)
   })
@@ -48,7 +46,7 @@ describe('payments preprocessor', async () => {
     })
     delete payment.members
 
-    const processed = await preprocessor.execute(payment)
+    const processed = await processPayment(payment)
     expect(processed.members.length).toBe(1)
     expect(processed.members).toEqual(expect.arrayContaining([billingMember.id]))
   })
@@ -66,7 +64,7 @@ describe('payments preprocessor', async () => {
     })
     delete payment.members
 
-    const processed = await preprocessor.execute(payment)
+    const processed = await processPayment(payment)
     expect(processed.members).toEqual(expect.arrayContaining([billingMember.id]))
   })
 
@@ -84,7 +82,7 @@ describe('payments preprocessor', async () => {
     })
     delete payment.members
 
-    const processed = await preprocessor.execute(payment)
+    const processed = await processPayment(payment)
     expect(processed.members).toEqual(expect.arrayContaining([family1.id, family2.id]))
   })
 
@@ -102,7 +100,7 @@ describe('payments preprocessor', async () => {
     })
     delete payment.members
 
-    const processed = await preprocessor.execute(payment)
+    const processed = await processPayment(payment)
     expect(processed.members).toEqual(expect.arrayContaining([family1.id]))
     expect(processed.members).toEqual(expect.not.arrayContaining([family2.id]))
   })
@@ -118,6 +116,6 @@ describe('payments preprocessor', async () => {
     })
     delete payment.members
 
-    expect(preprocessor.execute(payment)).rejects.toThrowErrorMatchingSnapshot()
+    expect(processPayment(payment)).rejects.toThrowErrorMatchingSnapshot()
   })
 })
