@@ -12,9 +12,8 @@ module.exports = async function (payment) {
     processed.members.push(billingMember.id)
   }
 
-  if (processed.membershipType === 'family') {
-    const familyMembers = await
-      billingMember.getFamilyMembers()
+  if (processed.family === '1') {
+    const familyMembers = await billingMember.getFamilyMembers()
     if (familyMembers.length === 0) {
       throw new Error('cannot create family payment without family members')
     }

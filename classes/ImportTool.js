@@ -6,7 +6,7 @@ const fs = require('fs')
 const es = require('event-stream')
 
 module.exports = class ImportTool {
-  async import (model, input) {
+  async import (model, input, preprocess) {
     const result = {
       totalRows: 0,
       inserts: 0,
@@ -34,6 +34,9 @@ module.exports = class ImportTool {
 
         let row = this.applyDefaultValues(input.defaults, params)
         row = await this.applyRelations(model, row, t)
+        if (typeof preprocess === 'function') {
+          row = await preprocess(row)
+        }
         const rowKeys = Object.keys(row)
 
         // prepare the query
