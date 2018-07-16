@@ -29,13 +29,7 @@ class Payment extends Model {
         allowNull: false,
         validate: {min: 1}
       },
-      membershipType: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          isIn: [['single', 'family']]
-        }
-      },
+      membershipType: DataTypes.STRING,
       paymentType: DataTypes.STRING,
       billingMemberId: {
         type: DataTypes.INTEGER.UNSIGNED,
