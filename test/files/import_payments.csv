@@ -1,4 +1,4 @@
-billingMember.accessId;paymentDate;amount;paymentType;membershipType;currency;paymentYear;family;info
-100;2017-12-23;30;в офиса на БДЗП;;BGL;2006;;
+billingMember.accessId;paymentDate;amount;paymentType;membershipType;currency;paymentYear;isFamilyPayment;info
+100;2017-12-23;30;в офиса на БДЗП;;BGL;2006;0;
 101;2018-05-08;60;банков превод;;BGL;2006;1;30 EUR
 102;2018-05-29;20;банков превод;;BGL;2006;;10 EUR

@@ -37,13 +37,12 @@ module.exports = class ImportTool {
         if (typeof preprocess === 'function') {
           row = await preprocess(row)
         }
-        const rowKeys = Object.keys(row)
 
         // prepare the query
         const queryParams = matchingFields
           .filter(field => {
             if (field.length === 1) {
-              return rowKeys.includes(field[0])
+              return field[0] in row
             }
             return true
           })
@@ -51,7 +50,7 @@ module.exports = class ImportTool {
             if (field.length > 1) {
               return {
                 [Op.and]: field.map(fieldName => {
-                  if (!rowKeys.includes(fieldName)) {
+                  if (!(fieldName in row)) {
                     throw new Error('missing part of composite identifier')
                   }
                   return {[fieldName]: row[fieldName]}
@@ -140,8 +139,7 @@ module.exports = class ImportTool {
     await Promise.all(Object.keys(res)
       .filter(key => !!key.includes('.'))
       .map(async key => {
-        const relationshipName = key.split('.')[0]
-        const relationshipField = key.split('.')[1]
+        const [relationshipName, relationshipField] = key.split('.')
 
         if (!model.associations[relationshipName]) {
           throw new Error(`non existing relationship: ${relationshipName}`)
@@ -158,9 +156,9 @@ module.exports = class ImportTool {
         if (relationshipResult.length === 1) {
           res[model.associations[relationshipName].identifier] = relationshipResult[0].id
         } else if (relationshipResult.length === 0) {
-          throw new Error('relation not found')
+          throw new Error(`${relationshipName} relation not found`)
         } else {
-          throw new Error('found more than one relation')
+          throw new Error(`found more than one ${relationshipName} relation`)
         }
       }))
 

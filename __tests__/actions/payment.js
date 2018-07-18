@@ -63,7 +63,7 @@ describe('action payment', () => {
     testActionPermissions(action, params, {guest: false, user: false, admin: true})
 
     test('should contain all initial fields', async () => {
-      const rawData = generatePayment()
+      const rawData = generatePayment({}, {addMembers: true})
       const payment = await ah.api.models.payment.create(rawData)
 
       const response = await ah.runAdminAction(action, {paymentId: payment.id})
@@ -88,8 +88,8 @@ describe('action payment', () => {
     const params = async () => { return assign({paymentId: payment.id}, updatedParams) }
 
     beforeEach(async () => {
-      payment = await ah.api.models.payment.create(generatePayment())
-      updatedParams = generatePayment()
+      payment = await ah.api.models.payment.create(generatePayment({}, true))
+      updatedParams = generatePayment({}, {addMembers: true})
     })
 
     afterEach(async () => {
@@ -114,7 +114,7 @@ describe('action payment', () => {
 
   describe('#create', () => {
     const action = 'payment:create'
-    const params = generatePayment({paymentType: 'TEMPORARY'})
+    const params = generatePayment({paymentType: 'TEMPORARY'}, {addMembers: true})
 
     afterEach(async () => {
       ah.api.models.payment.destroy({where: {paymentType: 'TEMPORARY'}, force: true})

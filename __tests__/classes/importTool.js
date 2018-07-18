@@ -81,7 +81,10 @@ describe('import models', () => {
     })
     await model.sync()
   })
-  afterAll(ah.stop)
+  afterAll(async () => {
+    await ah.api.sequelize.sequelize.queryInterface.dropTable('TestImportModels')
+    await ah.stop()
+  })
 
   beforeEach(async () => {
     await model.destroy({where: {}, force: true})
@@ -403,15 +406,19 @@ describe('import models', () => {
           keyPart1: {
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
-            unique: 'compostiteKey'
+            unique: 'compositeKey'
           },
           keyPart2: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: 'compostiteKey'
+            unique: 'compositeKey'
           }
         })
         await modelWithComposite.sync()
+      })
+
+      afterAll(async () => {
+        await ah.api.sequelize.sequelize.queryInterface.dropTable('TestImportModelWithComposites')
       })
 
       afterEach(async () => {
@@ -592,6 +599,10 @@ describe('import models', () => {
       })
       modelB.belongsTo(model, {as: 'modelRelation'})
       await modelB.sync()
+    })
+
+    afterAll(async () => {
+      await ah.api.sequelize.sequelize.queryInterface.dropTable('TestImportModelBs')
     })
 
     afterEach(async () => {

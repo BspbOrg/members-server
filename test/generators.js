@@ -1,6 +1,6 @@
 const {assign} = Object
 const addDays = require('date-fns/add_days')
-
+const format = require('date-fns/format')
 exports.generateUser = (opts) => {
   const i = exports.generateUser.index++
   return assign({
@@ -29,21 +29,27 @@ exports.generateMember = (opts) => {
     address: `Address ${i}`,
     phone: (i % 11 === 0) ? `+35989911122${i % 9 + 1}` : null,
     category: (i % 3 === 0) ? 'student' : ((i % 3 === 1) ? 'regular' : 'retired'),
-    membershipStartDate: '2017-0' + (i % 9 + 1) + '-20'
+    membershipStartDate: format(addDays('2015-05-10', i + 1), 'YYYY-MM-DD')
   }, opts)
 }
 exports.generateMember.index = 0
 
-exports.generatePayment = (opts) => {
+exports.generatePayment = (overrideParams = {}, {addMembers = false} = {addMembers: false}) => {
   const i = exports.generatePayment.index++
-  return assign({
-    paymentDate: addDays('2017-05-10', i + 1),
+  const res = {}
+  if (addMembers) {
+    res.members = [((i + 1) % 2) + 1]
+  }
+  assign(res, {
+    paymentDate: format(addDays('2017-05-10', i + 1), 'YYYY-MM-DD'),
     paymentType: `cash${i}`,
     amount: 1 + i,
     membershipType: (i % 2 === 0) ? `single` : 'family',
     billingMemberId: (i % 2) + 1,
-    members: [((i + 1) % 2) + 1],
     info: 'info ' + i
-  }, opts)
+  }, overrideParams)
+
+  return res
 }
+
 exports.generatePayment.index = 0

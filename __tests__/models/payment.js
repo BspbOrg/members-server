@@ -24,7 +24,7 @@ describe('model payment', () => {
   describe('creating', () => {
     let payment
     beforeEach(() => {
-      payment = generatePayment()
+      payment = generatePayment({})
     })
 
     testRequiredFields('payment', () => payment, ['paymentDate', 'amount', 'billingMemberId'])
@@ -67,10 +67,10 @@ describe('model payment', () => {
       member2 = await ah.api.models.member.create(generateMember())
       payment1 = await ah.api.models.payment.create(generatePayment({
         billingMemberId: member1.id
-      }))
+      }, {addMembers: true}))
       payment2 = await ah.api.models.payment.create(generatePayment({
         billingMemberId: member2.id
-      }))
+      }, {addMembers: true}))
       await payment2.setMembers([member1, member2])
     })
     afterAll(async () => {
