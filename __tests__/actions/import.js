@@ -82,4 +82,46 @@ describe('action import', () => {
       expect(await familyPayment.hasMembers([member2, family1, family2])).toBeTruthy()
     })
   })
+
+  describe('#familyMembers', async () => {
+    const action = 'import:family'
+    test('should import family members', async () => {
+      const master1 = await ah.api.models.member.create(generateMember({cardId: 100}))
+      const family1 = await ah.api.models.member.create(generateMember({cardId: 101}))
+      const family2 = await ah.api.models.member.create(generateMember({cardId: 102}))
+      const master2 = await ah.api.models.member.create(generateMember({cardId: 103}))
+      const family3 = await ah.api.models.member.create(generateMember({cardId: 104}))
+      const family4 = await ah.api.models.member.create(generateMember({cardId: 105}))
+
+      await master2.setFamilyMembers([family4])
+
+      const params = {
+        create: true,
+        update: false,
+        failOnError: false,
+        dryRun: false,
+        file: {path: path.join('test/files', 'import_family.csv')}
+      }
+      const res = await ah.runAdminAction(action, params)
+
+      expect(res.data).toEqual(expect.objectContaining({
+        totalRows: 4,
+        inserts: 3,
+        updates: 0,
+        errors: 0,
+        ignored: 1,
+        dryRun: false,
+        success: true
+      }))
+
+      await master1.reload()
+      await master2.reload()
+
+      expect(await master1.hasFamilyMembers([family1, family2])).toBeTruthy()
+      expect((await master1.getFamilyMembers()).length).toBe(2)
+
+      expect(await master2.hasFamilyMembers([family3, family4])).toBeTruthy()
+      expect((await master2.getFamilyMembers()).length).toBe(2)
+    })
+  })
 })
