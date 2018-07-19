@@ -9,17 +9,18 @@ const {generateMember} = require('../../test/generators')
 describe('family members preprocessor', async () => {
   beforeAll(async () => {
     await ah.start()
+    await ah.api.models.member_families.destroy({where: {}, force: true})
     await ah.api.models.payment.destroy({where: {}, force: true})
     await ah.api.models.member.destroy({where: {}, force: true})
-    await ah.api.models.member_families.destroy({where: {}, force: true})
+
   })
 
   afterAll(ah.stop)
 
   afterEach(async () => {
+    await ah.api.models.member_families.destroy({where: {}, force: true})
     await ah.api.models.payment.destroy({where: {}, force: true})
     await ah.api.models.member.destroy({where: {}, force: true})
-    await ah.api.models.member_families.destroy({where: {}, force: true})
   })
 
   test('should match master member', async () => {
@@ -61,6 +62,20 @@ describe('family members preprocessor', async () => {
       familyCardId: 1001
     }
 
+    expect.assertions(1)
+    expect(processFamily(input)).rejects.toThrowErrorMatchingSnapshot()
+  })
+
+  test('should fail if master and family are the same member', async () => {
+    // create master member
+    await ah.api.models.member.create(generateMember({cardId: 1000}))
+
+    const input = {
+      cardId: 1000,
+      familyCardId: 1000
+    }
+
+    expect.assertions(1)
     expect(processFamily(input)).rejects.toThrowErrorMatchingSnapshot()
   })
 
@@ -73,6 +88,7 @@ describe('family members preprocessor', async () => {
       familyCardId: 1001
     }
 
+    expect.assertions(1)
     expect(processFamily(input)).rejects.toThrowErrorMatchingSnapshot()
   })
 
