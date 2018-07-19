@@ -12,7 +12,6 @@ describe('family members preprocessor', async () => {
     await ah.api.models.member_families.destroy({where: {}, force: true})
     await ah.api.models.payment.destroy({where: {}, force: true})
     await ah.api.models.member.destroy({where: {}, force: true})
-
   })
 
   afterAll(ah.stop)
