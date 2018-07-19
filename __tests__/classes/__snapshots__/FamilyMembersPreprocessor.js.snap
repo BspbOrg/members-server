@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`family members preprocessor should fail on missing family member 1`] = `"no family member found"`;
+exports[`family members preprocessor should fail if master and family are the same member 1`] = `"Master and family card Ids are the same"`;
 
-exports[`family members preprocessor should fail on missing master member 1`] = `"no master member found"`;
+exports[`family members preprocessor should fail on missing family member 1`] = `"no family member found: 1001"`;
+
+exports[`family members preprocessor should fail on missing master member 1`] = `"no master member found: 1001"`;
 
 exports[`family members preprocessor should remind that the code depends on member.cardId unique constraint 1`] = `"The specified card ID is already in use."`;

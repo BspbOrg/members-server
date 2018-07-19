@@ -34,7 +34,7 @@ exports.generateMember = (opts) => {
 }
 exports.generateMember.index = 0
 
-exports.generatePayment = (overrideParams = {}, {addMembers = false} = {addMembers: false}) => {
+exports.generatePayment = (overrideParams = {}, {addMembers = false} = {}) => {
   const i = exports.generatePayment.index++
   const res = {}
   if (addMembers) {
