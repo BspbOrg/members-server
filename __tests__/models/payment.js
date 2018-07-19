@@ -24,7 +24,7 @@ describe('model payment', () => {
   describe('creating', () => {
     let payment
     beforeEach(() => {
-      payment = generatePayment({})
+      payment = generatePayment()
     })
 
     testRequiredFields('payment', () => payment, ['paymentDate', 'amount', 'billingMemberId'])

@@ -46,7 +46,7 @@ describe('payments preprocessor', async () => {
 
   test('should add only related family member in payment', async () => {
     // create member not related to the payment
-    await ah.api.models.member.create(generateMember())
+    const unrelatedMember = await ah.api.models.member.create(generateMember())
 
     const billingMember = await ah.api.models.member.create(generateMember())
     const familyMember = await ah.api.models.member.create(generateMember())
@@ -58,7 +58,7 @@ describe('payments preprocessor', async () => {
     })
 
     const processed = await processPayment(payment)
-    expect(processed.members).toEqual([billingMember.id, familyMember.id])
+    expect(processed.members).toEqual(expect.not.arrayContaining([unrelatedMember.id]))
   })
 
   test('should not add family members in payment members when single payment is made', async () => {
@@ -67,7 +67,8 @@ describe('payments preprocessor', async () => {
     await billingMember.setFamilyMembers([familyMember])
 
     const payment = generatePayment({
-      billingMemberId: billingMember.id
+      billingMemberId: billingMember.id,
+      isFamilyPayment: false
     })
 
     const processed = await processPayment(payment)
@@ -81,7 +82,7 @@ describe('payments preprocessor', async () => {
 
     const payment = generatePayment({
       billingMemberId: billingMember.id,
-      isFamilyPayment: 'true'
+      isFamilyPayment: true
     })
 
     const processed = await processPayment(payment)
@@ -95,7 +96,7 @@ describe('payments preprocessor', async () => {
 
     const payment = generatePayment({
       billingMemberId: billingMember.id,
-      isFamilyPayment: '1',
+      isFamilyPayment: true,
       paymentDate: '2018-05-05'
     })
 
@@ -110,7 +111,7 @@ describe('payments preprocessor', async () => {
 
     const payment = generatePayment({
       billingMemberId: billingMember.id,
-      isFamilyPayment: '1',
+      isFamilyPayment: true,
       paymentDate: '2015-10-18'
     })
 
@@ -125,7 +126,7 @@ describe('payments preprocessor', async () => {
 
     const payment = generatePayment({
       billingMemberId: billingMember.id,
-      isFamilyPayment: '1',
+      isFamilyPayment: true,
       paymentDate: '2015-10-18'
     })
 
@@ -140,7 +141,7 @@ describe('payments preprocessor', async () => {
 
     const payment = generatePayment({
       billingMemberId: billingMember.id,
-      isFamilyPayment: '1',
+      isFamilyPayment: true,
       paymentDate: '2015-10-18'
     })
 
@@ -153,7 +154,7 @@ describe('payments preprocessor', async () => {
 
     const payment = generatePayment({
       billingMemberId: billingMember.id,
-      isFamilyPayment: '1'
+      isFamilyPayment: true
     })
 
     expect(processPayment(payment)).rejects.toThrowErrorMatchingSnapshot()

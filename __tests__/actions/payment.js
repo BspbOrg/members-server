@@ -88,7 +88,7 @@ describe('action payment', () => {
     const params = async () => { return assign({paymentId: payment.id}, updatedParams) }
 
     beforeEach(async () => {
-      payment = await ah.api.models.payment.create(generatePayment({}, true))
+      payment = await ah.api.models.payment.create(generatePayment({}, {addMembers: true}))
       updatedParams = generatePayment({}, {addMembers: true})
     })
 

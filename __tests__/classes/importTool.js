@@ -82,7 +82,7 @@ describe('import models', () => {
     await model.sync()
   })
   afterAll(async () => {
-    await ah.api.sequelize.sequelize.queryInterface.dropTable('TestImportModels')
+    await ah.api.sequelize.sequelize.queryInterface.dropTable(model.tableName)
     await ah.stop()
   })
 
@@ -418,7 +418,7 @@ describe('import models', () => {
       })
 
       afterAll(async () => {
-        await ah.api.sequelize.sequelize.queryInterface.dropTable('TestImportModelWithComposites')
+        await ah.api.sequelize.sequelize.queryInterface.dropTable(modelWithComposite.tableName)
       })
 
       afterEach(async () => {
@@ -602,7 +602,7 @@ describe('import models', () => {
     })
 
     afterAll(async () => {
-      await ah.api.sequelize.sequelize.queryInterface.dropTable('TestImportModelBs')
+      await ah.api.sequelize.sequelize.queryInterface.dropTable(modelB.tableName)
     })
 
     afterEach(async () => {

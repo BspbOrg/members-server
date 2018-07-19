@@ -41,6 +41,7 @@ module.exports = class ImportTool {
         // prepare the query
         const queryParams = matchingFields
           .filter(field => {
+            // check only single column indexes here. Multi column indexes are passed to the next check for missing part of the index.
             if (field.length === 1) {
               return field[0] in row
             }
