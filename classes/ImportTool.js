@@ -35,7 +35,7 @@ module.exports = class ImportTool {
         let row = this.applyDefaultValues(input.defaults, params)
         row = await this.applyRelations(model, row, t)
         if (typeof preprocess === 'function') {
-          row = await preprocess(row)
+          row = await preprocess(row, {transaction: t})
         }
 
         // prepare the query

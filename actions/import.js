@@ -2,6 +2,7 @@
 
 const {api, Action} = require('actionhero')
 const processPayment = require('../classes/PaymentPreprocessor')
+const processFamily = require('../classes/FamilyMembersPreprocessor')
 
 exports.members = class Members extends Action {
   constructor () {
@@ -44,5 +45,27 @@ exports.payments = class Payments extends Action {
   async run ({params, response}) {
     const parsed = await api.import.parseCSVFile(params.file)
     response.data = await api.import.import(api.models.payment, Object.assign({}, params, {data: parsed}), processPayment)
+  }
+}
+
+exports.family = class Family extends Action {
+  constructor () {
+    super()
+    this.name = 'import:family'
+    this.description = 'Import family members. Requires admin role'
+    this.middleware = ['auth.hasRole.admin']
+    this.inputs = {
+      file: {},
+      create: {},
+      update: {},
+      failOnError: {},
+      dryRun: {},
+      defaults: {}
+    }
+  }
+
+  async run ({params, response}) {
+    const parsed = await api.import.parseCSVFile(params.file)
+    response.data = await api.import.import(api.models.member_families, Object.assign({}, params, {data: parsed}), processFamily)
   }
 }
