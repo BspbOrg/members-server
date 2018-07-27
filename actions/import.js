@@ -3,6 +3,7 @@
 const {api, Action} = require('actionhero')
 const processPayment = require('../classes/PaymentPreprocessor')
 const processFamily = require('../classes/FamilyMembersPreprocessor')
+const boolean = require('boolean')
 
 exports.members = class Members extends Action {
   constructor () {
@@ -12,10 +13,18 @@ exports.members = class Members extends Action {
     this.middleware = ['auth.hasRole.admin']
     this.inputs = {
       file: {},
-      create: {},
-      update: {},
-      failOnError: {},
-      dryRun: {},
+      create: {
+        formatter: (p) => boolean(p)
+      },
+      update: {
+        formatter: (p) => boolean(p)
+      },
+      failOnError: {
+        formatter: (p) => boolean(p)
+      },
+      dryRun: {
+        formatter: (p) => boolean(p)
+      },
       defaults: {}
     }
   }

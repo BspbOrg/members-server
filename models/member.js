@@ -16,15 +16,26 @@ class Member extends Model {
         allowNull: true,
         unique: {msg: 'The specified username is already in use.'},
         validate: {
-          len: [4, 20],
-          is: /^[a-z][a-z0-9_.-]/i
+          len: {
+            args: [4, 20],
+            msg: 'Username must be between 4 and 20 characters'
+          },
+          is: {
+            args: /^[a-z][a-z0-9_.-]/i,
+            msg: 'Username must include only letters, digits, "_", ".", "-"'
+          }
         }
       },
       email: {
         type: DataTypes.STRING,
         allowNull: true,
         unique: {msg: 'The specified email address is already in use.'},
-        validate: {isEmail: true}
+        validate: {
+          isEmail: {
+            args: true,
+            msg: 'Specified email is invalid'
+          }
+        }
       },
       firstName: {
         type: DataTypes.STRING,

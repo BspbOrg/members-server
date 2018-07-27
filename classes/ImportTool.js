@@ -28,92 +28,128 @@ module.exports = class ImportTool {
       })
 
     const t = await api.sequelize.sequelize.transaction()
-    await Promise.all(input.data.map(async (params, rowIndex) => {
-      try {
-        result.totalRows++
 
-        let row = this.applyDefaultValues(input.defaults, params)
-        row = await this.applyRelations(model, row, t)
-        if (typeof preprocess === 'function') {
-          row = await preprocess(row)
-        }
+    try {
+      await input.data.reduce(async (p, params, rowIndex) => {
+        try {
+          try {
+            await p
+          } catch (e) {}
 
-        // prepare the query
-        const queryParams = matchingFields
-          .filter(field => {
-            // check only single column indexes here. Multi column indexes are passed to the next check for missing part of the index.
-            if (field.length === 1) {
-              return field[0] in row
+          if (t.finished) {
+            throw new Error(`Transaction finished with: ${t.finished}`)
+          }
+
+          result.totalRows++
+
+          let row = Object.assign({}, params)
+          Object.keys(row).forEach((key) => {
+            if (row[key] === '') {
+              delete row[key]
             }
-            return true
           })
-          .map(field => {
-            if (field.length > 1) {
-              return {
-                [Op.and]: field.map(fieldName => {
-                  if (!(fieldName in row)) {
-                    throw new Error('missing part of composite identifier')
-                  }
-                  return {[fieldName]: row[fieldName]}
-                })
 
+          let emptyRow = true
+          Object.keys(row).forEach((key) => {
+            if (row[key]) {
+              emptyRow = false
+            }
+          })
+
+          if (emptyRow) {
+            result.ignored++
+            return
+          }
+
+          row = this.applyDefaultValues(input.defaults, row)
+          row = await this.applyRelations(model, row, t)
+
+          if (typeof preprocess === 'function') {
+            row = await preprocess(row)
+          }
+
+          let rowModel = await model.build(row)
+
+          // prepare the query
+          const queryParams = matchingFields
+            .filter(field => {
+              // check only single column indexes here. Multi column indexes are passed to the next check for missing part of the index.
+              if (field.length === 1) {
+                return field[0] in row
               }
-            } else {
-              return {[field[0]]: row[field[0]]}
+              return true
+            })
+            .map(field => {
+              if (field.length > 1) {
+                return {
+                  [Op.and]: field.map(fieldName => {
+                    if (!(fieldName in row)) {
+                      throw new Error('missing part of composite identifier')
+                    }
+                    return {[fieldName]: rowModel[fieldName]}
+                  })
+
+                }
+              } else {
+                return {[field[0]]: rowModel[field[0]]}
+              }
+            })
+
+          const records = await model.findAll({
+            transaction: t,
+            limit: 2,
+            where: {
+              [Op.or]: queryParams
             }
           })
 
-        const records = await model.findAll({
-          transaction: t,
-          limit: 2,
-          where: {
-            [Op.or]: queryParams
+          let existing = false
+          if (records.length > 1) {
+            throw new Error('duplicate records found')
+          } else if (records.length === 1) {
+            existing = true
           }
-        })
 
-        let existing = false
-        if (records.length > 1) {
-          throw new Error('duplicate records found')
-        } else if (records.length === 1) {
-          existing = true
-        }
-
-        if (existing) {
-          if (input.update) {
-            await records[0].update(row, {transaction: t})
-            result.updates++
+          if (existing) {
+            if (input.update) {
+              await records[0].update(row, {transaction: t})
+              result.updates++
+            } else {
+              result.ignored++
+            }
           } else {
-            result.ignored++
+            if (input.create) {
+              await rowModel.save({transaction: t})
+              result.inserts++
+            } else {
+              result.ignored++
+            }
           }
-        } else {
-          if (input.create) {
-            await model.create(row, {transaction: t})
-            result.inserts++
-          } else {
-            result.ignored++
-          }
+        } catch (e) {
+          result.errors++
+          result.errorDetails.push({row: rowIndex + 1, error: e.message})
         }
-      } catch (e) {
-        result.errors++
-        result.errorDetails.push({row: rowIndex + 1, error: e})
-      }
-    }))
+      }, null)
 
-    if (input.failOnError) {
       if (result.errors) {
-        result.inserts = 0
-        result.updates = 0
-        result.ignored = input.data.length - result.errors
-        await t.rollback()
-      } else {
-        await t.commit()
+        if (input.failOnError) {
+          result.inserts = 0
+          result.updates = 0
+          result.ignored = input.data.length - result.errors
+        }
       }
-    } else {
+
       if (input.dryRun) {
         await t.rollback()
       } else {
-        await t.commit()
+        if (input.failOnError && result.errors) {
+          await t.rollback()
+        } else {
+          await t.commit()
+        }
       }
+    } catch (e) {
+      await t.rollback()
     }
 
     result.success = input.failOnError ? result.errors === 0 : true

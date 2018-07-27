@@ -29,7 +29,8 @@ describe('import models', () => {
       field1: `field1 value ${i}`,
       field2: `field2 value ${i}`,
       unique1: `unique1 value ${i}`,
-      unique2: `${i}`
+      unique2: `${i}`,
+      requiredField: '123'
     }, opts)
   }
   generateImportModel.index = 0
@@ -77,6 +78,10 @@ describe('import models', () => {
       number1: {
         type: DataTypes.INTEGER,
         allowNull: true
+      },
+      requiredField: {
+        type: DataTypes.STRING,
+        allowNull: false
       }
     })
     await model.sync()
@@ -196,8 +201,7 @@ describe('import models', () => {
         create: true,
         failOnError: true,
         data: [
-          generateImportModel({unique1: '999'}),
-          generateImportModel({unique1: '999'})
+          generateImportModel({requiredField: null})
         ]
       }))).toEqual(importResult({
         inserts: 0,
@@ -213,8 +217,8 @@ describe('import models', () => {
         create: true,
         failOnError: false,
         data: [
-          generateImportModel({unique1: '999'}),
-          generateImportModel({unique1: '999'})
+          generateImportModel(),
+          generateImportModel({requiredField: null})
         ]
       }))).toEqual(importResult({
         inserts: 1,
@@ -230,6 +234,25 @@ describe('import models', () => {
       expect(await importModel(generateImportData({
         create: true,
         dryRun: true,
+        data: [
+          generateImportModel()
+        ]
+      }))).toEqual(importResult({
+        inserts: 1,
+        ignored: 0,
+        errors: 0,
+        dryRun: true,
+        success: true
+      }))
+
+      await expect(model.count()).resolves.toBe(0)
+    })
+
+    test('should not modify database when enabled and failOnError is enabled, but no errors detected', async () => {
+      expect(await importModel(generateImportData({
+        create: true,
+        dryRun: true,
+        failOnError: true,
         data: [
           generateImportModel()
         ]
@@ -549,8 +572,7 @@ describe('import models', () => {
       expect(await importModel(generateImportData({
         create: true,
         data: [
-          generateImportModel({unique1: '999'}),
-          generateImportModel({unique1: '999'})
+          generateImportModel({requiredField: null})
         ]
       }))).toEqual(importResult({
         errors: 1
@@ -561,8 +583,8 @@ describe('import models', () => {
       expect(await importModel(generateImportData({
         create: true,
         data: [
-          generateImportModel({unique1: '999'}),
-          generateImportModel({unique1: '999'})
+          generateImportModel(),
+          generateImportModel({requiredField: null})
         ]
       }))).toEqual(importResult({
         inserts: 1,
@@ -570,7 +592,7 @@ describe('import models', () => {
         errorDetails: [
           {
             row: 2,
-            error: expect.any(Error)
+            error: expect.any(String)
           }
         ]
       }))
@@ -690,5 +712,63 @@ describe('import models', () => {
 
       expect(await modelB.count()).toBe(0)
     })
+  })
+
+  test('should nullify empty strings', async () => {
+    expect(await importer.import(model, generateImportData({
+      create: true,
+      data: [
+        generateImportModel({requiredField: ''})
+      ]
+    }))).toEqual(importResult({
+      errors: 1
+    }))
+  })
+
+  test('should apply model transformations before match the record', async () => {
+    let modelWithTransformations = ah.api.sequelize.sequelize.define('TestModelWithTransformations', {
+      id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      field1: DataTypes.STRING,
+      unique1: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true,
+        set (val) {
+          this.setDataValue('unique1', '00' + val)
+        }
+      }
+    })
+    await modelWithTransformations.sync()
+
+    await modelWithTransformations.create({unique1: '111'})
+    expect(await importer.import(modelWithTransformations, generateImportData({
+      create: true,
+      data: [
+        {unique1: '111'},
+        {unique1: '222'}
+      ]
+    }))).toEqual(importResult({
+      errors: 0,
+      inserts: 1,
+      ignored: 1
+    }))
+
+    await ah.api.sequelize.sequelize.queryInterface.dropTable(modelWithTransformations.tableName)
+  })
+
+  test('should ignore empty rows', async () => {
+    expect(await importer.import(model, generateImportData({
+      create: true,
+      data: [
+        {}
+      ]
+    }))).toEqual(importResult({
+      ignored: 1
+    }))
   })
 })

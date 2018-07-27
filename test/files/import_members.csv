@@ -1,4 +1,4 @@
 accessId;cardId;firstName;middleName;lastName;Country;postalCode;address;city;email;username;phone;membershipStartDate;category
-100;500;Ivan;Ivanov;Ivanov;Bulgaria;1330;Address 1;Plovdiv;ivan@test.test;ivan;+359899111222;2017-05-20;regular
+100;500;Ivan;Ivanov;Ivanov;Bulgaria;1330;Address 1;Plovdiv;ivan@test.test;;+359899111222;2017-05-20;regular
 101;501;Petar;Petrov;Petrov;Bulgaria;1330;Address 2;Sofia;petar@test.test;petar;+359899123123;2015-01-25;retired
 102;502;Georgi;Georgiev;Georgiev;Bulgaria;9002;Address 3;Varna;georgi@test.test;georgi;+359899333222;2015-12-30;student
