@@ -43,10 +43,18 @@ exports.payments = class Payments extends Action {
     this.middleware = ['auth.hasRole.admin']
     this.inputs = {
       file: {},
-      create: {},
-      update: {},
-      failOnError: {},
-      dryRun: {},
+      create: {
+        formatter: (p) => boolean(p)
+      },
+      update: {
+        formatter: (p) => boolean(p)
+      },
+      failOnError: {
+        formatter: (p) => boolean(p)
+      },
+      dryRun: {
+        formatter: (p) => boolean(p)
+      },
       defaults: {}
     }
   }
@@ -65,10 +73,18 @@ exports.family = class Family extends Action {
     this.middleware = ['auth.hasRole.admin']
     this.inputs = {
       file: {},
-      create: {},
-      update: {},
-      failOnError: {},
-      dryRun: {},
+      create: {
+        formatter: (p) => boolean(p)
+      },
+      update: {
+        formatter: (p) => boolean(p)
+      },
+      failOnError: {
+        formatter: (p) => boolean(p)
+      },
+      dryRun: {
+        formatter: (p) => boolean(p)
+      },
       defaults: {}
     }
   }

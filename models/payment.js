@@ -78,7 +78,9 @@ class Payment extends Model {
 
   toJSON () {
     const json = super.toJSON()
-    json.members = this.members.map(m => m ? m.toJSON('short') : m)
+    if (this.members) {
+      json.members = this.members.map(m => m ? m.toJSON('short') : m)
+    }
     return json
   }
 }

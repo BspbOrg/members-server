@@ -75,7 +75,7 @@ describe('family members preprocessor', async () => {
     }
 
     expect.assertions(1)
-    expect(processFamily(input)).rejects.toThrowErrorMatchingSnapshot()
+    await expect(processFamily(input)).rejects.toThrowErrorMatchingSnapshot()
   })
 
   test('should fail on missing master member', async () => {

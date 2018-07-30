@@ -119,7 +119,7 @@ module.exports = class ImportTool {
             }
           } else {
             if (input.create) {
-              await rowModel.save({transaction: t})
+              await model.create(row, {transaction: t})
               result.inserts++
             } else {
               result.ignored++
