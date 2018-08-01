@@ -1,6 +1,7 @@
 const {Model} = require('sequelize')
 const PNF = require('google-libphonenumber').PhoneNumberFormat
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance()
+const emailValidator = require('email-validator')
 
 class Member extends Model {
   static init (sequelize, DataTypes) {
@@ -31,9 +32,10 @@ class Member extends Model {
         allowNull: true,
         unique: {msg: 'The specified email address is already in use.'},
         validate: {
-          isEmail: {
-            args: true,
-            msg: 'Specified email is invalid'
+          isValidEmail (email) {
+            if (!emailValidator.validate(email)) {
+              throw new Error('Specified email is invalid')
+            }
           }
         }
       },

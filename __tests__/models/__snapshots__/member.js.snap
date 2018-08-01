@@ -12,6 +12,10 @@ exports[`model member creating should require firstName 1`] = `"notNull Violatio
 
 exports[`model member creating should require lastName 1`] = `"notNull Violation: member.lastName cannot be null"`;
 
+exports[`model member creating validation email field should not allow following email: "Abc@def"@example.com 1`] = `"Validation error: Specified email is invalid"`;
+
+exports[`model member creating validation email field should not allow following email: "Fred Bloggs"@example.com 1`] = `"Validation error: Specified email is invalid"`;
+
 exports[`model member creating validation email field should not allow following email: Abc\\@def@example.com 1`] = `"Validation error: Specified email is invalid"`;
 
 exports[`model member creating validation email field should not allow following email: Fred\\ Bloggs@example.com 1`] = `"Validation error: Specified email is invalid"`;

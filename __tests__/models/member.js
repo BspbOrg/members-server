@@ -73,13 +73,12 @@ describe('model member', () => {
 
       describe('email field', async () => {
         const validEmails = [
-          '"Abc@def"@example.com',
-          '"Fred Bloggs"@example.com',
           'customer/department=shipping@example.com',
           '$A12345@example.com',
           '!def!xyz%abc@example.com',
           '_somename@example.com',
-          'user+mailbox@example.com'
+          'user+mailbox@example.com',
+          'test_test@gmail.com'
         ]
 
         validEmails.forEach(email => {
@@ -89,12 +88,14 @@ describe('model member', () => {
         })
 
         const invalidEmails = [
-          'Abc\\@def@example.com', // actually valid but still not supported by sequelize validation
-          'Fred\\ Bloggs@example.com', // actually valid but still not supported by sequelize validation
-          'Joe.\\\\Blow@example.com', // actually valid but still not supported by sequelize validation
-          'user@[192.168.0.1]', // actually valid but still not supported by sequelize validation
-          'joe@[::1]', // actually valid but still not supported by sequelize validation
-          'joe@[2001:db8::ff00:42:8329]', // actually valid but still not supported by sequelize validation
+          'Abc\\@def@example.com', // actually valid but still not supported by email-validator
+          'Fred\\ Bloggs@example.com', // actually valid but still not supported by email-validator
+          'Joe.\\\\Blow@example.com', // actually valid but still not supported by email-validator
+          'user@[192.168.0.1]', // actually valid but still not supported by email-validator
+          'joe@[::1]', // actually valid but still not supported by email-validator
+          'joe@[2001:db8::ff00:42:8329]', // actually valid but still not supported by email-validator
+          '"Abc@def"@example.com', // actually valid but still not supported by email-validator
+          '"Fred Bloggs"@example.com', // actually valid but still not supported by email-validator
           'adsd.443',
           'test@test',
           'test@test@test.test'
