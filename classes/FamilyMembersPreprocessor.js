@@ -7,7 +7,7 @@ module.exports = async function (familyRelation) {
 
   const member = await api.models.member.findOne({where: {cardId: familyRelation.cardId}})
   if (!member) {
-    throw new Error(`no master member found: ${familyRelation.familyCardId}`)
+    throw new Error(`no master member found: ${familyRelation.cardId}`)
   }
 
   const familyMember = await api.models.member.findOne({where: {cardId: familyRelation.familyCardId}})

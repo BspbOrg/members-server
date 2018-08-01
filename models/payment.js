@@ -25,7 +25,7 @@ class Payment extends Model {
         unique: 'compositeKeyBillingMemberPaymentDate'
       },
       amount: {
-        type: DataTypes.INTEGER.UNSIGNED,
+        type: DataTypes.DOUBLE,
         allowNull: false,
         validate: {min: 1}
       },
