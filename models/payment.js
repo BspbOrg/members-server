@@ -47,7 +47,7 @@ class Payment extends Model {
   static async create (values, options) {
     const model = await super.create(values, options)
     if (values.members) {
-      await model.setMembers(values.members)
+      await model.setMembers(values.members, options)
     }
     return model
   }
