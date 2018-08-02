@@ -23,9 +23,9 @@ describe('action import', () => {
         update: false,
         failOnError: false,
         dryRun: false,
-        defaults: {
+        defaults: JSON.stringify({
           category: 'regular'
-        },
+        }),
         file: {path: path.join('test/files', 'import_members.csv')}
       }
       const res = await ah.runAdminAction(action, params)
@@ -59,10 +59,10 @@ describe('action import', () => {
         update: false,
         failOnError: false,
         dryRun: false,
-        defaults: {
+        defaults: JSON.stringify({
           paymentType: 'cash',
           membershipType: 'single'
-        },
+        }),
         file: {path: path.join('test/files', 'import_payments.csv')}
       }
       const res = await ah.runAdminAction(action, params)
