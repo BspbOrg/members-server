@@ -25,7 +25,9 @@ exports.members = class Members extends Action {
       dryRun: {
         formatter: (p) => boolean(p)
       },
-      defaults: {}
+      defaults: {
+        formatter: (p) => JSON.parse(p)
+      }
     }
   }
 
