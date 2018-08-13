@@ -15,11 +15,10 @@ before_install:
 - ssh-add github_deploy_key
 - "[[ $(node -v) =~ ^v9.*$ ]] || npm install -g npm@latest"
 - npm install -g greenkeeper-lockfile@1
-before_script:
-- greenkeeper-lockfile-update
+install: npm install
+before_script: greenkeeper-lockfile-update
 script: npm test -- --ci --runInBand || npm test -- --ci --runInBand
-after_script:
-- greenkeeper-lockfile-upload
+after_script: greenkeeper-lockfile-upload
 deploy:
   provider: heroku
   api_key:
