@@ -15,9 +15,9 @@ exports.list = class List extends Action {
     }
   }
 
-  async run ({ params: {limit, offset, context}, response }) {
+  async run ({ params: { limit, offset, context }, response }) {
     const res = await api.models.member.findAndCountAll({
-      ...(limit !== '-1' ? {offset, limit} : {}),
+      ...(limit !== '-1' ? { offset, limit } : {}),
       include: [ 'familyMembers' ]
     })
     response.data = await Promise.all(res.rows.map(u => u.toJSON(context)))
@@ -50,7 +50,7 @@ exports.Show = class Show extends Action {
     this.inputs = { memberId: { required: true }, context: {} }
   }
 
-  async run ({ member, response, params: {context} }) {
+  async run ({ member, response, params: { context } }) {
     response.success = false
     response.data = member.toJSON(context)
     const familyMembers = await member.getFamilyMembers()

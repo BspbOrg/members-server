@@ -1,4 +1,4 @@
-const {Model, or} = require('sequelize')
+const { Model, or } = require('sequelize')
 const isFuture = require('date-fns/is_future')
 
 class Payment extends Model {
@@ -27,7 +27,7 @@ class Payment extends Model {
       amount: {
         type: DataTypes.DOUBLE,
         allowNull: false,
-        validate: {min: 1}
+        validate: { min: 1 }
       },
       membershipType: DataTypes.STRING,
       paymentType: DataTypes.STRING,
@@ -52,20 +52,20 @@ class Payment extends Model {
     return model
   }
 
-  static associate ({member, payment}) {
-    payment.belongsTo(member, {as: 'billingMember'})
-    payment.belongsToMany(member, {as: 'members', through: 'payment_members'})
+  static associate ({ member, payment }) {
+    payment.belongsTo(member, { as: 'billingMember' })
+    payment.belongsToMany(member, { as: 'members', through: 'payment_members' })
   }
 
-  static loadScopes ({member, payment}) {
+  static loadScopes ({ member, payment }) {
     payment.addScope('defaultScope', {
       include: [payment.associations.members]
-    }, {override: true})
+    }, { override: true })
     payment.addScope('member', function (memberId) {
       return {
         where: or(
-          {'$members->payment_members.memberId$': memberId},
-          {billingMemberId: memberId}
+          { '$members->payment_members.memberId$': memberId },
+          { billingMemberId: memberId }
         ),
         include: [payment.associations.members]
       }
@@ -81,11 +81,11 @@ class Payment extends Model {
   }
 
   static scopeMember (memberId) {
-    return this.scope({method: ['member', memberId]})
+    return this.scope({ method: ['member', memberId] })
   }
 
   static scopeMembershipMember (memberId) {
-    return this.scope({method: ['membershipMember', memberId]})
+    return this.scope({ method: ['membershipMember', memberId] })
   }
 
   toJSON (context) {

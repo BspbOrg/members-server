@@ -4,8 +4,8 @@
 
 const ah = require('../../test/ah-setup')
 const ImportTool = require('../../classes/ImportTool')
-const {DataTypes} = require('sequelize')
-const {assign} = Object
+const { DataTypes } = require('sequelize')
+const { assign } = Object
 
 describe('import models', () => {
   const importer = new ImportTool()
@@ -68,12 +68,12 @@ describe('import models', () => {
       unique1: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: {msg: 'The specified value is already in use.'}
+        unique: { msg: 'The specified value is already in use.' }
       },
       unique2: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: {msg: 'The specified value is already in use.'}
+        unique: { msg: 'The specified value is already in use.' }
       },
       number1: {
         type: DataTypes.INTEGER,
@@ -92,11 +92,11 @@ describe('import models', () => {
   })
 
   beforeEach(async () => {
-    await model.destroy({where: {}, force: true})
+    await model.destroy({ where: {}, force: true })
   })
 
   test('should import model', async () => {
-    await importer.import(model, generateImportData({create: true}))
+    await importer.import(model, generateImportData({ create: true }))
     await expect(model.count()).resolves.toBe(1)
   })
 
@@ -141,7 +141,7 @@ describe('import models', () => {
       await model.create(record)
 
       // update some field on the prepared for import model
-      const recordForImport = Object.assign({}, record, {field2: 'new address'})
+      const recordForImport = Object.assign({}, record, { field2: 'new address' })
 
       // check import result
       expect(await importModel(generateImportData({
@@ -178,7 +178,7 @@ describe('import models', () => {
       await model.create(record)
 
       // update some field on the prepared for import record
-      const recordForImport = Object.assign({}, record, {field1: 'new field1 value'})
+      const recordForImport = Object.assign({}, record, { field1: 'new field1 value' })
 
       // check import result
       expect(await importModel(generateImportData({
@@ -201,7 +201,7 @@ describe('import models', () => {
         create: true,
         failOnError: true,
         data: [
-          generateImportModel({requiredField: null})
+          generateImportModel({ requiredField: null })
         ]
       }))).toEqual(importResult({
         inserts: 0,
@@ -218,7 +218,7 @@ describe('import models', () => {
         failOnError: false,
         data: [
           generateImportModel(),
-          generateImportModel({requiredField: null})
+          generateImportModel({ requiredField: null })
         ]
       }))).toEqual(importResult({
         inserts: 1,
@@ -270,14 +270,14 @@ describe('import models', () => {
 
   describe('consider defaults in input settings', () => {
     const invalidValues = [
-      {field1: null},
-      {field1: undefined},
-      {field1: ''}
+      { field1: null },
+      { field1: undefined },
+      { field1: '' }
     ]
 
     const validValues = [
-      {field1: 'row value'},
-      {field1: '0'}
+      { field1: 'row value' },
+      { field1: '0' }
     ]
 
     invalidValues.forEach(value => {
@@ -362,8 +362,8 @@ describe('import models', () => {
     })
 
     test('should match model by unique field', async () => {
-      const record = generateImportModel(Object.assign({}, modelParams, {unique1: 999}))
-      const record2 = generateImportModel(Object.assign({}, modelParams, {unique1: 998}))
+      const record = generateImportModel(Object.assign({}, modelParams, { unique1: 999 }))
+      const record2 = generateImportModel(Object.assign({}, modelParams, { unique1: 998 }))
 
       const recordId = (await model.create(record)).id
       const record2Id = (await model.create(record2)).id
@@ -400,16 +400,16 @@ describe('import models', () => {
     })
 
     test('should fail if match more than one record by more unique fields', async () => {
-      const record = generateImportModel(Object.assign({}, modelParams, {unique1: 999}))
+      const record = generateImportModel(Object.assign({}, modelParams, { unique1: 999 }))
       await model.create(record)
 
-      const record2 = generateImportModel(Object.assign({}, modelParams, {unique2: 999}))
+      const record2 = generateImportModel(Object.assign({}, modelParams, { unique2: 999 }))
       await model.create(record2)
 
       expect(await importModel(generateImportData({
         update: true,
         data: [
-          generateImportModel({unique1: record.unique1, unique2: record2.unique2})
+          generateImportModel({ unique1: record.unique1, unique2: record2.unique2 })
         ]
       }))).toEqual(importResult({
         updates: 0,
@@ -445,7 +445,7 @@ describe('import models', () => {
       })
 
       afterEach(async () => {
-        await modelWithComposite.destroy({where: {}, force: true})
+        await modelWithComposite.destroy({ where: {}, force: true })
       })
 
       test('should match model by composite key', async () => {
@@ -572,7 +572,7 @@ describe('import models', () => {
       expect(await importModel(generateImportData({
         create: true,
         data: [
-          generateImportModel({requiredField: null})
+          generateImportModel({ requiredField: null })
         ]
       }))).toEqual(importResult({
         errors: 1
@@ -584,7 +584,7 @@ describe('import models', () => {
         create: true,
         data: [
           generateImportModel(),
-          generateImportModel({requiredField: null})
+          generateImportModel({ requiredField: null })
         ]
       }))).toEqual(importResult({
         inserts: 1,
@@ -619,7 +619,7 @@ describe('import models', () => {
           allowNull: true
         }
       })
-      modelB.belongsTo(model, {as: 'modelRelation'})
+      modelB.belongsTo(model, { as: 'modelRelation' })
       await modelB.sync()
     })
 
@@ -628,12 +628,12 @@ describe('import models', () => {
     })
 
     afterEach(async () => {
-      await modelB.destroy({where: {}, force: true})
-      await model.destroy({where: {}, force: true})
+      await modelB.destroy({ where: {}, force: true })
+      await model.destroy({ where: {}, force: true })
     })
 
     test('should match model by given relation', async () => {
-      const recordA = generateImportModel({unique1: '999'})
+      const recordA = generateImportModel({ unique1: '999' })
       const recordAId = (await model.create(recordA)).id
 
       const recordB = {
@@ -651,11 +651,11 @@ describe('import models', () => {
       }))
 
       const importedRecordB = await modelB.findOne()
-      expect(importedRecordB).toEqual(expect.objectContaining({modelRelationId: recordAId}))
+      expect(importedRecordB).toEqual(expect.objectContaining({ modelRelationId: recordAId }))
     })
 
     test('should fail if related model is not found', async () => {
-      const recordA = generateImportModel({unique1: '999'})
+      const recordA = generateImportModel({ unique1: '999' })
       await model.create(recordA)
       const recordB = {
         field: 'some value',
@@ -675,8 +675,8 @@ describe('import models', () => {
     })
 
     test('should fail if more than one relation model found', async () => {
-      await model.create(generateImportModel({field1: 'value'}))
-      await model.create(generateImportModel({field1: 'value'}))
+      await model.create(generateImportModel({ field1: 'value' }))
+      await model.create(generateImportModel({ field1: 'value' }))
       const recordB = {
         field: 'some value',
         'modelRelation.field1': 'value'
@@ -695,7 +695,7 @@ describe('import models', () => {
     })
 
     test('should fail if relationship is non existing', async () => {
-      await model.create(generateImportModel({field1: 'value'}))
+      await model.create(generateImportModel({ field1: 'value' }))
       const recordB = {
         field: 'some value',
         'missingRelation.field1': 'value'
@@ -718,7 +718,7 @@ describe('import models', () => {
     expect(await importer.import(model, generateImportData({
       create: true,
       data: [
-        generateImportModel({requiredField: ''})
+        generateImportModel({ requiredField: '' })
       ]
     }))).toEqual(importResult({
       errors: 1
@@ -745,12 +745,12 @@ describe('import models', () => {
     })
     await modelWithTransformations.sync()
 
-    await modelWithTransformations.create({unique1: '111'})
+    await modelWithTransformations.create({ unique1: '111' })
     expect(await importer.import(modelWithTransformations, generateImportData({
       create: true,
       data: [
-        {unique1: '111'},
-        {unique1: '222'}
+        { unique1: '111' },
+        { unique1: '222' }
       ]
     }))).toEqual(importResult({
       errors: 0,

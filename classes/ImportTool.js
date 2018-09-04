@@ -1,5 +1,5 @@
-const {api} = require('actionhero')
-const {Sequelize} = require('sequelize')
+const { api } = require('actionhero')
+const { Sequelize } = require('sequelize')
 const Op = Sequelize.Op
 const csv = require('csv-parser')
 const fs = require('fs')
@@ -89,12 +89,12 @@ module.exports = class ImportTool {
                     if (!(fieldName in row)) {
                       throw new Error('missing part of composite identifier')
                     }
-                    return {[fieldName]: rowModel[fieldName]}
+                    return { [fieldName]: rowModel[fieldName] }
                   })
 
                 }
               } else {
-                return {[field[0]]: rowModel[field[0]]}
+                return { [field[0]]: rowModel[field[0]] }
               }
             })
 
@@ -115,14 +115,14 @@ module.exports = class ImportTool {
 
           if (existing) {
             if (input.update) {
-              await records[0].update(row, {transaction: t})
+              await records[0].update(row, { transaction: t })
               result.updates++
             } else {
               result.ignored++
             }
           } else {
             if (input.create) {
-              await model.create(row, {transaction: t})
+              await model.create(row, { transaction: t })
               result.inserts++
             } else {
               result.ignored++
@@ -134,7 +134,7 @@ module.exports = class ImportTool {
           }
         } catch (e) {
           result.errors++
-          result.errorDetails.push({row: rowIndex + 1, error: e.message})
+          result.errorDetails.push({ row: rowIndex + 1, error: e.message })
         }
       }, null)
 

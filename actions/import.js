@@ -1,6 +1,6 @@
 'use strict'
 
-const {api, Action} = require('actionhero')
+const { api, Action } = require('actionhero')
 const processPayment = require('../classes/PaymentPreprocessor')
 const processFamily = require('../classes/FamilyMembersPreprocessor')
 const boolean = require('boolean')
@@ -31,9 +31,9 @@ exports.members = class Members extends Action {
     }
   }
 
-  async run ({params, response}) {
+  async run ({ params, response }) {
     const parsed = await api.import.parseCSVFile(params.file)
-    response.data = await api.import.import(api.models.member, Object.assign({}, params, {data: parsed}))
+    response.data = await api.import.import(api.models.member, Object.assign({}, params, { data: parsed }))
   }
 }
 
@@ -61,12 +61,12 @@ exports.payments = class Payments extends Action {
     }
   }
 
-  async run ({params, response}) {
+  async run ({ params, response }) {
     const parsed = await api.import.parseCSVFile(params.file)
     const members = []
-    response.data = await api.import.import(api.models.payment, {...params, data: parsed}, {
+    response.data = await api.import.import(api.models.payment, { ...params, data: parsed }, {
       preprocessor: processPayment,
-      preprocessorArgs: [{members}]
+      preprocessorArgs: [{ members }]
     })
     await api.membership.enqueueRecompute(members)
   }
@@ -96,8 +96,8 @@ exports.family = class Family extends Action {
     }
   }
 
-  async run ({params, response}) {
+  async run ({ params, response }) {
     const parsed = await api.import.parseCSVFile(params.file)
-    response.data = await api.import.import(api.models.member_families, Object.assign({}, params, {data: parsed}), {preprocessor: processFamily})
+    response.data = await api.import.import(api.models.member_families, Object.assign({}, params, { data: parsed }), { preprocessor: processFamily })
   }
 }

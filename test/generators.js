@@ -1,4 +1,4 @@
-const {assign} = Object
+const { assign } = Object
 const addDays = require('date-fns/add_days')
 const format = require('date-fns/format')
 exports.generateUser = (opts) => {
@@ -34,7 +34,7 @@ exports.generateMember = (opts) => {
 }
 exports.generateMember.index = 0
 
-exports.generatePayment = (overrideParams = {}, {addMembers = false} = {}) => {
+exports.generatePayment = (overrideParams = {}, { addMembers = false } = {}) => {
   const i = exports.generatePayment.index++
   const res = {}
   if (addMembers) {

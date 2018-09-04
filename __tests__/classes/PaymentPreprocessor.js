@@ -4,20 +4,20 @@
 
 const ah = require('../../test/ah-setup')
 const processPayment = require('../../classes/PaymentPreprocessor')
-const {generateMember, generatePayment} = require('../../test/generators')
+const { generateMember, generatePayment } = require('../../test/generators')
 
 describe('payments preprocessor', async () => {
   beforeAll(async () => {
     await ah.start()
-    await ah.api.models.payment.destroy({where: {}, force: true})
-    await ah.api.models.member.destroy({where: {}, force: true})
+    await ah.api.models.payment.destroy({ where: {}, force: true })
+    await ah.api.models.member.destroy({ where: {}, force: true })
   })
 
   afterAll(ah.stop)
 
   afterEach(async () => {
-    await ah.api.models.payment.destroy({where: {}, force: true})
-    await ah.api.models.member.destroy({where: {}, force: true})
+    await ah.api.models.payment.destroy({ where: {}, force: true })
+    await ah.api.models.member.destroy({ where: {}, force: true })
   })
 
   test('should add billing member in payment members when single payment is made', async () => {
@@ -106,7 +106,7 @@ describe('payments preprocessor', async () => {
 
   test('should add family members who joined before payment date', async () => {
     const billingMember = await ah.api.models.member.create(generateMember())
-    const familyMember = await ah.api.models.member.create(generateMember({membershipStartDate: '2015-10-15'}))
+    const familyMember = await ah.api.models.member.create(generateMember({ membershipStartDate: '2015-10-15' }))
     await billingMember.setFamilyMembers([familyMember])
 
     const payment = generatePayment({
@@ -121,7 +121,7 @@ describe('payments preprocessor', async () => {
 
   test('should not add family members who joined after payment date', async () => {
     const billingMember = await ah.api.models.member.create(generateMember())
-    const familyMember = await ah.api.models.member.create(generateMember({membershipStartDate: '2015-10-20'}))
+    const familyMember = await ah.api.models.member.create(generateMember({ membershipStartDate: '2015-10-20' }))
     await billingMember.setFamilyMembers([familyMember])
 
     const payment = generatePayment({
@@ -136,7 +136,7 @@ describe('payments preprocessor', async () => {
 
   test('should add family members who joined on payment date', async () => {
     const billingMember = await ah.api.models.member.create(generateMember())
-    const familyMember = await ah.api.models.member.create(generateMember({membershipStartDate: '2015-10-18'}))
+    const familyMember = await ah.api.models.member.create(generateMember({ membershipStartDate: '2015-10-18' }))
     await billingMember.setFamilyMembers([familyMember])
 
     const payment = generatePayment({

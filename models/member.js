@@ -1,4 +1,4 @@
-const {Model} = require('sequelize')
+const { Model } = require('sequelize')
 const PNF = require('google-libphonenumber').PhoneNumberFormat
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance()
 const emailValidator = require('email-validator')
@@ -15,7 +15,7 @@ class Member extends Model {
       username: {
         type: DataTypes.STRING(20),
         allowNull: true,
-        unique: {msg: 'The specified username is already in use.'},
+        unique: { msg: 'The specified username is already in use.' },
         validate: {
           len: {
             args: [4, 20],
@@ -30,7 +30,7 @@ class Member extends Model {
       email: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: {msg: 'The specified email address is already in use.'},
+        unique: { msg: 'The specified email address is already in use.' },
         validate: {
           isValidEmail (email) {
             if (!emailValidator.validate(email)) {
@@ -65,12 +65,12 @@ class Member extends Model {
       accessId: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: {msg: 'The specified access ID is already in use.'}
+        unique: { msg: 'The specified access ID is already in use.' }
       },
       cardId: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: {msg: 'The specified card ID is already in use.'}
+        unique: { msg: 'The specified card ID is already in use.' }
       },
       country: {
         type: DataTypes.STRING,
@@ -91,7 +91,7 @@ class Member extends Model {
       phone: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: {msg: 'The specified phone number is already in use.'},
+        unique: { msg: 'The specified phone number is already in use.' },
         set (phone) {
           if (phone) {
             phone = phone.replace(/[^\d+]/g, '')
@@ -147,7 +147,7 @@ class Member extends Model {
     })
   }
 
-  static associate ({member}) {
+  static associate ({ member }) {
     member.belongsToMany(member, {
       as: 'familyMembers',
       through: 'member_families'
@@ -160,10 +160,10 @@ class Member extends Model {
     })
   }
 
-  static loadScopes ({member}) {
+  static loadScopes ({ member }) {
     member.addScope('family', function (memberId) {
       return {
-        where: {'$familyMasters.id$': memberId},
+        where: { '$familyMasters.id$': memberId },
         include: [{
           association: member.associations.familyMasters,
           attributes: ['id'],
@@ -176,7 +176,7 @@ class Member extends Model {
   }
 
   static scopeFamily (memberId) {
-    return this.scope({method: ['family', memberId]})
+    return this.scope({ method: ['family', memberId] })
   }
 
   get name () { return [this.firstName, this.middleName, this.lastName].filter(v => v).join(' ') }

@@ -1,6 +1,6 @@
 'use strict'
 
-const {api, Action} = require('actionhero')
+const { api, Action } = require('actionhero')
 
 exports.list = class List extends Action {
   constructor () {
@@ -16,10 +16,10 @@ exports.list = class List extends Action {
     }
   }
 
-  async run ({params: {offset, limit, memberId, context}, response}) {
+  async run ({ params: { offset, limit, memberId, context }, response }) {
     const query = {
       // offset&limit doesn't work with member scope
-      ...(memberId ? {} : {offset, limit}),
+      ...(memberId ? {} : { offset, limit }),
       order: [['paymentDate', 'DESC']]
     }
     let scoped = api.models.payment
@@ -38,10 +38,10 @@ exports.destroy = class Destroy extends Action {
     this.name = 'payment:destroy'
     this.description = 'Delete payment. Requires admin role'
     this.middleware = ['auth.hasRole.admin', 'payment.params']
-    this.inputs = {paymentId: {required: true}}
+    this.inputs = { paymentId: { required: true } }
   }
 
-  async run ({payment, response}) {
+  async run ({ payment, response }) {
     response.success = false
     await payment.destroy()
     await api.membership.enqueueRecompute(payment.members)
@@ -55,10 +55,10 @@ exports.Show = class Show extends Action {
     this.name = 'payment:show'
     this.description = 'Retrieve information regarding specific payment'
     this.middleware = ['auth.hasRole.admin', 'payment.params']
-    this.inputs = {paymentId: {required: true}, context: {}}
+    this.inputs = { paymentId: { required: true }, context: {} }
   }
 
-  async run ({payment, params: {context}, response}) {
+  async run ({ payment, params: { context }, response }) {
     response.success = false
     response.data = await payment.toJSON(context)
     response.success = true
@@ -72,7 +72,7 @@ exports.update = class Update extends Action {
     this.description = 'Update payment info'
     this.middleware = ['auth.hasRole.admin', 'payment.params']
     this.inputs = {
-      paymentId: {required: true},
+      paymentId: { required: true },
       amount: {},
       paymentDate: {},
       membershipType: {},
@@ -84,7 +84,7 @@ exports.update = class Update extends Action {
     }
   }
 
-  async run ({params, response, payment}) {
+  async run ({ params, response, payment }) {
     let membersToRecompute = [...payment.members]
     response.success = false
     await payment.updateAttributes(params)
@@ -106,18 +106,18 @@ exports.create = class Create extends Action {
     this.description = 'Create payment'
     this.middleware = ['auth.hasRole.admin']
     this.inputs = {
-      amount: {required: true},
-      paymentDate: {required: true},
+      amount: { required: true },
+      paymentDate: { required: true },
       membershipType: {},
       paymentType: {},
-      billingMemberId: {required: true},
+      billingMemberId: { required: true },
       members: {},
       info: {},
       context: {}
     }
   }
 
-  async run ({params, response}) {
+  async run ({ params, response }) {
     response.success = false
     const payment = await api.models.payment.create(params)
     if (params.members) {

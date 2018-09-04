@@ -1,9 +1,9 @@
-const {api} = require('actionhero')
+const { api } = require('actionhero')
 const isBefore = require('date-fns/is_before')
 const isSameDay = require('date-fns/is_same_day')
 const boolean = require('boolean')
 
-module.exports = async function (payment, {members = []} = {}) {
+module.exports = async function (payment, { members = [] } = {}) {
   const processed = Object.assign({}, payment)
   if (!processed.members) {
     processed.members = []

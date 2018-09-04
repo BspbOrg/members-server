@@ -3,7 +3,7 @@ const isAfter = require('date-fns/is_after')
 const compareAsc = require('date-fns/compare_asc')
 
 module.exports = class Membership {
-  constructor ({api}) {
+  constructor ({ api }) {
     this.api = api
   }
 
@@ -14,7 +14,7 @@ module.exports = class Membership {
   computeMembership (payments) {
     let startDate = 0
     let endDate = 0
-    payments = payments.sort(({paymentDate: a}, {paymentDate: b}) => compareAsc(a, b))
+    payments = payments.sort(({ paymentDate: a }, { paymentDate: b }) => compareAsc(a, b))
     for (let payment of payments) {
       if (isAfter(payment.paymentDate, endDate)) {
         // membership expired or we started new one
@@ -25,7 +25,7 @@ module.exports = class Membership {
         endDate = addYears(endDate, 1 /* year */)
       }
     }
-    return {startDate, endDate}
+    return { startDate, endDate }
   }
 
   async enqueueRecompute (members) {
@@ -33,7 +33,7 @@ module.exports = class Membership {
       members.map(
         member => this.api.tasks.enqueue(
           'membership:recompute',
-          {memberId: member.id || member}
+          { memberId: member.id || member }
         )
       )
     )

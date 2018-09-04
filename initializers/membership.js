@@ -1,4 +1,4 @@
-const {Initializer, api} = require('actionhero')
+const { Initializer, api } = require('actionhero')
 const Membership = require('../classes/Membership')
 
 module.exports = class MembershipInitializer extends Initializer {
@@ -8,6 +8,6 @@ module.exports = class MembershipInitializer extends Initializer {
   }
 
   async initialize () {
-    api.membership = new Membership({api})
+    api.membership = new Membership({ api })
   }
 }

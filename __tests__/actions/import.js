@@ -4,15 +4,15 @@
 
 const ah = require('../../test/ah-setup')
 const path = require('path')
-const {generateMember} = require('../../test/generators')
+const { generateMember } = require('../../test/generators')
 
 describe('action import', () => {
   beforeAll(ah.start)
   afterAll(ah.stop)
 
   beforeEach(async () => {
-    await ah.api.models.payment.destroy({where: {}, force: true})
-    await ah.api.models.member.destroy({where: {}, force: true})
+    await ah.api.models.payment.destroy({ where: {}, force: true })
+    await ah.api.models.member.destroy({ where: {}, force: true })
   })
 
   describe('#members', () => {
@@ -26,7 +26,7 @@ describe('action import', () => {
         defaults: JSON.stringify({
           category: 'regular'
         }),
-        file: {path: path.join('test/files', 'import_members.csv')}
+        file: { path: path.join('test/files', 'import_members.csv') }
       }
       const res = await ah.runAdminAction(action, params)
 
@@ -48,13 +48,13 @@ describe('action import', () => {
     const action = 'import:payment'
 
     const prepareData = async () => {
-      const member1 = await ah.api.models.member.create(generateMember({accessId: 100}))
-      const member2 = await ah.api.models.member.create(generateMember({accessId: 101}))
-      const member3 = await ah.api.models.member.create(generateMember({accessId: 102}))
+      const member1 = await ah.api.models.member.create(generateMember({ accessId: 100 }))
+      const member2 = await ah.api.models.member.create(generateMember({ accessId: 101 }))
+      const member3 = await ah.api.models.member.create(generateMember({ accessId: 102 }))
       const family1 = await ah.api.models.member.create(generateMember())
       const family2 = await ah.api.models.member.create(generateMember())
       await member2.setFamilyMembers([family1, family2])
-      return {member1, member2, member3, family1, family2}
+      return { member1, member2, member3, family1, family2 }
     }
 
     const executeImport = async () => {
@@ -67,13 +67,13 @@ describe('action import', () => {
           paymentType: 'cash',
           membershipType: 'single'
         }),
-        file: {path: path.join('test/files', 'import_payments.csv')}
+        file: { path: path.join('test/files', 'import_payments.csv') }
       }
       return ah.runAdminAction(action, params)
     }
 
     test('should import payments', async () => {
-      const {member2, family1, family2} = await prepareData()
+      const { member2, family1, family2 } = await prepareData()
       const res = await executeImport()
 
       expect(res.data).toEqual(expect.objectContaining({
@@ -87,32 +87,32 @@ describe('action import', () => {
       }))
 
       expect((await ah.api.models.payment.findAll()).length).toBe(3)
-      const familyPayment = await ah.api.models.payment.findOne({where: {info: '30 EUR'}})
+      const familyPayment = await ah.api.models.payment.findOne({ where: { info: '30 EUR' } })
       expect(await familyPayment.getMembers()).toEqual(expect.arrayContaining([
-        expect.objectContaining({id: member2.id}),
-        expect.objectContaining({id: family1.id}),
-        expect.objectContaining({id: family2.id})
+        expect.objectContaining({ id: member2.id }),
+        expect.objectContaining({ id: family1.id }),
+        expect.objectContaining({ id: family2.id })
       ]))
     })
 
     describe('membership recalculation', () => {
       test('should enqueue billing member for single payment', async () => {
         const enqueueSpy = jest.spyOn(ah.api.membership, 'enqueueRecompute')
-        const {member1} = await prepareData()
+        const { member1 } = await prepareData()
         await executeImport()
         expect(enqueueSpy).toHaveBeenCalledWith(expect.arrayContaining([member1.id]))
       })
 
       test('should enqueue family member for family payment', async () => {
         const enqueueSpy = jest.spyOn(ah.api.membership, 'enqueueRecompute')
-        const {family1, family2} = await prepareData()
+        const { family1, family2 } = await prepareData()
         await executeImport()
         expect(enqueueSpy).toHaveBeenCalledWith(expect.arrayContaining([family1.id, family2.id]))
       })
 
       test('should enqueue billing member for generic payment', async () => {
         const enqueueSpy = jest.spyOn(ah.api.membership, 'enqueueRecompute')
-        const {member3} = await prepareData()
+        const { member3 } = await prepareData()
         await executeImport()
         expect(enqueueSpy).toHaveBeenCalledWith(expect.arrayContaining([member3.id]))
       })
@@ -122,12 +122,12 @@ describe('action import', () => {
   describe('#familyMembers', async () => {
     const action = 'import:family'
     test('should import family members', async () => {
-      const master1 = await ah.api.models.member.create(generateMember({cardId: 100}))
-      const family1 = await ah.api.models.member.create(generateMember({cardId: 101}))
-      const family2 = await ah.api.models.member.create(generateMember({cardId: 102}))
-      const master2 = await ah.api.models.member.create(generateMember({cardId: 103}))
-      const family3 = await ah.api.models.member.create(generateMember({cardId: 104}))
-      const family4 = await ah.api.models.member.create(generateMember({cardId: 105}))
+      const master1 = await ah.api.models.member.create(generateMember({ cardId: 100 }))
+      const family1 = await ah.api.models.member.create(generateMember({ cardId: 101 }))
+      const family2 = await ah.api.models.member.create(generateMember({ cardId: 102 }))
+      const master2 = await ah.api.models.member.create(generateMember({ cardId: 103 }))
+      const family3 = await ah.api.models.member.create(generateMember({ cardId: 104 }))
+      const family4 = await ah.api.models.member.create(generateMember({ cardId: 105 }))
 
       await master2.setFamilyMembers([family4])
 
@@ -136,7 +136,7 @@ describe('action import', () => {
         update: false,
         failOnError: false,
         dryRun: false,
-        file: {path: path.join('test/files', 'import_family.csv')}
+        file: { path: path.join('test/files', 'import_family.csv') }
       }
       const res = await ah.runAdminAction(action, params)
 

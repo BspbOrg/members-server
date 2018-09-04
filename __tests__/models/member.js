@@ -3,16 +3,16 @@
 'use strict'
 
 const ah = require('../../test/ah-setup')
-const {generateMember} = require('../../test/generators')
-const {testRequiredFields} = require('../../test/helpers')
+const { generateMember } = require('../../test/generators')
+const { testRequiredFields } = require('../../test/helpers')
 const dateFormat = require('date-fns/format')
 
 describe('model member', () => {
   beforeAll(async () => {
     await ah.start()
     // await ah.api.sequelize.sequelize.sync({logging: ah.api.log})
-    await ah.api.models.payment.destroy({where: {}, force: true})
-    await ah.api.models.member.destroy({where: {}, force: true})
+    await ah.api.models.payment.destroy({ where: {}, force: true })
+    await ah.api.models.member.destroy({ where: {}, force: true })
   })
   afterAll(ah.stop)
 
@@ -31,44 +31,44 @@ describe('model member', () => {
 
     describe('validation', async () => {
       beforeEach(async () => {
-        await ah.api.models.payment.destroy({where: {}, force: true})
-        await ah.api.models.member.destroy({where: {}, force: true})
+        await ah.api.models.payment.destroy({ where: {}, force: true })
+        await ah.api.models.member.destroy({ where: {}, force: true })
       })
 
       test('should not allow duplicate access ids', async () => {
-        await expect(ah.api.models.member.create(generateMember({accessId: '111'}))).resolves.toBeDefined()
-        await expect(ah.api.models.member.create(generateMember({accessId: '111'}))).rejects.toThrowErrorMatchingSnapshot()
+        await expect(ah.api.models.member.create(generateMember({ accessId: '111' }))).resolves.toBeDefined()
+        await expect(ah.api.models.member.create(generateMember({ accessId: '111' }))).rejects.toThrowErrorMatchingSnapshot()
       })
 
       test('should not allow duplicate card ids', async () => {
-        await expect(ah.api.models.member.create(generateMember({cardId: '111'}))).resolves.toBeDefined()
-        await expect(ah.api.models.member.create(generateMember({cardId: '111'}))).rejects.toThrowErrorMatchingSnapshot()
+        await expect(ah.api.models.member.create(generateMember({ cardId: '111' }))).resolves.toBeDefined()
+        await expect(ah.api.models.member.create(generateMember({ cardId: '111' }))).rejects.toThrowErrorMatchingSnapshot()
       })
 
       test('should not allow duplicate username', async () => {
-        await expect(ah.api.models.member.create(generateMember({username: 'user'}))).resolves.toBeDefined()
-        await expect(ah.api.models.member.create(generateMember({username: 'user'}))).rejects.toThrowErrorMatchingSnapshot()
+        await expect(ah.api.models.member.create(generateMember({ username: 'user' }))).resolves.toBeDefined()
+        await expect(ah.api.models.member.create(generateMember({ username: 'user' }))).rejects.toThrowErrorMatchingSnapshot()
       })
 
       test('should allow date object for membershipStartDate', async () => {
         const date = new Date()
-        member = await ah.api.models.member.create(generateMember({membershipStartDate: date}))
+        member = await ah.api.models.member.create(generateMember({ membershipStartDate: date }))
         expect(member.membershipStartDate).toBe(dateFormat(date, 'YYYY-MM-DD'))
       })
 
       test('should allow string with proper format for membershipStartDate', async () => {
         const date = '2017-05-20'
-        member = await ah.api.models.member.create(generateMember({membershipStartDate: date}))
+        member = await ah.api.models.member.create(generateMember({ membershipStartDate: date }))
         expect(dateFormat(member.membershipStartDate, 'YYYY-MM-DD')).toBe(date)
       })
 
       test('should not allow string with wrong format for membershipStartDate', async () => {
         const date = '20/05/2017'
-        await expect(ah.api.models.member.create(generateMember({membershipStartDate: date}))).rejects.toThrowErrorMatchingSnapshot()
+        await expect(ah.api.models.member.create(generateMember({ membershipStartDate: date }))).rejects.toThrowErrorMatchingSnapshot()
       })
 
       test('should fail on invalid age category', async () => {
-        await expect(ah.api.models.member.create(generateMember({category: 'unsupported category'}))).rejects.toThrowErrorMatchingSnapshot()
+        await expect(ah.api.models.member.create(generateMember({ category: 'unsupported category' }))).rejects.toThrowErrorMatchingSnapshot()
       })
 
       describe('email field', async () => {
@@ -83,7 +83,7 @@ describe('model member', () => {
 
         validEmails.forEach(email => {
           test(`should allow following email: ${email}`, async () => {
-            await expect(ah.api.models.member.create(generateMember({email: email}))).resolves.toBeDefined()
+            await expect(ah.api.models.member.create(generateMember({ email: email }))).resolves.toBeDefined()
           })
         })
 
@@ -103,7 +103,7 @@ describe('model member', () => {
 
         invalidEmails.forEach(email => {
           test(`should not allow following email: ${email}`, async () => {
-            await expect(ah.api.models.member.create(generateMember({email: email}))).rejects.toThrowErrorMatchingSnapshot()
+            await expect(ah.api.models.member.create(generateMember({ email: email }))).rejects.toThrowErrorMatchingSnapshot()
           })
         })
       })
@@ -111,8 +111,8 @@ describe('model member', () => {
 
     describe('format phone number', async () => {
       beforeEach(async () => {
-        await ah.api.models.payment.destroy({where: {}, force: true})
-        await ah.api.models.member.destroy({where: {}, force: true})
+        await ah.api.models.payment.destroy({ where: {}, force: true })
+        await ah.api.models.member.destroy({ where: {}, force: true })
       })
 
       const phoneNumberScenarios = [
@@ -195,14 +195,14 @@ describe('model member', () => {
 
       phoneNumberScenarios.filter(scenario => scenario.success).forEach((scenario) => {
         test(`should format phone number ${scenario.given}`, async () => {
-          const createdMember = await ah.api.models.member.create(generateMember({phone: scenario.given}))
+          const createdMember = await ah.api.models.member.create(generateMember({ phone: scenario.given }))
           expect(createdMember.phone).toBe(scenario.expected)
         })
       })
 
       phoneNumberScenarios.filter(scenario => !scenario.success).forEach((scenario) => {
         test(`should fail on phone number ${scenario.given}`, async () => {
-          expect(ah.api.models.member.create(generateMember({phone: scenario.given}))).rejects.toThrowErrorMatchingSnapshot()
+          expect(ah.api.models.member.create(generateMember({ phone: scenario.given }))).rejects.toThrowErrorMatchingSnapshot()
         })
       })
     })
@@ -220,16 +220,16 @@ describe('model member', () => {
       await member1.setFamilyMembers([member2.id, member3.id])
     })
     afterAll(async () => {
-      member1.destroy({force: true})
-      member2.destroy({force: true})
-      member3.destroy({force: true})
+      member1.destroy({ force: true })
+      member2.destroy({ force: true })
+      member3.destroy({ force: true })
     })
 
     test('should have family association', async () => {
       const family = await member1.getFamilyMembers()
       expect(family).toEqual(expect.arrayContaining([
-        expect.objectContaining({id: member2.id}),
-        expect.objectContaining({id: member3.id})
+        expect.objectContaining({ id: member2.id }),
+        expect.objectContaining({ id: member3.id })
       ]))
     })
 
@@ -237,12 +237,12 @@ describe('model member', () => {
       describe('for family master', () => {
         test('should exclude family master member', async () => {
           const members = await ah.api.models.member.scopeFamily(member1.id).findAll({})
-          expect(members).not.toEqual(expect.arrayContaining([expect.objectContaining({id: member1.id})]))
+          expect(members).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
         })
 
         test('should include members', async () => {
           const members = await ah.api.models.member.scopeFamily(member1.id).findAll({})
-          expect(members).toEqual(expect.arrayContaining([expect.objectContaining({id: member2.id})]))
+          expect(members).toEqual(expect.arrayContaining([expect.objectContaining({ id: member2.id })]))
         })
       })
 

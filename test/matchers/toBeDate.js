@@ -1,4 +1,4 @@
-const {printReceived, printExpected} = require('jest-matcher-utils')
+const { printReceived, printExpected } = require('jest-matcher-utils')
 const compareAsc = require('date-fns/compare_asc')
 
 module.exports = function toBeDate (received, expected) {

@@ -1,4 +1,4 @@
-const {Initializer, api} = require('actionhero')
+const { Initializer, api } = require('actionhero')
 const ImportTool = require('../classes/ImportTool')
 
 module.exports = class ImportInitializer extends Initializer {

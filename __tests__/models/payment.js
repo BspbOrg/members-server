@@ -3,8 +3,8 @@
 'use strict'
 
 const ah = require('../../test/ah-setup')
-const {generatePayment, generateMember} = require('../../test/generators')
-const {testRequiredFields} = require('../../test/helpers')
+const { generatePayment, generateMember } = require('../../test/generators')
+const { testRequiredFields } = require('../../test/helpers')
 const dateFormat = require('date-fns/format')
 const addDays = require('date-fns/add_days')
 
@@ -12,7 +12,7 @@ describe('model payment', () => {
   beforeAll(async () => {
     await ah.start()
     // await ah.api.sequelize.sequelize.sync({logging: ah.api.log})
-    await ah.api.models.payment.destroy({where: {}, force: true})
+    await ah.api.models.payment.destroy({ where: {}, force: true })
   })
   afterAll(ah.stop)
 
@@ -67,37 +67,37 @@ describe('model payment', () => {
       member2 = await ah.api.models.member.create(generateMember())
       payment1 = await ah.api.models.payment.create(generatePayment({
         billingMemberId: member1.id
-      }, {addMembers: true}))
+      }, { addMembers: true }))
       payment2 = await ah.api.models.payment.create(generatePayment({
         billingMemberId: member2.id
-      }, {addMembers: true}))
+      }, { addMembers: true }))
       await payment2.setMembers([member1, member2])
     })
     afterAll(async () => {
-      payment1.destroy({force: true})
-      payment2.destroy({force: true})
-      member1.destroy({force: true})
-      member2.destroy({force: true})
+      payment1.destroy({ force: true })
+      payment2.destroy({ force: true })
+      member1.destroy({ force: true })
+      member2.destroy({ force: true })
     })
 
     test('should have billingMember association', async () => {
       const billingMember = await payment1.getBillingMember()
-      expect(billingMember).toEqual(expect.objectContaining({id: member1.id}))
+      expect(billingMember).toEqual(expect.objectContaining({ id: member1.id }))
     })
 
     test('should have members association', async () => {
       const members = await payment2.getMembers()
-      expect(members).toEqual(expect.arrayContaining([expect.objectContaining({id: member1.id})]))
+      expect(members).toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
     })
 
     test('member scope should include billing member', async () => {
       const payments = await ah.api.models.payment.scopeMember(member1.id).findAll({})
-      expect(payments).toEqual(expect.arrayContaining([expect.objectContaining({id: payment1.id})]))
+      expect(payments).toEqual(expect.arrayContaining([expect.objectContaining({ id: payment1.id })]))
     })
 
     test('member scope should include members', async () => {
       const payments = await ah.api.models.payment.scopeMember(member1.id).findAll({})
-      expect(payments).toEqual(expect.arrayContaining([expect.objectContaining({id: payment2.id})]))
+      expect(payments).toEqual(expect.arrayContaining([expect.objectContaining({ id: payment2.id })]))
     })
 
     test('member scope should not duplicate', async () => {
@@ -107,12 +107,12 @@ describe('model payment', () => {
 
     test('membership scope should exclude billing member', async () => {
       const payments = await ah.api.models.payment.scopeMembershipMember(member1.id).findAll({})
-      expect(payments).toEqual([expect.objectContaining({id: payment2.id})])
+      expect(payments).toEqual([expect.objectContaining({ id: payment2.id })])
     })
 
     test('membership scope should include members', async () => {
       const payments = await ah.api.models.payment.scopeMembershipMember(member1.id).findAll({})
-      expect(payments).toEqual(expect.arrayContaining([expect.objectContaining({id: payment2.id})]))
+      expect(payments).toEqual(expect.arrayContaining([expect.objectContaining({ id: payment2.id })]))
     })
   })
 })
