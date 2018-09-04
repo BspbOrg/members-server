@@ -88,11 +88,11 @@ describe('family members preprocessor', async () => {
     }
 
     expect.assertions(1)
-    expect(processFamily(input)).rejects.toThrowErrorMatchingSnapshot()
+    await expect(processFamily(input)).rejects.toThrowErrorMatchingSnapshot()
   })
 
   test('should remind that the code depends on member.cardId unique constraint', async () => {
     await ah.api.models.member.create(generateMember({ cardId: 1001 }))
-    expect(ah.api.models.member.create(generateMember({ cardId: 1001 }))).rejects.toThrowErrorMatchingSnapshot()
+    await expect(ah.api.models.member.create(generateMember({ cardId: 1001 }))).rejects.toThrowErrorMatchingSnapshot()
   })
 })

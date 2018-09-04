@@ -2,8 +2,6 @@
 
 exports[`family members preprocessor should fail if master and family are the same member 1`] = `"Master and family card Ids are the same"`;
 
-exports[`family members preprocessor should fail if master and family are the same member 2`] = `"Master and family card Ids are the same"`;
-
 exports[`family members preprocessor should fail on missing family member 1`] = `"no family member found: 1001"`;
 
 exports[`family members preprocessor should fail on missing master member 1`] = `"no master member found: 1000"`;
