@@ -10,16 +10,24 @@ exports.list = class List extends Action {
     this.middleware = ['auth.hasRole.admin', 'paging']
     this.inputs = {
       limit: {},
-      offset: {}
+      offset: {},
+      memberId: {},
+      context: {}
     }
   }
 
-  async run ({params, response}) {
-    const res = await api.models.payment.findAndCountAll({
-      offset: params.offset,
-      limit: params.limit
-    })
-    response.data = await Promise.all(res.rows.map(u => u.toJSON()))
+  async run ({params: {offset, limit, memberId, context}, response}) {
+    const query = {
+      // offset&limit doesn't work with member scope
+      ...(memberId ? {} : {offset, limit}),
+      order: [['paymentDate', 'DESC']]
+    }
+    let scoped = api.models.payment
+    if (memberId) {
+      scoped = api.models.payment.scopeMember(memberId)
+    }
+    const res = await scoped.findAndCountAll(query)
+    response.data = await Promise.all(res.rows.map(u => u.toJSON(context || 'view')))
     response.count = res.count
   }
 }
@@ -47,12 +55,12 @@ exports.Show = class Show extends Action {
     this.name = 'payment:show'
     this.description = 'Retrieve information regarding specific payment'
     this.middleware = ['auth.hasRole.admin', 'payment.params']
-    this.inputs = {paymentId: {required: true}}
+    this.inputs = {paymentId: {required: true}, context: {}}
   }
 
-  async run ({payment, response}) {
+  async run ({payment, params: {context}, response}) {
     response.success = false
-    response.data = await payment.toJSON()
+    response.data = await payment.toJSON(context)
     response.success = true
   }
 }
@@ -71,7 +79,8 @@ exports.update = class Update extends Action {
       paymentType: {},
       billingMemberId: {},
       members: {},
-      info: {}
+      info: {},
+      context: {}
     }
   }
 
@@ -84,8 +93,8 @@ exports.update = class Update extends Action {
       await payment.reload()
       membersToRecompute = [...membersToRecompute, ...payment.members]
     }
-    api.membership.enqueueRecompute(membersToRecompute)
-    response.data = payment.toJSON()
+    response.recompute = await api.membership.enqueueRecompute(membersToRecompute)
+    response.data = payment.toJSON(params.context)
     response.success = true
   }
 }
@@ -103,7 +112,8 @@ exports.create = class Create extends Action {
       paymentType: {},
       billingMemberId: {required: true},
       members: {},
-      info: {}
+      info: {},
+      context: {}
     }
   }
 
@@ -114,7 +124,7 @@ exports.create = class Create extends Action {
       await payment.setMembers(params.members)
       await payment.reload()
     }
-    response.data = payment.toJSON()
+    response.data = payment.toJSON(params.context)
     await api.membership.enqueueRecompute(payment.members)
     response.success = true
   }

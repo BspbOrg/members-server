@@ -9,16 +9,8 @@ Object {
   "id": 1,
   "info": null,
   "members": Array [
-    Object {
-      "firstName": "Completely",
-      "id": 1,
-      "lastName": "Member",
-    },
-    Object {
-      "firstName": "Minimal",
-      "id": 2,
-      "lastName": "Member",
-    },
+    1,
+    2,
   ],
   "membershipType": "family",
   "paymentDate": "2015-03-20",

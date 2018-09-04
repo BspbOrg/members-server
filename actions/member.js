@@ -10,17 +10,17 @@ exports.list = class List extends Action {
     this.middleware = [ 'auth.hasRole.admin', 'paging' ]
     this.inputs = {
       limit: {},
-      offset: {}
+      offset: {},
+      context: {}
     }
   }
 
-  async run ({ params, response }) {
+  async run ({ params: {limit, offset, context}, response }) {
     const res = await api.models.member.findAndCountAll({
-      offset: params.offset,
-      limit: params.limit,
+      ...(limit !== '-1' ? {offset, limit} : {}),
       include: [ 'familyMembers' ]
     })
-    response.data = await Promise.all(res.rows.map(u => u.toJSON()))
+    response.data = await Promise.all(res.rows.map(u => u.toJSON(context)))
     response.count = res.count
   }
 }
@@ -47,14 +47,22 @@ exports.Show = class Show extends Action {
     this.name = 'member:show'
     this.description = 'Retrieve information regarding specific member'
     this.middleware = [ 'auth.hasRole.admin', 'member.params' ]
-    this.inputs = { memberId: { required: true } }
+    this.inputs = { memberId: { required: true }, context: {} }
   }
 
-  async run ({ member, response }) {
+  async run ({ member, response, params: {context} }) {
     response.success = false
-    response.data = member.toJSON()
+    response.data = member.toJSON(context)
     const familyMembers = await member.getFamilyMembers()
-    response.data.familyMembers = familyMembers.map(m => m.toJSON())
+    switch (context) {
+      case 'edit':
+        response.data.familyMembers = familyMembers.map(m => m.id)
+        break
+      default:
+      case 'view':
+        response.data.familyMembers = familyMembers.map(m => m.toJSON())
+        break
+    }
     response.success = true
   }
 }
@@ -81,7 +89,8 @@ exports.update = class Update extends exports.Show {
       phone: {},
       category: {},
       familyMembers: {},
-      membershipStartDate: {}
+      membershipStartDate: {},
+      context: {}
     }
   }
 
@@ -116,7 +125,8 @@ exports.create = class Create extends exports.Show {
       address: {},
       phone: {},
       familyMembers: {},
-      membershipStartDate: {}
+      membershipStartDate: {},
+      context: {}
     }
   }
 

@@ -186,6 +186,7 @@ class Member extends Model {
       case 'short':
         return {
           id: this.id,
+          label: [this.firstName, this.lastName].filter(v => v).join(' '),
           firstName: this.firstName,
           lastName: this.lastName
         }

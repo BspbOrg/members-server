@@ -16,8 +16,8 @@ exports['default'] = {
       post: [
         {path: '/member', action: 'member:create'},
         {path: '/member/:memberId', action: 'member:update'},
-        {path: '/payment', action: 'member:create'},
-        {path: '/payment/:paymentId', action: 'member:update'},
+        {path: '/payment', action: 'payment:create'},
+        {path: '/payment/:paymentId', action: 'payment:update'},
         {path: '/session', action: 'session:auth'},
         {path: '/user', action: 'user:create'},
         {path: '/user/:userId', action: 'user:update'},

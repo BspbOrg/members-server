@@ -32,6 +32,19 @@ describe('action payment', () => {
     testPaging(action, 'payment', () => {
       return generatePayment({paymentType: 'TEMPORARY'})
     }, {paymentType: 'TEMPORARY'})
+
+    test('should filter by memberId', async () => {
+      const member1 = await ah.api.models.member.findOne()
+      const res = await ah.runAdminAction(action, {memberId: member1.id})
+      expect(res.data.length).toBeGreaterThanOrEqual(1)
+      res.data.forEach(payment => {
+        if (payment.billingMemberId === member1.id) {
+          expect(payment.billingMemberId).toEqual(member1.id)
+        } else {
+          expect(payment.members).toEqual(expect.arrayContaining([expect.objectContaining({id: member1.id})]))
+        }
+      })
+    })
   })
 
   describe('#destroy', () => {
@@ -70,7 +83,6 @@ describe('action payment', () => {
 
       const expected = assign({}, rawData)
       expected.paymentDate = format(expected.paymentDate, 'YYYY-MM-DD')
-      expected.members = expected.members.map(m => expect.objectContaining({id: m}))
       expect(response).toHaveProperty('data', expect.objectContaining(expected))
     })
 
@@ -145,7 +157,6 @@ describe('action payment', () => {
         test('should have the provided properties', async () => {
           const expected = assign({}, params)
           expected.paymentDate = format(expected.paymentDate, 'YYYY-MM-DD')
-          expected.members = expected.members.map(m => expect.objectContaining({id: m}))
           expect(getResponse.data).toEqual(expect.objectContaining(expected))
         })
       })

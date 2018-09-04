@@ -88,12 +88,21 @@ class Payment extends Model {
     return this.scope({method: ['membershipMember', memberId]})
   }
 
-  toJSON () {
-    const json = super.toJSON()
-    if (this.members) {
-      json.members = this.members.map(m => m ? m.toJSON('short') : m)
+  toJSON (context) {
+    switch (context) {
+      case 'view':
+        return {
+          ...super.toJSON(),
+          members: this.members.map(m => m ? m.toJSON('short') : m),
+          billingMember: this.billingMember ? this.billingMember.toJSON('short') : null
+        }
+      case 'edit':
+      default:
+        return {
+          ...super.toJSON(),
+          members: this.members.map(m => m ? m.id : m)
+        }
     }
-    return json
   }
 }
 
