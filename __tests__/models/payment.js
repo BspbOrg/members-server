@@ -104,5 +104,15 @@ describe('model payment', () => {
       const payments = await ah.api.models.payment.scopeMember(member1.id).findAll({})
       expect(payments).toHaveLength(2)
     })
+
+    test('membership scope should exclude billing member', async () => {
+      const payments = await ah.api.models.payment.scopeMembershipMember(member1.id).findAll({})
+      expect(payments).toEqual([expect.objectContaining({id: payment2.id})])
+    })
+
+    test('membership scope should include members', async () => {
+      const payments = await ah.api.models.payment.scopeMembershipMember(member1.id).findAll({})
+      expect(payments).toEqual(expect.arrayContaining([expect.objectContaining({id: payment2.id})]))
+    })
   })
 })

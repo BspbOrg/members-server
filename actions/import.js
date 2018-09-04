@@ -63,7 +63,12 @@ exports.payments = class Payments extends Action {
 
   async run ({params, response}) {
     const parsed = await api.import.parseCSVFile(params.file)
-    response.data = await api.import.import(api.models.payment, Object.assign({}, params, {data: parsed}), processPayment)
+    const members = []
+    response.data = await api.import.import(api.models.payment, {...params, data: parsed}, {
+      preprocessor: processPayment,
+      preprocessorArgs: [{members}]
+    })
+    await api.membership.enqueueRecompute(members)
   }
 }
 
@@ -93,6 +98,6 @@ exports.family = class Family extends Action {
 
   async run ({params, response}) {
     const parsed = await api.import.parseCSVFile(params.file)
-    response.data = await api.import.import(api.models.member_families, Object.assign({}, params, {data: parsed}), processFamily)
+    response.data = await api.import.import(api.models.member_families, Object.assign({}, params, {data: parsed}), {preprocessor: processFamily})
   }
 }

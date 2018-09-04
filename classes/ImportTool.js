@@ -6,7 +6,10 @@ const fs = require('fs')
 const es = require('event-stream')
 
 module.exports = class ImportTool {
-  async import (model, input, preprocess) {
+  async import (model, input, {
+    preprocessor, preprocessorArgs = [],
+    postprocessor, postprocessorArgs = []
+  } = {}) {
     const result = {
       totalRows: 0,
       inserts: 0,
@@ -64,8 +67,8 @@ module.exports = class ImportTool {
           row = this.applyDefaultValues(input.defaults, row)
           row = await this.applyRelations(model, row, t)
 
-          if (typeof preprocess === 'function') {
-            row = await preprocess(row)
+          if (typeof preprocessor === 'function') {
+            row = await preprocessor(row, ...preprocessorArgs)
           }
 
           let rowModel = await model.build(row)
@@ -124,6 +127,10 @@ module.exports = class ImportTool {
             } else {
               result.ignored++
             }
+          }
+
+          if (typeof postprocessor === 'function') {
+            postprocessor(model, existing, ...postprocessorArgs)
           }
         } catch (e) {
           result.errors++

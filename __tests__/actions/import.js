@@ -46,14 +46,18 @@ describe('action import', () => {
 
   describe('#payments', async () => {
     const action = 'import:payment'
-    test('should import payments', async () => {
-      await ah.api.models.member.create(generateMember({accessId: 100}))
+
+    const prepareData = async () => {
+      const member1 = await ah.api.models.member.create(generateMember({accessId: 100}))
       const member2 = await ah.api.models.member.create(generateMember({accessId: 101}))
-      await ah.api.models.member.create(generateMember({accessId: 102}))
+      const member3 = await ah.api.models.member.create(generateMember({accessId: 102}))
       const family1 = await ah.api.models.member.create(generateMember())
       const family2 = await ah.api.models.member.create(generateMember())
       await member2.setFamilyMembers([family1, family2])
+      return {member1, member2, member3, family1, family2}
+    }
 
+    const executeImport = async () => {
       const params = {
         create: true,
         update: false,
@@ -65,7 +69,12 @@ describe('action import', () => {
         }),
         file: {path: path.join('test/files', 'import_payments.csv')}
       }
-      const res = await ah.runAdminAction(action, params)
+      return ah.runAdminAction(action, params)
+    }
+
+    test('should import payments', async () => {
+      const {member2, family1, family2} = await prepareData()
+      const res = await executeImport()
 
       expect(res.data).toEqual(expect.objectContaining({
         totalRows: 3,
@@ -79,7 +88,34 @@ describe('action import', () => {
 
       expect((await ah.api.models.payment.findAll()).length).toBe(3)
       const familyPayment = await ah.api.models.payment.findOne({where: {info: '30 EUR'}})
-      expect(await familyPayment.hasMembers([member2, family1, family2])).toBeTruthy()
+      expect(await familyPayment.getMembers()).toEqual(expect.arrayContaining([
+        expect.objectContaining({id: member2.id}),
+        expect.objectContaining({id: family1.id}),
+        expect.objectContaining({id: family2.id})
+      ]))
+    })
+
+    describe('membership recalculation', () => {
+      test('should enqueue billing member for single payment', async () => {
+        const enqueueSpy = jest.spyOn(ah.api.membership, 'enqueueRecompute')
+        const {member1} = await prepareData()
+        await executeImport()
+        expect(enqueueSpy).toHaveBeenCalledWith(expect.arrayContaining([member1.id]))
+      })
+
+      test('should enqueue family member for family payment', async () => {
+        const enqueueSpy = jest.spyOn(ah.api.membership, 'enqueueRecompute')
+        const {family1, family2} = await prepareData()
+        await executeImport()
+        expect(enqueueSpy).toHaveBeenCalledWith(expect.arrayContaining([family1.id, family2.id]))
+      })
+
+      test('should enqueue billing member for generic payment', async () => {
+        const enqueueSpy = jest.spyOn(ah.api.membership, 'enqueueRecompute')
+        const {member3} = await prepareData()
+        await executeImport()
+        expect(enqueueSpy).toHaveBeenCalledWith(expect.arrayContaining([member3.id]))
+      })
     })
   })
 

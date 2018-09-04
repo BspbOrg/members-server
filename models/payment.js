@@ -70,10 +70,22 @@ class Payment extends Model {
         include: [payment.associations.members]
       }
     })
+    payment.addScope('membershipMember', function (memberId) {
+      return {
+        where: {
+          '$members->payment_members.memberId$': memberId
+        },
+        include: [payment.associations.members]
+      }
+    })
   }
 
   static scopeMember (memberId) {
     return this.scope({method: ['member', memberId]})
+  }
+
+  static scopeMembershipMember (memberId) {
+    return this.scope({method: ['membershipMember', memberId]})
   }
 
   toJSON () {

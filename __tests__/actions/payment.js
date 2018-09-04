@@ -151,4 +151,53 @@ describe('action payment', () => {
       })
     })
   })
+
+  describe('membership recalculation', () => {
+    let enqueueSpy
+    beforeEach(async () => {
+      enqueueSpy = jest.spyOn(ah.api.membership, 'enqueueRecompute')
+    })
+    afterEach(async () => {
+      enqueueSpy.mockRestore()
+      ah.api.models.payment.destroy({where: {paymentType: 'TEMPORARY'}, force: true})
+    })
+
+    test('schedule for members when payment is created', async () => {
+      const action = 'payment:create'
+      const params = generatePayment({paymentType: 'TEMPORARY', billingMemberId: 1, members: [2]})
+      const response = await ah.runAdminAction(action, params)
+      expect(response).toBeSuccessAction()
+      expect(enqueueSpy).toHaveBeenCalledWith([expect.objectContaining({id: 2})])
+    })
+
+    test('schedule for old members when members are modified', async () => {
+      const payment = await ah.api.models.payment.create(generatePayment({paymentType: 'TEMPORARY', members: [1]}))
+      expect(payment.id).toBeTruthy()
+      const action = 'payment:update'
+      const params = {paymentId: payment.id, members: [2]}
+      const response = await ah.runAdminAction(action, params)
+      expect(response).toBeSuccessAction()
+      expect(enqueueSpy).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({id: 1})]))
+    })
+
+    test('schedule for new members when members are modified', async () => {
+      const payment = await ah.api.models.payment.create(generatePayment({paymentType: 'TEMPORARY', members: [1]}))
+      expect(payment.id).toBeTruthy()
+      const action = 'payment:update'
+      const params = {paymentId: payment.id, members: [2]}
+      const response = await ah.runAdminAction(action, params)
+      expect(response).toBeSuccessAction()
+      expect(enqueueSpy).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({id: 2})]))
+    })
+
+    test('schedule for members when payment is destroyed', async () => {
+      const payment = await ah.api.models.payment.create(generatePayment({paymentType: 'TEMPORARY', members: [1]}))
+      expect(payment.id).toBeTruthy()
+      const action = 'payment:destroy'
+      const params = {paymentId: payment.id}
+      const response = await ah.runAdminAction(action, params)
+      expect(response).toBeSuccessAction()
+      expect(enqueueSpy).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({id: 1})]))
+    })
+  })
 })

@@ -3,7 +3,7 @@ const isBefore = require('date-fns/is_before')
 const isSameDay = require('date-fns/is_same_day')
 const boolean = require('boolean')
 
-module.exports = async function (payment) {
+module.exports = async function (payment, {members = []} = {}) {
   const processed = Object.assign({}, payment)
   if (!processed.members) {
     processed.members = []
@@ -26,5 +26,9 @@ module.exports = async function (payment) {
       }
     })
   }
+
+  // add members to the global list of members that needs recompute of membership
+  processed.members.forEach(memberId => members.includes(memberId) || members.push(memberId))
+
   return processed
 }

@@ -36,6 +36,7 @@ exports.destroy = class Destroy extends Action {
   async run ({payment, response}) {
     response.success = false
     await payment.destroy()
+    await api.membership.enqueueRecompute(payment.members)
     response.success = true
   }
 }
@@ -75,12 +76,15 @@ exports.update = class Update extends Action {
   }
 
   async run ({params, response, payment}) {
+    let membersToRecompute = [...payment.members]
     response.success = false
     await payment.updateAttributes(params)
     if (params.members) {
       await payment.setMembers(params.members)
       await payment.reload()
+      membersToRecompute = [...membersToRecompute, ...payment.members]
     }
+    api.membership.enqueueRecompute(membersToRecompute)
     response.data = payment.toJSON()
     response.success = true
   }
@@ -111,6 +115,7 @@ exports.create = class Create extends Action {
       await payment.reload()
     }
     response.data = payment.toJSON()
+    await api.membership.enqueueRecompute(payment.members)
     response.success = true
   }
 }
