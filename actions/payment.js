@@ -27,7 +27,7 @@ exports.list = class List extends Action {
       scoped = api.models.payment.scopeMember(memberId)
     }
     const res = await scoped.findAndCountAll(query)
-    response.data = await Promise.all(res.rows.map(u => u.toJSON(context || 'view')))
+    response.data = await Promise.all(res.rows.slice(offset, offset + limit).map(u => u.toJSON(context || 'view')))
     response.count = res.count
   }
 }
