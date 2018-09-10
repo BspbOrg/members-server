@@ -58,6 +58,9 @@ class Payment extends Model {
   }
 
   static loadScopes ({ member, payment }) {
+    payment.addScope('defaultScope', {
+      include: [ payment.associations.members ]
+    }, { override: true })
     payment.addScope('member', function (memberId) {
       return {
         where: or(
@@ -78,7 +81,7 @@ class Payment extends Model {
     payment.addScope('view', {
       include: [payment.associations.billingMember, payment.associations.members]
     })
-    payment.addScope('edit', { })
+    payment.addScope('edit', { include: [ payment.associations.members ] })
   }
 
   static scopeMember (memberId) {
