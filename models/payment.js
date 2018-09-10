@@ -58,9 +58,6 @@ class Payment extends Model {
   }
 
   static loadScopes ({ member, payment }) {
-    payment.addScope('defaultScope', {
-      include: [payment.associations.members]
-    }, { override: true })
     payment.addScope('member', function (memberId) {
       return {
         where: or(
@@ -78,6 +75,10 @@ class Payment extends Model {
         include: [payment.associations.members]
       }
     })
+    payment.addScope('view', {
+      include: [payment.associations.billingMember, payment.associations.members]
+    })
+    payment.addScope('edit', { })
   }
 
   static scopeMember (memberId) {
@@ -86,6 +87,17 @@ class Payment extends Model {
 
   static scopeMembershipMember (memberId) {
     return this.scope({ method: ['membershipMember', memberId] })
+  }
+
+  static scopeContext (context) {
+    switch (context) {
+      case 'view':
+        return this.scope('view')
+      case 'edit':
+        return this.scope('edit')
+      default:
+        return this
+    }
   }
 
   toJSON (context) {

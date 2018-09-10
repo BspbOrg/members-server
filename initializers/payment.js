@@ -3,13 +3,13 @@ const { Initializer, api } = require('actionhero')
 async function resolvePayment (paymentId, data) {
   if (data.payment) return
 
-  const { connection: { rawConnection } } = data
+  const { connection: { rawConnection }, params: { context } } = data
 
   if (!paymentId) {
     throw new Error('Missing paymentId')
   }
 
-  data.payment = await api.models.payment.findOne({ where: { id: paymentId } })
+  data.payment = await api.models.payment.scopeContext(context).findOne({ where: { id: paymentId } })
   if (!data.payment) {
     rawConnection.responseHttpCode = 404
     throw new Error('Payment not found')
