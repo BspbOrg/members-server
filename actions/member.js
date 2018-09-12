@@ -1,8 +1,7 @@
 'use strict'
 
 const { api, Action } = require('actionhero')
-const Sequelize = require('sequelize')
-const { Op } = Sequelize
+const { Op } = require('sequelize')
 
 const QUERY_FIELDS = [
   'username', 'firstName', 'middleName', 'lastName', 'email', 'phone', 'accessId', 'cardId', 'country',

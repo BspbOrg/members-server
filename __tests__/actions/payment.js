@@ -5,7 +5,7 @@
 const ah = require('../../test/ah-setup')
 const { snapshot, testActionPermissions, testFieldChange, testPaging } = require('../../test/helpers')
 const { assign } = Object
-const { generatePayment } = require('../../test/generators')
+const { generatePayment, generateMember } = require('../../test/generators')
 const format = require('date-fns/format')
 
 describe('action payment', () => {
@@ -42,6 +42,217 @@ describe('action payment', () => {
           expect(payment.billingMemberId).toEqual(member1.id)
         } else {
           expect(payment.members).toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
+        }
+      })
+    })
+
+    describe('filtering', () => {
+      test('should return records newer than fromDate', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-16' }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-14' }))
+        try {
+          const response = await ah.runAdminAction(action, { fromDate: '2017-09-15', limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+        }
+      })
+
+      test('should return records at fromDate', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-16' }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-14' }))
+        try {
+          const response = await ah.runAdminAction(action, { fromDate: '2017-09-16', limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+        }
+      })
+
+      test('should return records older than toDate', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-16' }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-18' }))
+        try {
+          const response = await ah.runAdminAction(action, { toDate: '2017-09-17', limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+        }
+      })
+
+      test('should return records at toDate', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-16' }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-18' }))
+        try {
+          const response = await ah.runAdminAction(action, { toDate: '2017-09-16', limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+        }
+      })
+
+      test('should return records at both fromDate and toDate', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-16' }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-18' }))
+        const noMatch2 = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-14' }))
+        try {
+          const response = await ah.runAdminAction(action, { toDate: '2017-09-16', limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([
+            expect.objectContaining({ id: noMatch.id }),
+            expect.objectContaining({ id: noMatch2.id })
+          ]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+          await noMatch2.destroy({ force: true })
+        }
+      })
+
+      test('should return records matching membershipType', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ membershipType: 'testmem' }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ membershipType: 'unmatch' }))
+        try {
+          const response = await ah.runAdminAction(action, { membershipType: 'testmem', limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+        }
+      })
+
+      test('should return records matching paymentType', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ paymentType: 'testpay' }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ paymentType: 'unmatch' }))
+        try {
+          const response = await ah.runAdminAction(action, { paymentType: 'testpay', limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+        }
+      })
+
+      test('should return records with amount more than minAmount', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ amount: 10 }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ amount: 8 }))
+        try {
+          const response = await ah.runAdminAction(action, { minAmount: 9, limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+        }
+      })
+
+      test('should return records with amount equal to minAmount', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ amount: 10 }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ amount: 8 }))
+        try {
+          const response = await ah.runAdminAction(action, { minAmount: 10, limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+        }
+      })
+
+      test('should return records with amount less than maxAmount', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ amount: 8 }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ amount: 10 }))
+        try {
+          const response = await ah.runAdminAction(action, { maxAmount: 9, limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+        }
+      })
+
+      test('should return records with amount equal to maxAmount', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ amount: 8 }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ amount: 10 }))
+        try {
+          const response = await ah.runAdminAction(action, { maxAmount: 8, limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+        }
+      })
+
+      test('should return records with amount equal to minAmount and maxAmount', async () => {
+        const match = await ah.api.models.payment.create(generatePayment({ amount: 10 }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ amount: 8 }))
+        const noMatch2 = await ah.api.models.payment.create(generatePayment({ amount: 12 }))
+        try {
+          const response = await ah.runAdminAction(action, { minAmount: 10, maxAmount: 10, limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([
+            expect.objectContaining({ id: noMatch.id }),
+            expect.objectContaining({ id: noMatch2.id })
+          ]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+          await noMatch2.destroy({ force: true })
+        }
+      })
+
+      test('should return records with member', async () => {
+        const member1 = await ah.api.models.member.create(generateMember())
+        const member2 = await ah.api.models.member.create(generateMember())
+        const match = await ah.api.models.payment.create(generatePayment({ members: [member1.id] }))
+        const noMatch = await ah.api.models.payment.create(generatePayment({ members: [member2.id] }))
+        try {
+          const response = await ah.runAdminAction(action, { memberId: member1.id, limit: -1 })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: match.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: noMatch.id })]))
+        } finally {
+          await match.destroy({ force: true })
+          await noMatch.destroy({ force: true })
+          await member1.destroy({ force: true })
+          await member2.destroy({ force: true })
         }
       })
     })

@@ -1,6 +1,7 @@
 'use strict'
 
 const { api, Action } = require('actionhero')
+const { Op } = require('sequelize')
 
 exports.list = class List extends Action {
   constructor () {
@@ -12,22 +13,47 @@ exports.list = class List extends Action {
       limit: {},
       offset: {},
       memberId: {},
-      context: {}
+      context: {},
+      fromDate: {},
+      toDate: {},
+      membershipType: {},
+      paymentType: {},
+      minAmount: {},
+      maxAmount: {}
     }
   }
 
-  async run ({ params: { offset, limit, memberId, context }, response }) {
+  async run ({ params: { offset, limit, memberId, context, fromDate, toDate, membershipType, paymentType, minAmount, maxAmount }, response }) {
     const query = {
       // offset&limit doesn't work with member scope
       ...(memberId ? {} : { offset, limit }),
+      where: {
+        ...(fromDate || toDate ? {
+          paymentDate: {
+            ...(fromDate ? { [Op.gte]: fromDate } : {}),
+            ...(toDate ? { [Op.lte]: toDate } : {})
+          }
+        } : {}),
+        ...(minAmount || maxAmount ? {
+          amount: {
+            ...(minAmount ? { [Op.gte]: minAmount } : {}),
+            ...(maxAmount ? { [Op.lte]: maxAmount } : {})
+          }
+        } : {}),
+        ...(membershipType ? { membershipType } : {}),
+        ...(paymentType ? { paymentType } : {})
+      },
       order: [['paymentDate', 'DESC']]
     }
-    let scoped = api.models.payment
-    if (memberId) {
-      scoped = api.models.payment.scopeMember(memberId)
-    }
+    const scoped = memberId ? api.models.payment.scopeMember(memberId) : api.models.payment
     const res = await scoped.findAndCountAll(query)
-    response.data = await Promise.all(res.rows.slice(offset, offset + limit).map(u => u.toJSON(context || 'view')))
+    response.data = await Promise.all(
+      (
+        (memberId && limit !== '-1' && limit !== -1)
+          ? res.rows.slice(offset, offset + limit)
+          : res.rows
+      )
+        .map(u => u.toJSON(context || 'view')))
     response.count = res.count
   }
 }

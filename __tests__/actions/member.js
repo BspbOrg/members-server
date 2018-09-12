@@ -56,7 +56,7 @@ describe('action member', () => {
           try {
             return await ah.api.models.member.create(generateMember({ [fieldName]: value }))
           } catch (e) {
-            throw new Error(`Invalid ${fieldName} value ${value}: ${e.message} (${e.type}/${e.path}/${e.value}`)
+            throw new Error(`Invalid ${fieldName} value ${value}: ${e.message} (${JSON.stringify(e)})`)
           }
         }
 

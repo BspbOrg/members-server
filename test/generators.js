@@ -36,20 +36,16 @@ exports.generateMember.index = 0
 
 exports.generatePayment = (overrideParams = {}, { addMembers = false } = {}) => {
   const i = exports.generatePayment.index++
-  const res = {}
-  if (addMembers) {
-    res.members = [((i + 1) % 2) + 1]
-  }
-  assign(res, {
+  return {
     paymentDate: format(addDays('2017-05-10', i + 1), 'YYYY-MM-DD'),
     paymentType: `cash${i}`,
     amount: 1 + i,
     membershipType: (i % 2 === 0) ? `single` : 'family',
     billingMemberId: (i % 2) + 1,
-    info: 'info ' + i
-  }, overrideParams)
-
-  return res
+    info: 'info ' + i,
+    ...(addMembers ? { members: [((i + 1) % 2) + 1] } : {}),
+    ...overrideParams
+  }
 }
 
 exports.generatePayment.index = 0
