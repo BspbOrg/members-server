@@ -1,25 +1,43 @@
 'use strict'
 
 const { api, Action } = require('actionhero')
+const Sequelize = require('sequelize')
+const { Op } = Sequelize
+
+const QUERY_FIELDS = [
+  'username', 'firstName', 'middleName', 'lastName', 'email', 'phone', 'accessId', 'cardId', 'country',
+  'city', 'postalCode', 'address', 'category'
+]
 
 exports.list = class List extends Action {
   constructor () {
     super()
     this.name = 'member:list'
     this.description = 'List Members. Requires admin role'
-    this.middleware = [ 'auth.hasRole.admin', 'paging' ]
+    this.middleware = ['auth.hasRole.admin', 'paging']
     this.inputs = {
       limit: {},
       offset: {},
-      context: {}
+      context: {},
+      q: {}
     }
   }
 
-  async run ({ params: { limit, offset, context }, response }) {
-    const res = await api.models.member.findAndCountAll({
+  async run ({ params: { limit, offset, context, q }, response }) {
+    const query = {
+      ...(q ? {
+        where: {
+          [Op.or]: [
+            ...QUERY_FIELDS.map(field => ({
+              [field]: { [api.sequelize.sequelize.options.dialect === 'postgres' ? Op.iLike : Op.like]: `%${q}%` }
+            }))
+          ]
+        }
+      } : {}),
       ...(limit !== '-1' ? { offset, limit } : {}),
-      include: [ 'familyMembers' ]
-    })
+      include: ['familyMembers']
+    }
+    const res = await api.models.member.findAndCountAll(query)
     response.data = await Promise.all(res.rows.map(u => u.toJSON(context)))
     response.count = res.count
   }
@@ -30,7 +48,7 @@ exports.destroy = class Destroy extends Action {
     super()
     this.name = 'member:destroy'
     this.description = 'Delete member. Requires admin role'
-    this.middleware = [ 'auth.hasRole.admin', 'member.params' ]
+    this.middleware = ['auth.hasRole.admin', 'member.params']
     this.inputs = { memberId: { required: true } }
   }
 
@@ -46,7 +64,7 @@ exports.Show = class Show extends Action {
     super()
     this.name = 'member:show'
     this.description = 'Retrieve information regarding specific member'
-    this.middleware = [ 'auth.hasRole.admin', 'member.params' ]
+    this.middleware = ['auth.hasRole.admin', 'member.params']
     this.inputs = { memberId: { required: true }, context: {} }
   }
 
@@ -72,7 +90,7 @@ exports.update = class Update extends exports.Show {
     super()
     this.name = 'member:update'
     this.description = 'Update member info'
-    this.middleware = [ 'auth.hasRole.admin', 'member.params' ]
+    this.middleware = ['auth.hasRole.admin', 'member.params']
     this.inputs = {
       memberId: { required: true },
       firstName: {},
@@ -109,7 +127,7 @@ exports.create = class Create extends exports.Show {
     super()
     this.name = 'member:create'
     this.description = 'Create member'
-    this.middleware = [ 'auth.hasRole.admin' ]
+    this.middleware = ['auth.hasRole.admin']
     this.inputs = {
       firstName: { required: true },
       middleName: {},

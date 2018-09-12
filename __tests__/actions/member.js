@@ -35,6 +35,71 @@ describe('action member', () => {
     testPaging(action, 'member', () => {
       return generateMember({ firstName: 'TEMPORARY' })
     }, { firstName: 'TEMPORARY' })
+
+    describe('filtering', () => {
+      describe('q', () => {
+        const STRING_FIELDS = ['firstName', 'username', 'middleName', 'lastName', 'accessId', 'cardId', 'country', 'city', 'postalCode', 'address']
+        const FIELDS = {
+          email: { matchValue: 'mail@acme.org', noMatchValue: 'snail@physics.org' },
+          phone: { matchValue: '+359897823456', noMatchValue: '+359879876543' },
+          category: { matchValue: 'regular', noMatchValue: 'student' },
+          ...(STRING_FIELDS.reduce((agg, fieldName) => ({
+            ...agg,
+            [fieldName]: {
+              matchValue: 'search',
+              noMatchValue: 'no match'
+            }
+          }), {}))
+        }
+
+        const create = async ({ fieldName, value }) => {
+          try {
+            return await ah.api.models.member.create(generateMember({ [fieldName]: value }))
+          } catch (e) {
+            throw new Error(`Invalid ${fieldName} value ${value}: ${e.message} (${e.type}/${e.path}/${e.value}`)
+          }
+        }
+
+        const setup = async ({ fieldName, matchValue, noMatchValue }) => {
+          return {
+            memberMatch: await create({ fieldName, value: matchValue }),
+            memberNotMatch: await create({ fieldName, value: noMatchValue })
+          }
+        }
+
+        const testSearch = async ({ memberMatch, memberNotMatch, q }) => {
+          try {
+            const response = await ah.runAdminAction(action, { q, limit: -1 })
+            expect(response).toBeSuccessAction()
+            const { data } = response
+            expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: memberMatch.id })]))
+            expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: memberNotMatch.id })]))
+          } finally {
+            await memberMatch.destroy({ force: true })
+            await memberNotMatch.destroy({ force: true })
+          }
+        }
+
+        Object.keys(FIELDS).forEach(fieldName => {
+          const field = FIELDS[fieldName]
+
+          test(`should match ${fieldName}`, async () => {
+            const { memberMatch, memberNotMatch } = await setup({ fieldName, ...field })
+            await testSearch({ memberMatch, memberNotMatch, q: field.matchValue })
+          })
+
+          test(`should match case insensitive ${fieldName}`, async () => {
+            const { memberMatch, memberNotMatch } = await setup({ fieldName, ...field })
+            await testSearch({ memberMatch, memberNotMatch, q: field.matchValue.toUpperCase() })
+          })
+
+          test(`should match partial ${fieldName}`, async () => {
+            const { memberMatch, memberNotMatch } = await setup({ fieldName, ...field })
+            await testSearch({ memberMatch, memberNotMatch, q: field.matchValue.slice(1, -1) })
+          })
+        })
+      })
+    })
   })
 
   describe('#destroy', () => {
