@@ -72,9 +72,9 @@ module.exports = class SessionInitializer extends Initializer {
             }
 
             if (!csrfToken &&
-              data.cookies &&
-              data.cookies[ 'csrf-token' ]) {
-              csrfToken = data.cookies[ 'csrf-token' ]
+              data.connection.rawConnection.cookies &&
+              data.connection.rawConnection.cookies[ 'csrf-token' ]) {
+              csrfToken = data.connection.rawConnection.cookies[ 'csrf-token' ]
             }
 
             if (!csrfToken &&
@@ -83,7 +83,10 @@ module.exports = class SessionInitializer extends Initializer {
               csrfToken = data.params.csrfToken
             }
 
-            if (!csrfToken || csrfToken !== sessionData.csrfToken) {
+            if (!csrfToken) {
+              throw new Error('Missing CSRF')
+            }
+            if (csrfToken !== sessionData.csrfToken) {
               throw new Error('CSRF error')
             }
 

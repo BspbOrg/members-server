@@ -35,7 +35,8 @@ describe('action payment', () => {
 
     test('should filter by memberId', async () => {
       const member1 = await ah.api.models.member.findOne()
-      const res = await ah.runAdminAction(action, { memberId: member1.id })
+      const res = await ah.runAdminAction(action, { memberId: member1.id, limit: 10 })
+      expect(res).toBeSuccessAction()
       expect(res.data.length).toBeGreaterThanOrEqual(1)
       res.data.forEach(payment => {
         if (payment.billingMemberId === member1.id) {

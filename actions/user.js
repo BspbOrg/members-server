@@ -12,10 +12,7 @@ exports.list = class List extends Action {
       { id: 2, firstName: 'Test', lastName: 'User', username: 'test', email: 'test@bspb.org' }
     ]
     this.middleware = [ 'auth.hasRole.admin', 'paging' ]
-    this.inputs = {
-      limit: {},
-      offset: {}
-    }
+    this.inputs = {}
   }
 
   async run ({ params, response }) {

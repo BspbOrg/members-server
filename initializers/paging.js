@@ -11,15 +11,11 @@ module.exports = class PagingInitializer extends Initializer {
       name: 'paging',
       global: false,
       preProcessor: async ({ actionTemplate: { inputs }, params }) => {
-        if (inputs.limit) {
-          if (!params.limit) {
-            params.limit = api.config.paging.pageSize
-          }
+        if (!inputs.limit) {
+          inputs.limit = { formatter: parseInt, default: api.config.paging.pageSize }
         }
-        if (inputs.offset) {
-          if (!params.offset) {
-            params.offset = 0
-          }
+        if (!inputs.offset) {
+          inputs.offset = { formatter: parseInt, default: 0 }
         }
       }
     })

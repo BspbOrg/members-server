@@ -8,21 +8,20 @@ const QUERY_FIELDS = [
   'city', 'postalCode', 'address', 'category'
 ]
 
-exports.list = class List extends Action {
+class List extends Action {
   constructor () {
     super()
     this.name = 'member:list'
     this.description = 'List Members. Requires admin role'
-    this.middleware = ['auth.hasRole.admin', 'paging']
+    this.middleware = ['auth.hasRole.admin', 'paging', 'outputFormat']
+    this.exportName = 'members'
     this.inputs = {
-      limit: {},
-      offset: {},
       context: {},
       q: {}
     }
   }
 
-  async run ({ params: { limit, offset, context, q }, response }) {
+  async run ({ params: { limit, offset, context, q, outputType }, response }) {
     const query = {
       ...(q ? {
         where: {
@@ -42,7 +41,7 @@ exports.list = class List extends Action {
   }
 }
 
-exports.destroy = class Destroy extends Action {
+class Destroy extends Action {
   constructor () {
     super()
     this.name = 'member:destroy'
@@ -58,7 +57,7 @@ exports.destroy = class Destroy extends Action {
   }
 }
 
-exports.Show = class Show extends Action {
+class Show extends Action {
   constructor () {
     super()
     this.name = 'member:show'
@@ -84,7 +83,7 @@ exports.Show = class Show extends Action {
   }
 }
 
-exports.update = class Update extends exports.Show {
+class Update extends Show {
   constructor () {
     super()
     this.name = 'member:update'
@@ -121,7 +120,7 @@ exports.update = class Update extends exports.Show {
   }
 }
 
-exports.create = class Create extends exports.Show {
+class Create extends Show {
   constructor () {
     super()
     this.name = 'member:create'
@@ -156,3 +155,9 @@ exports.create = class Create extends exports.Show {
     return super.run(arguments[0])
   }
 }
+
+exports.list = List
+exports.destroy = Destroy
+exports.show = Show
+exports.update = Update
+exports.create = Create

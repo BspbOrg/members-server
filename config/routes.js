@@ -4,9 +4,12 @@ exports['default'] = {
 
       get: [
         { path: '/member', action: 'member:list' },
+        { path: '/member.csv', action: 'member:list' },
+        { path: '/member.json', action: 'member:list' },
         { path: '/member/:memberId', action: 'member:show' },
         { path: '/me', action: 'user:me' },
         { path: '/payment', action: 'payment:list' },
+        { path: '/payment.csv', action: 'payment:list' },
         { path: '/payment/:paymentId', action: 'payment:show' },
         { path: '/user', action: 'user:list' },
         { path: '/user/:userId', action: 'user:show' },

@@ -59,7 +59,7 @@ class Payment extends Model {
 
   static loadScopes ({ member, payment }) {
     payment.addScope('defaultScope', {
-      include: [ payment.associations.members ]
+      include: [payment.associations.members]
     }, { override: true })
     payment.addScope('member', function (memberId) {
       return {
@@ -81,7 +81,7 @@ class Payment extends Model {
     payment.addScope('view', {
       include: [payment.associations.billingMember, payment.associations.members]
     })
-    payment.addScope('edit', { include: [ payment.associations.members ] })
+    payment.addScope('edit', { include: [payment.associations.members] })
   }
 
   static scopeMember (memberId) {
@@ -95,6 +95,7 @@ class Payment extends Model {
   static scopeContext (context) {
     switch (context) {
       case 'view':
+      case 'export':
         return this.scope('view')
       case 'edit':
         return this.scope('edit')
@@ -106,6 +107,7 @@ class Payment extends Model {
   toJSON (context) {
     switch (context) {
       case 'view':
+      case 'export':
         return {
           ...super.toJSON(),
           members: this.members.map(m => m ? m.toJSON('short') : m),

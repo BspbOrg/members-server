@@ -8,12 +8,11 @@ exports.list = class List extends Action {
     super()
     this.name = 'payment:list'
     this.description = 'List Payments. Requires admin role'
-    this.middleware = ['auth.hasRole.admin', 'paging']
+    this.middleware = ['auth.hasRole.admin', 'paging', 'outputFormat']
+    this.exportName = 'payments'
     this.inputs = {
-      limit: {},
-      offset: {},
       memberId: {},
-      context: {},
+      context: { default: 'view' },
       fromDate: {},
       toDate: {},
       membershipType: {},
@@ -25,8 +24,6 @@ exports.list = class List extends Action {
 
   async run ({ params: { offset, limit, memberId, context, fromDate, toDate, membershipType, paymentType, minAmount, maxAmount }, response }) {
     const query = {
-      // offset&limit doesn't work with member scope
-      ...(memberId ? {} : { offset, limit }),
       where: {
         ...(fromDate || toDate ? {
           paymentDate: {
@@ -41,19 +38,22 @@ exports.list = class List extends Action {
           }
         } : {}),
         ...(membershipType ? { membershipType } : {}),
-        ...(paymentType ? { paymentType } : {})
+        ...(paymentType ? { paymentType } : {}),
+        ...(memberId ? {
+          [Op.or]: [
+            { '$members->payment_members.memberId$': memberId },
+            { billingMemberId: memberId }
+          ]
+        } : {})
       },
-      order: [['paymentDate', 'DESC']]
+      order: [['paymentDate', 'DESC']],
+      ...(limit !== -1 && !memberId ? { offset, limit } : {})
     }
-    const scoped = memberId ? api.models.payment.scopeMember(memberId) : api.models.payment
-    const res = await scoped.findAndCountAll(query)
-    response.data = await Promise.all(
-      (
-        (memberId && limit !== '-1' && limit !== -1)
-          ? res.rows.slice(offset, offset + limit)
-          : res.rows
-      )
-        .map(u => u.toJSON(context || 'view')))
+    const res = await api.models.payment.scopeContext(context).findAndCountAll(query)
+    if (limit !== -1 && memberId) {
+      res.rows = res.rows.slice(offset, offset + limit)
+    }
+    response.data = await Promise.all(res.rows.map(u => u.toJSON(context)))
     response.count = res.count
   }
 }
