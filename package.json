@@ -31,7 +31,7 @@
     "date-fns": "^1.29.0",
     "email-validator": "^2.0.4",
     "event-stream": "^3.3.4",
-    "google-libphonenumber": "^3.1.8",
+    "google-libphonenumber": "^3.1.13",
     "ioredis": "latest",
     "lodash.omit": "^4.5.0",
     "parse-database-url": "^0.3.0",
