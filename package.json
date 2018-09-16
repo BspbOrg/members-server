@@ -30,7 +30,7 @@
     "csv-stringify": "^4.0.1",
     "date-fns": "^1.29.0",
     "email-validator": "^2.0.4",
-    "event-stream": "^3.3.4",
+    "event-stream": "^4.0.0",
     "google-libphonenumber": "^3.1.8",
     "ioredis": "latest",
     "lodash.omit": "^4.5.0",
