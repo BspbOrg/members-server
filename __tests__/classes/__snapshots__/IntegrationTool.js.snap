@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`integration bspb.org getPaymentsForSync should return 1`] = `
+Object {
+  "cursor": Object {
+    "id": 36,
+  },
+  "payments": Array [
+    Object {
+      "amount": 20,
+      "info": "MEM_1286/15510496/10",
+      "paymentDate": 2015-04-09T07:19:16.000Z,
+      "referenceId": "1286",
+      "referenceType": "borica",
+      "username": "user1",
+    },
+    Object {
+      "amount": 10,
+      "info": "DMEM_1385/15510496/10",
+      "paymentDate": 2015-10-26T18:21:25.000Z,
+      "referenceId": "1385",
+      "referenceType": "borica",
+      "username": "user3",
+    },
+  ],
+}
+`;

@@ -36,7 +36,15 @@ class Payment extends Model {
         allowNull: false,
         unique: 'compositeKeyBillingMemberPaymentDate'
       },
-      info: DataTypes.STRING
+      info: DataTypes.STRING,
+      referenceType: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      referenceId: {
+        type: DataTypes.STRING,
+        allowNull: true
+      }
     }, {
       sequelize,
       modelName: 'payment',
