@@ -55,6 +55,14 @@ describe('model payment', () => {
       payment.paymentDate = dateFormat(addDays(new Date(), 1), 'YYYY-MM-DD')
       return expect(ah.api.models.payment.create(payment)).rejects.toThrowErrorMatchingSnapshot()
     })
+
+    test('should allow multiple records with null reference type and id', async () => {
+      const payment1 = await ah.api.models.payment.create(generatePayment({ referenceType: null, referenceId: null }))
+      const payment2 = await ah.api.models.payment.create(generatePayment({ referenceType: null, referenceId: null }))
+      expect(payment1).toBeTruthy()
+      expect(payment2).toBeTruthy()
+      expect(payment1.id).not.toEqual(payment2.id)
+    })
   })
 
   describe('with some payments', () => {

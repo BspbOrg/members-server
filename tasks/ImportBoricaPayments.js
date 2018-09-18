@@ -14,14 +14,20 @@ module.exports = class ImportBoricaPayments extends Task {
 
   async run () {
     const { cursor, payments } = await api.integration.getPaymentsForSync({ cursor: this.cursor })
-    Promise.all(payments.map(async ({ referenceType, referenceId, username, ...paymentInfo }) => {
-      const existingPayment = await api.models.payment.find({ where: { referenceId, referenceType } })
+    await Promise.all(payments.map(async ({ referenceType, referenceId, username, ...paymentInfo }) => {
+      const existingPayment = await api.models.payment.unscoped().findOne({
+        where: { referenceId, referenceType },
+        attributes: ['id']
+      })
       if (existingPayment) {
         api.log(`Skipping already synced payment ${referenceType}/${referenceId} for ${username}`, 'debug')
         return
       }
 
-      const member = await api.models.member.find({ where: { username } })
+      const member = await api.models.member.unscoped().findOne({
+        where: { username },
+        attributes: ['id']
+      })
       if (!member) {
         api.log(`Failed to resolve member ${username} for payment ${referenceType}/${referenceId}`, 'warn')
         return

@@ -39,11 +39,13 @@ class Payment extends Model {
       info: DataTypes.STRING,
       referenceType: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
+        unique: 'compositeKeyReferenceCode'
       },
       referenceId: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
+        unique: 'compositeKeyReferenceCode'
       }
     }, {
       sequelize,
