@@ -9,7 +9,9 @@ Object {
     Object {
       "amount": 20,
       "info": "MEM_1286/15510496/10",
+      "membershipType": "regular",
       "paymentDate": 2015-04-09T07:19:16.000Z,
+      "paymentType": "epay",
       "referenceId": "1286",
       "referenceType": "borica",
       "username": "user1",
@@ -17,7 +19,9 @@ Object {
     Object {
       "amount": 10,
       "info": "DMEM_1385/15510496/10",
+      "membershipType": "regular",
       "paymentDate": 2015-10-26T18:21:25.000Z,
+      "paymentType": "epay",
       "referenceId": "1385",
       "referenceType": "borica",
       "username": "user3",
