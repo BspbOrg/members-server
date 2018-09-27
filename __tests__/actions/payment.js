@@ -47,6 +47,16 @@ describe('action payment', () => {
       })
     })
 
+    test('should filter by billingMemberId', async () => {
+      const member1 = await ah.api.models.member.findOne()
+      const res = await ah.runAdminAction(action, { billingMemberId: member1.id, limit: 10 })
+      expect(res).toBeSuccessAction()
+      expect(res.data.length).toBeGreaterThanOrEqual(1)
+      res.data.forEach(payment => {
+        expect(payment.billingMemberId).toEqual(member1.id)
+      })
+    })
+
     describe('filtering', () => {
       test('should return records newer than fromDate', async () => {
         const match = await ah.api.models.payment.create(generatePayment({ paymentDate: '2017-09-16' }))

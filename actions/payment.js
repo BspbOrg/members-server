@@ -11,18 +11,19 @@ exports.list = class List extends Action {
     this.middleware = ['auth.hasRole.admin', 'paging', 'outputFormat']
     this.exportName = 'payments'
     this.inputs = {
-      memberId: {},
+      memberId: { formatter: parseInt },
       context: { default: 'view' },
       fromDate: {},
       toDate: {},
       membershipType: {},
       paymentType: {},
-      minAmount: {},
-      maxAmount: {}
+      minAmount: { formatter: parseFloat },
+      maxAmount: { formatter: parseFloat },
+      billingMemberId: { formatter: parseInt }
     }
   }
 
-  async run ({ params: { offset, limit, memberId, context, fromDate, toDate, membershipType, paymentType, minAmount, maxAmount }, response }) {
+  async run ({ params: { offset, limit, memberId, context, fromDate, toDate, membershipType, paymentType, minAmount, maxAmount, billingMemberId }, response }) {
     const query = {
       where: {
         ...(fromDate || toDate ? {
@@ -39,6 +40,7 @@ exports.list = class List extends Action {
         } : {}),
         ...(membershipType ? { membershipType } : {}),
         ...(paymentType ? { paymentType } : {}),
+        ...(billingMemberId ? { billingMemberId } : {}),
         ...(memberId ? {
           [Op.or]: [
             { '$members->payment_members.memberId$': memberId },
