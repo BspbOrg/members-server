@@ -5,16 +5,21 @@ cache:
   directories:
   - node_modules
 services:
-- postgresql
-- redis-server
+  - postgresql
+  - mysql
+  - redis-server
 before_install:
-- openssl aes-256-cbc -K $encrypted_081cd9764c51_key -iv $encrypted_081cd9764c51_iv
-  -in github_deploy_key.enc -out github_deploy_key -d
-- chmod 600 github_deploy_key
-- eval $(ssh-agent -s)
-- ssh-add github_deploy_key
-- "[[ $(node -v) =~ ^v9.*$ ]] || npm install -g npm@latest"
-- npm install -g greenkeeper-lockfile@1
+  - openssl aes-256-cbc -K $encrypted_081cd9764c51_key -iv $encrypted_081cd9764c51_iv
+    -in github_deploy_key.enc -out github_deploy_key -d
+  - chmod 600 github_deploy_key
+  - eval $(ssh-agent -s)
+  - ssh-add github_deploy_key
+  - "[[ $(node -v) =~ ^v9.*$ ]] || npm install -g npm@latest"
+  - npm install -g greenkeeper-lockfile@1
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS site;'
+  - mysql -e "CREATE USER 'user'@'localhost' IDENTIFIED BY 'secret';"
+  - mysql -e "GRANT ALL ON site.* TO 'user'@'localhost'";
+  - mysql site < test/files/bspborg.sql
 install: npm install
 before_script: greenkeeper-lockfile-update
 script: npm test -- --ci --runInBand || npm test -- --ci --runInBand
