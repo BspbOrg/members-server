@@ -18,12 +18,8 @@ class Member extends Model {
         unique: { msg: 'The specified username is already in use.' },
         validate: {
           len: {
-            args: [4, 20],
-            msg: 'Username must be between 4 and 20 characters'
-          },
-          is: {
-            args: /^[a-z][a-z0-9_.-]/i,
-            msg: 'Username must include only letters, digits, "_", ".", "-"'
+            args: [0, 20],
+            msg: 'Username must be less than 20 characters'
           }
         }
       },
