@@ -20,6 +20,9 @@
       "expect"
     ]
   },
+  "jest": {
+    "coverageDirectory": "./coverage/"
+  },
   "dependencies": {
     "actionhero": "19.0.2",
     "ah-cors-plugin": "^0.1.1",

@@ -3,6 +3,7 @@
 [![Dependency Status](https://david-dm.org/BspbOrg/members-server.svg?style=flat-square)](https://david-dm.org/BspbOrg/members-server)
 [![Greenkeeper badge](https://badges.greenkeeper.io/BspbOrg/members-server.svg)](https://greenkeeper.io/)
 [![Build Status](https://travis-ci.org/BspbOrg/members-server.svg?branch=master)](https://travis-ci.org/BspbOrg/members-server)
+[![codecov](https://codecov.io/gh/BspbOrg/members-server/branch/master/graph/badge.svg)](https://codecov.io/gh/BspbOrg/members-server)
 
 Management system for [BSPB](http://bspb.org/) members
 

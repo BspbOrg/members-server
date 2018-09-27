@@ -16,14 +16,17 @@ before_install:
   - ssh-add github_deploy_key
   - "[[ $(node -v) =~ ^v9.*$ ]] || npm install -g npm@latest"
   - npm install -g greenkeeper-lockfile@1
+  - npm install -g codecov
   - mysql -e 'CREATE DATABASE IF NOT EXISTS site;'
   - mysql -e "CREATE USER 'user'@'localhost' IDENTIFIED BY 'secret';"
   - mysql -e "GRANT ALL ON site.* TO 'user'@'localhost'";
   - mysql site < test/files/bspborg.sql
 install: npm install
 before_script: greenkeeper-lockfile-update
-script: npm test -- --ci --runInBand || npm test -- --ci --runInBand
-after_script: greenkeeper-lockfile-upload
+script: npm test -- --ci --runInBand --collectCoverage || npm test -- --ci --runInBand  --collectCoverage
+after_script:
+  - greenkeeper-lockfile-upload
+  - codecov
 deploy:
   provider: heroku
   api_key:
@@ -33,7 +36,7 @@ deploy:
   on:
     repo: BspbOrg/members-server
   run:
-  - npm run migrate
+    - npm run migrate
 env:
   global:
     secure: qlFEymOAYt0wuH4KZ7su6RN8V6C1uwEO1tbkCsVbWTpAjWwaPsA1rmeYKQA5Oy9wJ8HHkYCpD8bAY3PoVoyCza2GfQjs3A24/Sm5Gb/bOt2K3ajcrsQnny7U+LYI5phbyuiuOQACQjYfFTh8QAZ4yITQaau/cSknC+y5lFV4wDEh0e/pe0bCEtAh0IYIpwcc2VhsJzUgqD6pvUzynO01xToY5wNa6OhwgPpIJ+vWL3drx0mlWlDTMfLHy4ugwBKsud2VXblht53rrKVgEvjo8LMxCORrCRLBDbAA3V8ZqPrebJhbXI/B2CjASIsptmKX5ESJDWDGCAaBRlyqPlSNxEnccyts6pXEfKIACC/q7+MRHO+wdG2j+zG3irs8t0sAcl6BPZfYy5agHN6bxoUSBr8ECvcQeRLPyJFOzEa56uQT8FSYJFPjxHhQf80XOHU+wvmvCwYMTWPWdj9zZRknbMdEUPSYsVvsBzevpP/Ct0werVqP9rRqqMG7ykL8MUPXVCPEgaqnFxvJo92EJySmt1fn3FaiN4gi0M/27GHwyAliN+eOl6vgsgawo4yn1+7UFPqmtDmDiWkKYRGgCc9ylbMP7CSi3LMuRKVGHmbA4eE+O/yM5n7IZN52crdoxURdr7r/7qC5PrJcup4eP5LCWpSW9PUilmZVe+mEnFnbX6Q=
