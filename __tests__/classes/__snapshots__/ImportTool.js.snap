@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`import models duplicated record should report error 1`] = `"Conflicting records found: {\\"id\\":1,\\"unique1\\":\\"value1\\"} and {\\"id\\":2,\\"unique2\\":\\"value2\\"}"`;

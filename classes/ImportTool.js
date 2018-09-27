@@ -21,14 +21,12 @@ module.exports = class ImportTool {
       success: false
     }
 
-    // find all matching fields for the model
-    const matchingFields = []
-    matchingFields.push(model.primaryKeyAttributes)
-
-    Object.values(model.uniqueKeys)
-      .forEach(uniqueKey => {
-        matchingFields.push(uniqueKey.fields)
-      })
+    // prepare all unique index fields
+    const uniqueIndexes = [
+      model.primaryKeyAttributes,
+      ...Object.values(model.uniqueKeys).map(key => key.fields)
+    ]
+    uniqueIndexes.push()
 
     const t = await api.sequelize.sequelize.transaction()
 
@@ -45,21 +43,14 @@ module.exports = class ImportTool {
 
           result.totalRows++
 
-          let row = Object.assign({}, params)
-          Object.keys(row).forEach((key) => {
-            if (row[key] === '') {
-              delete row[key]
-            }
-          })
+          // clone non empty fields of the input
+          let row = Object
+            .keys(params)
+            .filter(key => params[key] !== '')
+            .reduce((agg, key) => ({ ...agg, [key]: params[key] }), {})
 
-          let emptyRow = true
-          Object.keys(row).forEach((key) => {
-            if (row[key]) {
-              emptyRow = false
-            }
-          })
-
-          if (emptyRow) {
+          // Check that some keys has data
+          if (!Object.keys(row).some(key => row[key])) {
             result.ignored++
             return
           }
@@ -73,29 +64,24 @@ module.exports = class ImportTool {
 
           let rowModel = await model.build(row)
 
-          // prepare the query
-          const queryParams = matchingFields
-            .filter(field => {
-              // check only single column indexes here. Multi column indexes are passed to the next check for missing part of the index.
-              if (field.length === 1) {
-                return field[0] in row
-              }
-              return true
-            })
-            .map(field => {
-              if (field.length > 1) {
-                return {
-                  [Op.and]: field.map(fieldName => {
-                    if (!(fieldName in row)) {
-                      throw new Error('missing part of composite identifier')
-                    }
-                    return { [fieldName]: rowModel[fieldName] }
-                  })
+          // leave only indexes with at least one provided field
+          const providedUniqueIndexes = uniqueIndexes.filter(fields => fields.some(fieldName => fieldName in row))
+          // check for fully specified indexes
+          providedUniqueIndexes.forEach(fields => fields.forEach(fieldName => {
+            if (!(fieldName in row)) {
+              throw new Error(`Missing ${fieldName} of composite identifier ${JSON.stringify(fields)}`)
+            }
+          }))
 
+          // prepare query to look for records matching any of the provided unique indexes
+          const queryParams = providedUniqueIndexes
+            .map(fields => {
+              if (fields.length > 1) {
+                return {
+                  [Op.and]: fields.map(fieldName => ({ [fieldName]: rowModel[fieldName] }))
                 }
-              } else {
-                return { [field[0]]: rowModel[field[0]] }
               }
+              return { [fields[0]]: rowModel[fields[0]] }
             })
 
           const records = await model.findAll({
@@ -108,7 +94,27 @@ module.exports = class ImportTool {
 
           let existing = false
           if (records.length > 1) {
-            throw new Error('duplicate records found')
+            const record1 = uniqueIndexes
+              .reduce((agg, index) => ({
+                ...agg,
+                ...index
+                  .filter(key => records[0][key])
+                  .reduce((agg, key) => ({
+                    ...agg,
+                    [key]: records[0][key]
+                  }), {})
+              }), {})
+            const record2 = uniqueIndexes
+              .reduce((agg, index) => ({
+                ...agg,
+                ...index
+                  .filter(key => records[1][key])
+                  .reduce((agg, key) => ({
+                    ...agg,
+                    [key]: records[1][key]
+                  }), {})
+              }), {})
+            throw new Error(`Conflicting records found: ${JSON.stringify(record1)} and ${JSON.stringify(record2)}`)
           } else if (records.length === 1) {
             existing = true
           }
@@ -134,7 +140,11 @@ module.exports = class ImportTool {
           }
         } catch (e) {
           result.errors++
-          result.errorDetails.push({ row: rowIndex + 1, error: e.message })
+          result.errorDetails.push({
+            // rowIndex is zero-based and counts from second row (first is header)
+            row: rowIndex + 2,
+            error: e.message
+          })
         }
       }, null)
 
@@ -164,24 +174,22 @@ module.exports = class ImportTool {
   }
 
   applyDefaultValues (defaultValues, params) {
-    const res = Object.assign({}, params)
+    if (!defaultValues) return params
 
-    if (defaultValues) {
-      Object.keys(defaultValues)
+    return {
+      ...params,
+      ...Object
+        .keys(defaultValues)
         .filter(key => typeof params[key] === 'undefined' || params[key] === '' || params[key] === null)
-        .forEach(key => {
-          res[key] = defaultValues[key]
-        })
+        .reduce((agg, key) => ({ ...agg, [key]: defaultValues[key] }), {})
     }
-
-    return res
   }
 
   async applyRelations (model, row, transaction) {
-    const res = Object.assign({}, row)
+    const res = { ...row }
 
     await Promise.all(Object.keys(res)
-      .filter(key => !!key.includes('.'))
+      .filter(key => key.includes('.'))
       .map(async key => {
         const [relationshipName, relationshipField] = key.split('.')
 

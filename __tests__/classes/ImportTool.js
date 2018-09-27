@@ -12,11 +12,11 @@ describe('import models', () => {
   let model
 
   const importResult = expectedResult => {
-    const checkResult = Object.assign({
+    return expect.objectContaining({
       errors: 0,
-      success: true
-    }, expectedResult)
-    return expect.objectContaining(checkResult)
+      success: true,
+      ...expectedResult
+    })
   }
 
   const importModel = importData => {
@@ -591,7 +591,7 @@ describe('import models', () => {
         errors: 1,
         errorDetails: [
           {
-            row: 2,
+            row: 3,
             error: expect.any(String)
           }
         ]
@@ -770,5 +770,142 @@ describe('import models', () => {
     }))).toEqual(importResult({
       ignored: 1
     }))
+  })
+
+  describe('composite unique keys', () => {
+    let compositeModel
+
+    beforeEach(async () => {
+      compositeModel = ah.api.sequelize.sequelize.define('TestImportModelWithCompositeUniqueKey', {
+        id: {
+          type: DataTypes.INTEGER.UNSIGNED,
+          allowNull: false,
+          autoIncrement: true,
+          primaryKey: true
+        },
+        field1: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: 'idx_composite'
+        },
+        field2: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: 'idx_composite'
+        },
+        field3: DataTypes.STRING
+      })
+      await compositeModel.sync()
+    })
+
+    afterEach(async () => {
+      await ah.api.sequelize.sequelize.queryInterface.dropTable(compositeModel.tableName)
+    })
+
+    test('should import if not used', async () => {
+      expect(await importer.import(compositeModel, {
+        create: true,
+        data: [
+          { field3: 'dummy' }
+        ]
+      })).toEqual(importResult({
+        inserts: 1
+      }))
+    })
+
+    test('should report the missing field if not fully specified', async () => {
+      expect(await importer.import(compositeModel, {
+        create: true,
+        data: [
+          { field1: 'dummy' }
+        ]
+      })).toEqual(importResult({
+        errors: 1,
+        errorDetails: expect.arrayContaining([expect.objectContaining({ error: expect.stringContaining('field2') })])
+      }))
+    })
+  })
+
+  describe('duplicated record', () => {
+    let testModel
+
+    beforeEach(async () => {
+      testModel = ah.api.sequelize.sequelize.define('TestImportModelForDuplicatedRecord', {
+        id: {
+          type: DataTypes.INTEGER.UNSIGNED,
+          allowNull: false,
+          autoIncrement: true,
+          primaryKey: true
+        },
+        unique1: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: true
+        },
+        unique2: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: true
+        },
+        composite1: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: 'idx_composite'
+        },
+        composite2: {
+          type: DataTypes.STRING,
+          allowNull: true,
+          unique: 'idx_composite'
+        }
+      })
+      await testModel.sync()
+    })
+
+    afterEach(async () => {
+      await ah.api.sequelize.sequelize.queryInterface.dropTable(testModel.tableName)
+    })
+
+    test('should report error', async () => {
+      testModel.create({ unique1: 'value1' })
+      testModel.create({ unique2: 'value2' })
+
+      const { errorDetails: [{ error }] } = await importer.import(testModel, {
+        create: true,
+        data: [
+          { unique1: 'value1', unique2: 'value2' }
+        ]
+      })
+      expect(error).toMatchSnapshot()
+    })
+
+    test('should report the duplicated fields', async () => {
+      testModel.create({ unique1: 'duplicate' })
+      testModel.create({ unique2: 'duplicate' })
+
+      const { errorDetails: [{ error }] } = await importer.import(testModel, {
+        create: true,
+        data: [
+          { unique1: 'duplicate', unique2: 'duplicate' }
+        ]
+      })
+
+      expect(error).toContain('unique1')
+      expect(error).toContain('unique2')
+    })
+
+    test('should report the duplicated values', async () => {
+      testModel.create({ unique1: 'val1' })
+      testModel.create({ unique2: 'val2' })
+
+      const { errorDetails: [{ error }] } = await importer.import(testModel, {
+        create: true,
+        data: [
+          { unique1: 'val1', unique2: 'val2' }
+        ]
+      })
+
+      expect(error).toContain('val1')
+      expect(error).toContain('val2')
+    })
   })
 })
