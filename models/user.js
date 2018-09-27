@@ -18,7 +18,7 @@ class User extends Model {
       username: {
         type: DataTypes.STRING(20),
         allowNull: false,
-        unique: { msg: 'The specified username is already in use.' },
+        unique: { msg: 'Username is already in use.' },
         validate: {
           len: [ 4, 20 ],
           is: /^[a-z][a-z0-9_.-]/i
@@ -27,7 +27,7 @@ class User extends Model {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: { msg: 'The specified email address is already in use.' },
+        unique: { msg: 'Email address is already in use.' },
         validate: { isEmail: true }
       },
       firstName: {

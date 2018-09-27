@@ -15,22 +15,22 @@ class Member extends Model {
       username: {
         type: DataTypes.STRING(20),
         allowNull: true,
-        unique: { msg: 'The specified username is already in use.' },
+        unique: { msg: 'Username is already in use.' },
         validate: {
           len: {
             args: [0, 20],
-            msg: 'Username must be less than 20 characters'
+            msg: 'Username must be less than 20 characters.'
           }
         }
       },
       email: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: { msg: 'The specified email address is already in use.' },
+        unique: { msg: 'Email address is already in use.' },
         validate: {
           isValidEmail (email) {
             if (!emailValidator.validate(email)) {
-              throw new Error('Specified email is invalid')
+              throw new Error('Email is invalid.')
             }
           }
         }
@@ -61,12 +61,12 @@ class Member extends Model {
       accessId: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: { msg: 'The specified access ID is already in use.' }
+        unique: { msg: 'Access ID is already in use.' }
       },
       cardId: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: { msg: 'The specified card ID is already in use.' }
+        unique: { msg: 'Card ID is already in use.' }
       },
       country: {
         type: DataTypes.STRING,
@@ -87,7 +87,7 @@ class Member extends Model {
       phone: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: { msg: 'The specified phone number is already in use.' },
+        unique: { msg: 'Phone number is already in use.' },
         set (phone) {
           if (phone) {
             phone = phone.replace(/[^\d+]/g, '')

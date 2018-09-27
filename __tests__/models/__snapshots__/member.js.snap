@@ -12,34 +12,34 @@ exports[`model member creating should require firstName 1`] = `"notNull Violatio
 
 exports[`model member creating should require lastName 1`] = `"notNull Violation: member.lastName cannot be null"`;
 
-exports[`model member creating validation email field should not allow following email: "Abc@def"@example.com 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: "Abc@def"@example.com 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation email field should not allow following email: "Fred Bloggs"@example.com 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: "Fred Bloggs"@example.com 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation email field should not allow following email: Abc\\@def@example.com 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: Abc\\@def@example.com 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation email field should not allow following email: Fred\\ Bloggs@example.com 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: Fred\\ Bloggs@example.com 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation email field should not allow following email: Joe.\\\\Blow@example.com 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: Joe.\\\\Blow@example.com 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation email field should not allow following email: adsd.443 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: adsd.443 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation email field should not allow following email: joe@[::1] 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: joe@[::1] 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation email field should not allow following email: joe@[2001:db8::ff00:42:8329] 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: joe@[2001:db8::ff00:42:8329] 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation email field should not allow following email: test@test 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: test@test 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation email field should not allow following email: test@test@test.test 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: test@test@test.test 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation email field should not allow following email: user@[192.168.0.1] 1`] = `"Validation error: Specified email is invalid"`;
+exports[`model member creating validation email field should not allow following email: user@[192.168.0.1] 1`] = `"Validation error: Email is invalid."`;
 
 exports[`model member creating validation should fail on invalid age category 1`] = `"Validation error: Validation isIn on category failed"`;
 
-exports[`model member creating validation should not allow duplicate access ids 1`] = `"The specified access ID is already in use."`;
+exports[`model member creating validation should not allow duplicate access ids 1`] = `"Access ID is already in use."`;
 
-exports[`model member creating validation should not allow duplicate card ids 1`] = `"The specified card ID is already in use."`;
+exports[`model member creating validation should not allow duplicate card ids 1`] = `"Card ID is already in use."`;
 
-exports[`model member creating validation should not allow duplicate username 1`] = `"The specified username is already in use."`;
+exports[`model member creating validation should not allow duplicate username 1`] = `"Username is already in use."`;
 
 exports[`model member creating validation should not allow string with wrong format for membershipStartDate 1`] = `"Validation error: Validation isDate on membershipStartDate failed"`;

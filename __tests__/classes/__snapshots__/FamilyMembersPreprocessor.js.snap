@@ -6,4 +6,4 @@ exports[`family members preprocessor should fail on missing family member 1`] = 
 
 exports[`family members preprocessor should fail on missing master member 1`] = `"no master member found: 1000"`;
 
-exports[`family members preprocessor should remind that the code depends on member.cardId unique constraint 1`] = `"The specified card ID is already in use."`;
+exports[`family members preprocessor should remind that the code depends on member.cardId unique constraint 1`] = `"Card ID is already in use."`;

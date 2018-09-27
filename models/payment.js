@@ -18,7 +18,7 @@ class Payment extends Model {
           isAfter: '1999-12-31',
           isBeforeToday (value) {
             if (isFuture(value)) {
-              throw new Error('Only past dates are allowed!')
+              throw new Error('Payment date cannot be in the future.')
             }
           }
         },
