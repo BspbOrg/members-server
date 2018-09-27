@@ -32,7 +32,7 @@ class List extends Action {
           ]
         }
       } : {}),
-      ...(limit !== '-1' ? { offset, limit } : {}),
+      ...(limit !== -1 ? { offset, limit } : {}),
       include: ['familyMembers']
     }
     const res = await api.models.member.findAndCountAll(query)
