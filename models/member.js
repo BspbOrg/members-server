@@ -179,6 +179,11 @@ class Member extends Model {
 
   toJSON (context) {
     switch (context) {
+      case 'edit':
+        return {
+          ...super.toJSON(),
+          familyMembers: this.familyMembers ? this.familyMembers.map(m => m.id) : []
+        }
       case 'short':
         return {
           id: this.id,
