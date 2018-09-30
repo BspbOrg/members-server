@@ -43,4 +43,10 @@ describe('task ImportBoricaPayments', () => {
     const countAfter = await ah.api.models.payment.count()
     expect(countAfter).toEqual(countBefore)
   })
+
+  test('should schedule membership recalculation', async () => {
+    const spy = jest.spyOn(ah.api.membership, 'enqueueRecompute')
+    await run()
+    expect(spy).toHaveBeenCalled()
+  })
 })
