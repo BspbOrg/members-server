@@ -126,10 +126,11 @@ module.exports = class IntegrationTool {
   }
 
   async enqueueMembershipUpdate (members) {
+    if (!this.config.enabled) return
     return Promise.all(
       members.map(
         member => this.api.tasks.enqueue(
-          'integration:updateMembership',
+          'IntegrationMembershipUpdate',
           { memberId: member.id || member }
         )
       )

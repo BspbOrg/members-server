@@ -56,10 +56,6 @@ describe('task membership:recompute', () => {
   afterAll(ah.stop)
 
   beforeEach(async () => {
-    ah.api.tasks.enqueue = jest.fn()
-  })
-
-  beforeEach(async () => {
     await ah.api.models.payment.truncate({ force: true })
     await ah.api.models.member.truncate({ force: true })
   })
