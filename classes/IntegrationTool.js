@@ -22,6 +22,7 @@ module.exports = class IntegrationTool {
     this.api = api
     this.config = config
     this.boricaPublicKey = fs.readFileSync(config.boricaPublicKey)
+    this.systemPaymentName = config.systemPaymentName
   }
 
   async connect () {
@@ -122,5 +123,54 @@ module.exports = class IntegrationTool {
       cursor,
       payments
     }
+  }
+
+  async enqueueMembershipUpdate (members) {
+    return Promise.all(
+      members.map(
+        member => this.api.tasks.enqueue(
+          'integration:updateMembership',
+          { memberId: member.id || member }
+        )
+      )
+    )
+  }
+
+  async getMemberId (username) {
+    return this.perform(async (conn) => {
+      const [rows] = await conn.query('SELECT id FROM members WHERE username = ?', [username])
+      if (rows.length === 1) return rows[0]['id']
+      throw new Error(`Cannot find member with username '${username}' in bspb.org db`)
+    })
+  }
+
+  async createOrUpdateMembershipPayment ({ username, paymentDate }) {
+    return this.perform(async (conn) => {
+      const memberId = await this.getMemberId(username)
+      if (!paymentDate) {
+        const [{ affectedRows }] = await conn.query(`DELETE FROM members_history WHERE member_id = ? AND name = ?`, [memberId, this.systemPaymentName])
+        return affectedRows === 1
+      }
+      const [[{ paymentId } = {}]] = await conn.query(`SELECT id as 'paymentId' FROM members_history WHERE member_id = ? AND name = ?`, [memberId, this.systemPaymentName])
+      if (!paymentId) {
+        const [{ insertId }] = await conn.query('INSERT INTO members_history SET ?', {
+          member_id: memberId,
+          nomenclature_id: 0,
+          type: 'member',
+          name: this.systemPaymentName,
+          amount: -1,
+          payment_date: paymentDate,
+          paid_date: paymentDate,
+          paid: true
+        })
+        return insertId
+      }
+      await conn.query(`UPDATE members_history SET ? WHERE id = ?`, [{
+        payment_date: paymentDate,
+        paid_date: paymentDate,
+        paid: true
+      }, paymentId])
+      return paymentId
+    })
   }
 }

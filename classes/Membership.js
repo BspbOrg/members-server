@@ -12,11 +12,11 @@ module.exports = class Membership {
    * @param {Payment[]}payments
    */
   computeMembership (payments) {
-    let startDate = 0
-    let endDate = 0
+    let startDate
+    let endDate
     payments = payments.sort(({ paymentDate: a }, { paymentDate: b }) => compareAsc(a, b))
     for (let payment of payments) {
-      if (isAfter(payment.paymentDate, endDate)) {
+      if (!endDate || isAfter(payment.paymentDate, endDate)) {
         // membership expired or we started new one
         startDate = payment.paymentDate
         endDate = addYears(startDate, 1 /* year */)

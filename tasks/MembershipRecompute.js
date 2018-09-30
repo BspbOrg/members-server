@@ -16,6 +16,7 @@ module.exports = class MembershipRecompute extends Task {
     const payments = await api.models.payment.scopeMembershipMember(memberId).findAll({})
     const { startDate: membershipStartDate, endDate: membershipEndDate } = api.membership.computeMembership(payments)
     await member.updateAttributes({ membershipStartDate, membershipEndDate })
+    await api.integration.enqueueMembershipUpdate([memberId])
     return { membershipStartDate, membershipEndDate }
   }
 }

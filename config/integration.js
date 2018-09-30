@@ -11,7 +11,9 @@ exports['default'] = {
       // Borica public key path
       boricaPublicKey: path.join(__dirname, '..', 'borika-test.cer'),
       // In ms how often to check for new borica payments and import. 0 to disable
-      importBoricaPaymentsFrequency: 0
+      importBoricaPaymentsFrequency: 0,
+      // Payment name in bspb.org for system payments that update membership
+      systemPaymentName: 'SYSTEM_INTEGRATION_PAYMENT'
     }
   }
 }

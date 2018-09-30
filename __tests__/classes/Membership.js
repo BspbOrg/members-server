@@ -92,6 +92,13 @@ describe('Membership', () => {
       const { startDate } = membership.computeMembership([payment1, payment2])
       expect(startDate).toBeDate('2018-09-03')
     })
+
+    test('without payments membership is undefined', () => {
+      const { membership } = setup()
+      const { startDate, endDate } = membership.computeMembership([])
+      expect(startDate).toBe(undefined)
+      expect(endDate).toBe(undefined)
+    })
   })
 
   describe('enqueueRecompute', () => {

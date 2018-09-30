@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`task IntegrationMembershipUpdate should create payment 1`] = `
+Array [
+  TextRow {
+    "member_id": 1,
+    "name": "SYSTEM_INTEGRATION_PAYMENT",
+    "paid": 1,
+    "paid_date": 2017-09-29T21:00:00.000Z,
+    "payment_date": 2017-09-29T21:00:00.000Z,
+  },
+]
+`;

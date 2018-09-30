@@ -75,5 +75,66 @@ describe('integration', () => {
         expect(response).toMatchSnapshot()
       })
     })
+
+    describe('createOrUpdateMembershipPayment', () => {
+      const run = async ({ username, paymentDate = '2018-09-30', ...args }) => ah.api.integration.createOrUpdateMembershipPayment({
+        username,
+        paymentDate,
+        ...args
+      })
+      const fetchSystemPayments = async (username) => ah.api.integration.perform(async (conn) => conn.query(`
+        SELECT m.username, h.name, payment_date as 'paymentDate', paid_date as 'paidDate', paid 
+        FROM members_history h
+        JOIN members m on (h.member_id = m.id)
+        WHERE m.username = ? AND h.name = ?
+        ORDER BY h.id DESC
+      `, [username, ah.api.integration.systemPaymentName]))
+
+      const deleteSystemPayments = async () => ah.api.integration.perform(async (conn) => conn.query(
+        'DELETE FROM members_history WHERE name = ?',
+        [ah.api.integration.systemPaymentName]
+      ))
+
+      beforeEach(async () => {
+        await deleteSystemPayments()
+      })
+
+      afterEach(async () => {
+        await deleteSystemPayments()
+      })
+
+      test('should create system payment for the user', async () => {
+        await run({ username: 'user1' })
+        const [rows] = await fetchSystemPayments('user1')
+        expect(rows).toHaveLength(1)
+      })
+
+      test('should create system payment at the date', async () => {
+        await run({ username: 'user1', paymentDate: '2018-10-01' })
+        const [[{ paymentDate }]] = await fetchSystemPayments('user1')
+        expect(paymentDate).toBeDate('2018-10-01')
+      })
+
+      test('member should have only one system payment record', async () => {
+        await run({ username: 'user1' })
+        await run({ username: 'user1' })
+        const [rows] = await fetchSystemPayments('user1')
+        expect(rows).toHaveLength(1)
+      })
+
+      test('should update payment date', async () => {
+        await run({ username: 'user1', paymentDate: '2018-01-01' })
+        await run({ username: 'user1', paymentDate: '2018-09-30' })
+        const [[{ paymentDate }]] = await fetchSystemPayments('user1')
+        expect(paymentDate).toBeDate('2018-09-30')
+      })
+
+      test('should delete system payment', async () => {
+        await run({ username: 'user1' })
+        await run({ username: 'user1', paymentDate: null })
+        const [rows] = await fetchSystemPayments('user1')
+        expect(rows).toHaveLength(0)
+      })
+    })
   })
 })

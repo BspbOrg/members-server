@@ -56,6 +56,10 @@ describe('task membership:recompute', () => {
   afterAll(ah.stop)
 
   beforeEach(async () => {
+    ah.api.tasks.enqueue = jest.fn()
+  })
+
+  beforeEach(async () => {
     await ah.api.models.payment.truncate({ force: true })
     await ah.api.models.member.truncate({ force: true })
   })
@@ -80,5 +84,12 @@ describe('task membership:recompute', () => {
     await member.reload()
     expect(member.membershipStartDate).toEqual('2018-09-03')
     expect(member.membershipEndDate).toEqual('2019-09-03')
+  })
+
+  test('should schedule bspb membership update', async () => {
+    const spy = jest.spyOn(ah.api.integration, 'enqueueMembershipUpdate')
+    await prepare({ memberId: 1, payments: [{ paymentDate: '2018-09-03' }] })
+    await run({ memberId: 1 })
+    expect(spy).toHaveBeenCalledWith([1])
   })
 })
