@@ -44,7 +44,7 @@ module.exports = class ImportBoricaPayments extends Task {
       return member.id
     }))
     // remove empty and get only unique ids
-    await api.membership.enqueueRecompute([new Set(updatedMembers.filter(m => m))])
+    await api.membership.enqueueRecompute([...new Set(updatedMembers.filter(m => m))])
     this.cursor = cursor
   }
 }
