@@ -1,16 +1,16 @@
 const parseDbUrl = require('parse-database-url')
 
-function parseDatabaseUrl (databaseUrl, options) {
-  options = options || {}
+function parseDatabaseUrl (databaseUrl, options = {}) {
   if (!databaseUrl) return options
 
-  const dbConfig = parseDbUrl(databaseUrl)
-  dbConfig.dialect = dbConfig.driver
-  delete dbConfig.driver
-  dbConfig.username = dbConfig.user
-  delete dbConfig.user
+  const { driver: dialect, user: username, ...dbConfig } = parseDbUrl(databaseUrl)
 
-  return Object.assign({}, options, dbConfig)
+  return {
+    ...options,
+    dialect,
+    username,
+    ...dbConfig
+  }
 }
 
 exports.default = {
@@ -65,4 +65,4 @@ const merge = (overlayFn) => {
 exports.development = exports.default.sequelize()
 exports.staging = merge(exports.staging)
 exports.test = merge(exports.test)
-// exports.production = merge(exports.production);
+exports.production = merge(exports.production)
