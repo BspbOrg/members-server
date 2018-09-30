@@ -26,9 +26,9 @@ module.exports = class IntegrationTool {
   }
 
   async connect () {
-    const { connection: { host, user, password, port, database } } = this.config
+    const { connection: { driver, host, user, password, port, database, ...other } } = this.config
     return mysql.createConnection({
-      host, user, password, port, database
+      host, user, password, port, database, ...other
     })
   }
 
