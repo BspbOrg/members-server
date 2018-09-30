@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 /* globals describe, beforeAll, afterAll, before, after, test, expect, jest */
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const config = require('../../config/auth').test.auth()
 
 describe('bcrypt dependency', () => {

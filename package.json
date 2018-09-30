@@ -27,7 +27,7 @@
     "actionhero": "19.0.2",
     "ah-cors-plugin": "^0.1.1",
     "ah-sequelize-plugin": "^1.0.3",
-    "bcrypt": "^3.0.1",
+    "bcryptjs": "^2.4.3",
     "boolean": "^0.2.0",
     "csv-parser": "^2.0.0",
     "csv-stringify": "^4.0.1",
