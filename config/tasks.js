@@ -59,3 +59,14 @@ exports.test = {
     }
   }
 }
+
+exports.production = {
+  tasks: (api) => {
+    return {
+      scheduler: true,
+      queues: ['*'],
+      minTaskProcessors: 1,
+      maxTaskProcessors: parseInt(process.env.MAX_TASK_PROCESSORS) || 0
+    }
+  }
+}
