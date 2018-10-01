@@ -190,9 +190,10 @@ class Member extends Model {
       case 'short':
         return {
           id: this.id,
-          label: [this.firstName, this.lastName].filter(v => v).join(' '),
+          label: [this.firstName, this.lastName].filter(v => v).join(' ') + (this.cardId ? ` (${this.cardId})` : ''),
           firstName: this.firstName,
-          lastName: this.lastName
+          lastName: this.lastName,
+          cardId: this.cardId
         }
       default:
         return super.toJSON()
