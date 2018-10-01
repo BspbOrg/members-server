@@ -34,7 +34,7 @@ exports[`model member creating validation email field should not allow following
 
 exports[`model member creating validation email field should not allow following email: user@[192.168.0.1] 1`] = `"Validation error: Email is invalid."`;
 
-exports[`model member creating validation should fail on invalid age category 1`] = `"Validation error: Validation isIn on category failed"`;
+exports[`model member creating validation should fail on invalid age category 1`] = `"Validation error: Category must be one of 'student', 'regular', 'retired'."`;
 
 exports[`model member creating validation should not allow duplicate access ids 1`] = `"Access ID is already in use."`;
 
