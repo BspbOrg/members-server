@@ -113,7 +113,7 @@ module.exports = class IntegrationTool {
       amount,
       paymentDate: timestamp,
       membershipType: 'regular',
-      paymentType: 'epay',
+      paymentType: 'card',
       username: mapping[paymentId],
       info: `${orderId}/${terminalId}/${type}`,
       referenceType: 'borica',
