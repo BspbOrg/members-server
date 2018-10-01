@@ -13,13 +13,13 @@ class Member extends Model {
         primaryKey: true
       },
       username: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(50),
         allowNull: true,
         unique: { msg: 'Username is already in use.' },
         validate: {
           len: {
-            args: [0, 20],
-            msg: 'Username must be less than 20 characters.'
+            args: [0, 50],
+            msg: 'Username must be less than 50 characters.'
           }
         }
       },
@@ -125,7 +125,10 @@ class Member extends Model {
         allowNull: false,
         defaultValue: 'regular',
         validate: {
-          isIn: [['student', 'regular', 'retired']]
+          isIn: {
+            args: [['student', 'regular', 'retired']],
+            msg: `Category must be one of 'student', 'regular', 'retired'.`
+          }
         }
       },
       membershipStartDate: {
