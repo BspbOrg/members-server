@@ -137,6 +137,13 @@ class Member extends Model {
         validate: {
           isDate: true
         }
+      },
+      membershipFirstDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+        validate: {
+          isDate: true
+        }
       }
     }, {
       sequelize,

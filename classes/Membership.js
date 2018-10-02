@@ -14,8 +14,10 @@ module.exports = class Membership {
   computeMembership (payments) {
     let startDate
     let endDate
+    let firstDate
     payments = payments.sort(({ paymentDate: a }, { paymentDate: b }) => compareAsc(a, b))
     for (let payment of payments) {
+      if (!firstDate) firstDate = payment.paymentDate
       if (!endDate || isAfter(payment.paymentDate, endDate)) {
         // membership expired or we started new one
         startDate = payment.paymentDate
@@ -25,7 +27,7 @@ module.exports = class Membership {
         endDate = addYears(endDate, 1 /* year */)
       }
     }
-    return { startDate, endDate }
+    return { startDate, endDate, firstDate }
   }
 
   async enqueueRecompute (members) {
