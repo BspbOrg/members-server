@@ -46,7 +46,7 @@ class Destroy extends Action {
     super()
     this.name = 'member:destroy'
     this.description = 'Delete member. Requires admin role'
-    this.middleware = ['auth.hasRole.admin', 'member.params']
+    this.middleware = ['csrf', 'auth.hasRole.admin', 'member.params']
     this.inputs = { memberId: { required: true } }
   }
 
@@ -88,7 +88,7 @@ class Update extends Show {
     super()
     this.name = 'member:update'
     this.description = 'Update member info'
-    this.middleware = ['auth.hasRole.admin', 'member.params']
+    this.middleware = ['csrf', 'auth.hasRole.admin', 'member.params']
     this.inputs = {
       memberId: { required: true },
       firstName: {},
@@ -125,7 +125,7 @@ class Create extends Show {
     super()
     this.name = 'member:create'
     this.description = 'Create member'
-    this.middleware = ['auth.hasRole.admin']
+    this.middleware = ['csrf', 'auth.hasRole.admin']
     this.inputs = {
       firstName: { required: true },
       middleName: {},

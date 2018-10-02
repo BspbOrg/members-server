@@ -65,7 +65,7 @@ exports.destroy = class Destroy extends Action {
     super()
     this.name = 'payment:destroy'
     this.description = 'Delete payment. Requires admin role'
-    this.middleware = ['auth.hasRole.admin', 'payment.params']
+    this.middleware = ['csrf', 'auth.hasRole.admin', 'payment.params']
     this.inputs = { paymentId: { required: true } }
   }
 
@@ -98,7 +98,7 @@ exports.update = class Update extends Action {
     super()
     this.name = 'payment:update'
     this.description = 'Update payment info'
-    this.middleware = ['auth.hasRole.admin', 'payment.params']
+    this.middleware = ['csrf', 'auth.hasRole.admin', 'payment.params']
     this.inputs = {
       paymentId: { required: true },
       amount: {},
@@ -132,7 +132,7 @@ exports.create = class Create extends Action {
     super()
     this.name = 'payment:create'
     this.description = 'Create payment'
-    this.middleware = ['auth.hasRole.admin']
+    this.middleware = ['csrf', 'auth.hasRole.admin']
     this.inputs = {
       amount: { required: true },
       paymentDate: { required: true },

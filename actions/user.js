@@ -11,13 +11,13 @@ exports.list = class List extends Action {
       { id: 1, firstName: 'Test', lastName: 'Admin', username: 'admin', email: 'admin@bspb.org' },
       { id: 2, firstName: 'Test', lastName: 'User', username: 'test', email: 'test@bspb.org' }
     ]
-    this.middleware = [ 'auth.hasRole.admin', 'paging' ]
+    this.middleware = ['auth.hasRole.admin', 'paging']
     this.inputs = {}
   }
 
   async run ({ params, response }) {
     const res = await api.models.user.findAndCountAll({
-      attributes: [ 'id', 'firstName', 'lastName', 'username', 'email', 'role' ],
+      attributes: ['id', 'firstName', 'lastName', 'username', 'email', 'role'],
       offset: params.offset,
       limit: params.limit
     })
@@ -31,7 +31,7 @@ exports.destroy = class Destroy extends Action {
     super()
     this.name = 'user:destroy'
     this.description = 'Delete user. Requires admin role'
-    this.middleware = [ 'auth.hasRole.admin', 'user.params' ]
+    this.middleware = ['csrf', 'auth.hasRole.admin', 'user.params']
     this.inputs = { userId: { required: true } }
   }
 
@@ -54,7 +54,7 @@ exports.me = class Me extends Action {
       username: 'admin',
       email: 'admin@bspb.org'
     }
-    this.middleware = [ 'auth.isAuthenticated', 'user.session' ]
+    this.middleware = ['auth.isAuthenticated', 'user.session']
   }
 
   async run ({ user, response }) {
@@ -69,7 +69,7 @@ exports.changePassword = class ChangePassword extends Action {
     super()
     this.name = 'user:changePassword'
     this.description = 'Update password for the currently authenticated user'
-    this.middleware = [ 'auth.isAuthenticated', 'user.session' ]
+    this.middleware = ['csrf', 'auth.isAuthenticated', 'user.session']
     this.inputs = {
       oldPassword: { required: true },
       newPassword: { required: true }
@@ -100,7 +100,7 @@ exports.show = class Show extends Action {
       username: 'admin',
       email: 'admin@bspb.org'
     }
-    this.middleware = [ 'auth.hasRole.admin', 'user.params' ]
+    this.middleware = ['auth.hasRole.admin', 'user.params']
     this.inputs = { userId: { required: true } }
   }
 
@@ -123,7 +123,7 @@ exports.update = class Update extends Action {
       username: 'admin',
       email: 'admin@bspb.org'
     }
-    this.middleware = [ 'auth.isAuthenticated', 'user.params', 'auth.hasRole.admin or auth.user == user' ]
+    this.middleware = ['csrf', 'auth.isAuthenticated', 'user.params', 'auth.hasRole.admin or auth.user == user']
     this.inputs = {
       userId: { required: true },
       firstName: {},
@@ -155,7 +155,7 @@ exports.create = class Create extends Action {
       username: 'admin',
       email: 'admin@bspb.org'
     }
-    this.middleware = [ 'auth.hasRole.admin' ]
+    this.middleware = ['csrf', 'auth.hasRole.admin']
     this.inputs = {
       firstName: { required: true },
       lastName: { required: true },

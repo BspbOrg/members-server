@@ -61,35 +61,6 @@ module.exports = class SessionInitializer extends Initializer {
             const sessionData = await api.session.load(data.connection)
             if (!sessionData) return
 
-            let csrfToken
-
-            if (!csrfToken &&
-              data.connection.rawConnection &&
-              data.connection.rawConnection.req &&
-              data.connection.rawConnection.req.headers &&
-              data.connection.rawConnection.req.headers[ 'x-csrf-token' ]) {
-              csrfToken = data.connection.rawConnection.req.headers[ 'x-csrf-token' ]
-            }
-
-            if (!csrfToken &&
-              data.connection.rawConnection.cookies &&
-              data.connection.rawConnection.cookies[ 'csrf-token' ]) {
-              csrfToken = data.connection.rawConnection.cookies[ 'csrf-token' ]
-            }
-
-            if (!csrfToken &&
-              data.params &&
-              data.params.csrfToken) {
-              csrfToken = data.params.csrfToken
-            }
-
-            if (!csrfToken) {
-              throw new Error('Missing CSRF')
-            }
-            if (csrfToken !== sessionData.csrfToken) {
-              throw new Error('CSRF error')
-            }
-
             data.session = sessionData
             const key = api.session.sessionKey(data.connection)
             await redis.expire(key, api.config.auth.sessionTtl)
@@ -104,6 +75,44 @@ module.exports = class SessionInitializer extends Initializer {
             if (data.session) return
             data.connection.rawConnection.responseHttpCode = 401
             throw new Error('Please log in to continue')
+          }
+        },
+        csrf: {
+          name: 'csrf',
+          global: false,
+          priority: 2500,
+          preProcessor: async (data) => {
+            await api.session.middleware.auth.preProcessor(data)
+            const { session, connection: { rawConnection }, params } = data
+
+            let csrfToken
+
+            if (!csrfToken &&
+              rawConnection &&
+              rawConnection.req &&
+              rawConnection.req.headers &&
+              rawConnection.req.headers['x-csrf-token']) {
+              csrfToken = rawConnection.req.headers['x-csrf-token']
+            }
+
+            if (!csrfToken &&
+              rawConnection.cookies &&
+              rawConnection.cookies['csrf-token']) {
+              csrfToken = rawConnection.cookies['csrf-token']
+            }
+
+            if (!csrfToken &&
+              params &&
+              params.csrfToken) {
+              csrfToken = params.csrfToken
+            }
+
+            if (!csrfToken) {
+              throw new Error('Missing CSRF')
+            }
+            if (csrfToken !== session.csrfToken) {
+              throw new Error('CSRF error')
+            }
           }
         },
         user: {
@@ -143,6 +152,7 @@ module.exports = class SessionInitializer extends Initializer {
     }
 
     api.actions.addMiddleware(api.session.middleware.session)
+    api.actions.addMiddleware(api.session.middleware.csrf)
     api.actions.addMiddleware(api.session.middleware.auth)
     api.actions.addMiddleware(api.session.middleware.user)
     api.actions.addMiddleware(api.session.middleware.admin)

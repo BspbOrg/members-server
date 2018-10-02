@@ -10,7 +10,7 @@ exports.members = class Members extends Action {
     super()
     this.name = 'import:member'
     this.description = 'Import members. Requires admin role'
-    this.middleware = ['auth.hasRole.admin']
+    this.middleware = ['csrf', 'auth.hasRole.admin']
     this.inputs = {
       file: {},
       create: {
@@ -42,7 +42,7 @@ exports.payments = class Payments extends Action {
     super()
     this.name = 'import:payment'
     this.description = 'Import payments. Requires admin role'
-    this.middleware = ['auth.hasRole.admin']
+    this.middleware = ['csrf', 'auth.hasRole.admin']
     this.inputs = {
       file: {},
       create: {
@@ -77,7 +77,7 @@ exports.family = class Family extends Action {
     super()
     this.name = 'import:family'
     this.description = 'Import family members. Requires admin role'
-    this.middleware = ['auth.hasRole.admin']
+    this.middleware = ['csrf', 'auth.hasRole.admin']
     this.inputs = {
       file: {},
       create: {
