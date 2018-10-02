@@ -15,7 +15,12 @@ module.exports = class MembershipRecompute extends Task {
     if (!member) throw new Error(`Member ${memberId} not found!`)
     const payments = await api.models.payment.scopeMembershipMember(memberId).findAll({})
     const { startDate: membershipStartDate, endDate: membershipEndDate } = api.membership.computeMembership(payments)
-    await member.updateAttributes({ membershipStartDate, membershipEndDate })
+    await member.updateAttributes({
+      membershipStartDate,
+      membershipEndDate,
+      // if we have membership but no cardId we should generate new one
+      ...(membershipEndDate && !member.cardId ? { cardId: await api.cardId.generateId() } : {})
+    })
     await api.integration.enqueueMembershipUpdate([memberId])
     return { membershipStartDate, membershipEndDate }
   }
