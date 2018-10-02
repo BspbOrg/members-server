@@ -9,7 +9,7 @@ Object {
     Object {
       "amount": 20,
       "info": "MEM_1286/15510496/10",
-      "membershipType": "regular",
+      "membershipType": "group",
       "paymentDate": 2015-04-09T07:19:16.000Z,
       "paymentType": "card",
       "referenceId": "1286",

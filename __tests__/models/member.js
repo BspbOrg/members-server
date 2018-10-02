@@ -107,6 +107,21 @@ describe('model member', () => {
           })
         })
       })
+
+      test('can not be created with family members', async () => {
+        const child = await ah.api.models.member.create(generateMember())
+        try {
+          const parent = await ah.api.models.member.create(generateMember({ familyMembers: [child.id] }))
+          try {
+            const familyMembers = await parent.getFamilyMembers()
+            expect(familyMembers).toEqual([])
+          } finally {
+            parent.destroy({ force: true })
+          }
+        } finally {
+          child.destroy({ force: true })
+        }
+      })
     })
 
     describe('format phone number', async () => {

@@ -63,6 +63,21 @@ describe('model payment', () => {
       expect(payment2).toBeTruthy()
       expect(payment1.id).not.toEqual(payment2.id)
     })
+
+    test('can be created with members', async () => {
+      const member = await ah.api.models.member.create(generateMember())
+      try {
+        const payment = await ah.api.models.payment.create(generatePayment({ members: [member.id] }))
+        try {
+          const members = await payment.getMembers()
+          expect(members).toEqual([expect.objectContaining({ id: member.id })])
+        } finally {
+          payment.destroy({ force: true })
+        }
+      } finally {
+        member.destroy({ force: true })
+      }
+    })
   })
 
   describe('with some payments', () => {

@@ -14,7 +14,7 @@ module.exports = class ImportBoricaPayments extends Task {
 
   async run () {
     const { cursor, payments } = await api.integration.getPaymentsForSync({ cursor: this.cursor })
-    const updatedMembers = await Promise.all(payments.map(async ({ referenceType, referenceId, username, ...paymentInfo }) => {
+    const updatedMembers = await Promise.all(payments.map(async ({ referenceType, referenceId, username, membershipType, ...paymentInfo }) => {
       const existingPayment = await api.models.payment.unscoped().findOne({
         where: { referenceId, referenceType },
         attributes: ['id']
@@ -33,12 +33,19 @@ module.exports = class ImportBoricaPayments extends Task {
         return
       }
 
+      const billingMemberId = member.id
+      let members = [billingMemberId]
+      if (membershipType === 'family') {
+        members = [...members, ...(await member.getFamilyMembers()).map(m => m.id)]
+      }
+
       await api.models.payment.create({
         referenceId,
         referenceType,
         ...paymentInfo,
-        billingMemberId: member.id,
-        members: [member.id]
+        membershipType,
+        billingMemberId,
+        members
       })
 
       return member.id

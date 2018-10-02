@@ -100,6 +100,19 @@ module.exports = class IntegrationTool {
     })
   }
 
+  async getMembershipTypeFromPaymentAmount (amount) {
+    switch (amount) {
+      case 7:
+        return 'discounted'
+      case 10:
+        return 'regular'
+      case 15:
+        return 'family'
+      case 20:
+        return 'group'
+    }
+  }
+
   async getPaymentsForSync ({ cursor: lastCursor, limit = 500 } = {}) {
     const { rows, cursor } = await this.fetchPayments({ lastCursor, limit })
     const decodedPayments = await Promise.all(
@@ -109,16 +122,16 @@ module.exports = class IntegrationTool {
     const paymentIds = successPayments.map(({ paymentId }) => paymentId)
     const paymentUsernames = await this.fetchPaymentMembers(paymentIds)
     const mapping = paymentUsernames.reduce((map, { paymentId, username }) => ({ ...map, [paymentId]: username }), {})
-    const payments = successPayments.map(({ paymentId, amount, timestamp, type, terminalId, orderId }) => ({
+    const payments = await Promise.all(successPayments.map(async ({ paymentId, amount, timestamp, type, terminalId, orderId }) => ({
       amount,
       paymentDate: timestamp,
-      membershipType: 'regular',
+      membershipType: await this.getMembershipTypeFromPaymentAmount(amount),
       paymentType: 'card',
       username: mapping[paymentId],
       info: `${orderId}/${terminalId}/${type}`,
       referenceType: 'borica',
       referenceId: paymentId
-    }))
+    })))
     return {
       cursor,
       payments
