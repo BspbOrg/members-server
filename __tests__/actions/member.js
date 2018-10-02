@@ -97,6 +97,11 @@ describe('action member', () => {
             const { memberMatch, memberNotMatch } = await setup({ fieldName, ...field })
             await testSearch({ memberMatch, memberNotMatch, q: field.matchValue.slice(1, -1) })
           })
+
+          test(`should match terms ${fieldName}`, async () => {
+            const { memberMatch, memberNotMatch } = await setup({ fieldName, ...field })
+            await testSearch({ memberMatch, memberNotMatch, q: ` ${field.matchValue} ${field.matchValue} ` })
+          })
         })
       })
     })

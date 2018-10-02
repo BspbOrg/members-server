@@ -17,21 +17,29 @@ class List extends Action {
     this.exportName = 'members'
     this.inputs = {
       context: {},
-      q: {}
+      q: { formatter: q => q.split(/\s+/).filter(w => w), default: '' }
     }
   }
 
   async run ({ params: { limit, offset, context, q, outputType }, response }) {
     const query = {
-      ...(q ? {
-        where: {
-          [Op.or]: [
-            ...QUERY_FIELDS.map(field => ({
-              [field]: { [api.sequelize.sequelize.options.dialect === 'postgres' ? Op.iLike : Op.like]: `%${q}%` }
-            }))
-          ]
-        }
-      } : {}),
+      ...(
+        q.length > 0
+          ? {
+            where: {
+              [Op.and]: [
+                ...q.map(w => ({
+                  [Op.or]: [
+                    ...QUERY_FIELDS.map(field => ({
+                      [field]: { [api.sequelize.sequelize.options.dialect === 'postgres' ? Op.iLike : Op.like]: `%${w}%` }
+                    }))
+                  ]
+                }))
+              ]
+            }
+          }
+          : {}
+      ),
       ...(limit !== -1 ? { offset, limit } : {}),
       include: ['familyMembers']
     }
