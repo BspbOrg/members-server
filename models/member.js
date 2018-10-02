@@ -2,6 +2,8 @@ const { Model } = require('sequelize')
 const PNF = require('google-libphonenumber').PhoneNumberFormat
 const phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance()
 const emailValidator = require('email-validator')
+const formatDate = require('date-fns/format')
+const bgLocale = require('date-fns/locale/bg')
 
 class Member extends Model {
   static init (sequelize, DataTypes) {
@@ -201,6 +203,14 @@ class Member extends Model {
           firstName: this.firstName,
           lastName: this.lastName,
           cardId: this.cardId
+        }
+      case 'card-print':
+        return {
+          Number: this.cardId,
+          FirstName: this.firstName,
+          LastName: this.lastName,
+          Name: `${this.firstName} ${this.lastName}`,
+          Valid: `Валидна до: ${formatDate(this.membershipEndDate, 'MMMM YYYY', { locale: bgLocale })}`
         }
       default:
         return super.toJSON()

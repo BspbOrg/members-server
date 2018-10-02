@@ -12,12 +12,15 @@ module.exports = class OutputFormatInitializer extends Initializer {
     api.actions.addMiddleware({
       name: 'outputFormat',
       global: false,
-      preProcessor: ({ actionTemplate: { inputs } }) => {
+      preProcessor: ({ actionTemplate: { exportName, inputs } }) => {
         if (!inputs.outputType) {
           inputs.outputType = {
             default: (value, { connection: { extension } }) => value || extension || 'json',
             validator: (value) => ['csv', 'json'].includes(value)
           }
+        }
+        if (!inputs.outputFilename) {
+          inputs.outputFilename = {}
         }
       },
       postProcessor: async (
@@ -29,12 +32,12 @@ module.exports = class OutputFormatInitializer extends Initializer {
           toRender
         }) => {
         if (error) return
-        const { outputType } = params
+        const { outputType, outputFilename } = params
         if (outputType === 'json') return
         const { rawConnection: { responseHeaders } } = connection
         switch (outputType) {
           case 'csv':
-            const filename = `${exportName}-${formatDate(Date.now())}.${outputType}`
+            const filename = outputFilename || `${exportName}-${formatDate(Date.now())}.${outputType}`
             responseHeaders.push(['content-type', 'text/csv; charset=utf-8'])
             responseHeaders.push(['content-disposition', `attachment; filename="${filename}"`])
             toRender = false
