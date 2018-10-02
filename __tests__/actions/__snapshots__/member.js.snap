@@ -16,6 +16,7 @@ Object {
   "id": 1,
   "lastName": "Member",
   "membershipEndDate": "9999-12-31",
+  "membershipFirstDate": null,
   "membershipStartDate": "2018-06-06",
   "middleName": "Populated",
   "originalSource": "fixtures",
