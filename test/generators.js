@@ -1,21 +1,21 @@
-const { assign } = Object
 const addDays = require('date-fns/add_days')
 const format = require('date-fns/format')
 exports.generateUser = (opts) => {
   const i = exports.generateUser.index++
-  return assign({
+  return {
     firstName: `First name ${i}`,
     lastName: `Last name ${i}`,
     email: `user${i}@bspb.org`,
     username: `user${i}`,
-    password: 'secret'
-  }, opts)
+    password: 'secret',
+    ...opts
+  }
 }
 exports.generateUser.index = 0
 
 exports.generateMember = (opts) => {
   const i = exports.generateMember.index++
-  return assign({
+  return {
     firstName: `First name ${i}`,
     middleName: `Middle name ${i}`,
     lastName: `Last name ${i}`,
@@ -29,8 +29,9 @@ exports.generateMember = (opts) => {
     address: `Address ${i}`,
     phone: (i % 11 === 0) ? `+35989911122${i % 9 + 1}` : null,
     category: (i % 3 === 0) ? 'student' : ((i % 3 === 1) ? 'regular' : 'retired'),
-    membershipStartDate: format(addDays('2015-05-10', i + 1), 'YYYY-MM-DD')
-  }, opts)
+    membershipStartDate: format(addDays('2015-05-10', i + 1), 'YYYY-MM-DD'),
+    ...opts
+  }
 }
 exports.generateMember.index = 0
 
