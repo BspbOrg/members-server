@@ -41,7 +41,8 @@ class List extends Action {
           : {}
       ),
       ...(limit !== -1 ? { offset, limit } : {}),
-      include: ['familyMembers']
+      include: ['familyMembers'],
+      order: [['firstName', 'ASC'], ['lastName', 'ASC'], ['cardId', 'ASC']]
     }
     const res = await api.models.member.findAndCountAll(query)
     response.data = await Promise.all(res.rows.map(u => u.toJSON(context)))
