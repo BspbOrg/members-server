@@ -115,6 +115,7 @@ class Update extends Show {
       category: {},
       familyMembers: {},
       membershipStartDate: {},
+      membershipFirstDate: {},
       context: {}
     }
   }
@@ -151,6 +152,7 @@ class Create extends Show {
       phone: {},
       familyMembers: {},
       membershipStartDate: {},
+      membershipFirstDate: {},
       context: {}
     }
   }
