@@ -5,7 +5,7 @@ const { Op } = require('sequelize')
 
 const QUERY_FIELDS = [
   'username', 'firstName', 'middleName', 'lastName', 'email', 'phone', 'accessId', 'cardId', 'country',
-  'city', 'postalCode', 'address', 'category'
+  'city', 'postalCode', 'address'
 ]
 
 class List extends Action {
@@ -17,16 +17,18 @@ class List extends Action {
     this.exportName = 'members'
     this.inputs = {
       context: {},
-      q: { formatter: q => q.split(/\s+/).filter(w => w), default: '' }
+      q: { formatter: q => q.split(/\s+/).filter(w => w), default: '' },
+      category: {},
+      expiredMembership: {}
     }
   }
 
-  async run ({ params: { limit, offset, context, q, outputType }, response }) {
+  async run ({ params: { limit, offset, context, q, outputType, category, expiredMembership }, response }) {
     const query = {
-      ...(
-        q.length > 0
-          ? {
-            where: {
+      where: {
+        ...(
+          q.length > 0
+            ? {
               [Op.and]: [
                 ...q.map(w => ({
                   [Op.or]: [
@@ -37,9 +39,19 @@ class List extends Action {
                 }))
               ]
             }
+            : {}
+        ),
+        ...(category ? {
+          category: {
+            [Op.eq]: category
           }
-          : {}
-      ),
+        } : {}),
+        ...(expiredMembership === '1' ? {
+          membershipEndDate: {
+            [Op.lte]: new Date()
+          }
+        } : {})
+      },
       ...(limit !== -1 ? { offset, limit } : {}),
       include: ['familyMembers'],
       order: [['firstName', 'ASC'], ['lastName', 'ASC'], ['cardId', 'ASC']]
