@@ -6,6 +6,9 @@ const ah = require('../../test/ah-setup')
 const { snapshot, testActionPermissions, testFieldChange, testPaging } = require('../../test/helpers')
 const { assign } = Object
 const { generateMember } = require('../../test/generators')
+const format = require('date-fns/format')
+const addDays = require('date-fns/add_days')
+const subDays = require('date-fns/sub_days')
 
 describe('action member', () => {
   beforeAll(ah.start)
@@ -36,13 +39,32 @@ describe('action member', () => {
       return generateMember({ firstName: 'TEMPORARY' })
     }, { firstName: 'TEMPORARY' })
 
+    test(`should match by category`, async () => {
+      const regularMember = await ah.api.models.member.create(generateMember({ category: 'regular' }))
+      const studentMember = await ah.api.models.member.create(generateMember({ category: 'student' }))
+      const response = await ah.runAdminAction(action, { category: 'student', limit: -1 })
+      expect(response).toBeSuccessAction()
+      const { data } = response
+      expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: studentMember.id })]))
+      expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: regularMember.id })]))
+    })
+
+    test(`should match by expired membership`, async () => {
+      const notExpiredMember = await ah.api.models.member.create(generateMember({ membershipEndDate: format(addDays(new Date(), 2), 'YYYY-MM-DD') }))
+      const expiredMember = await ah.api.models.member.create(generateMember({ membershipEndDate: format(subDays(new Date(), 2), 'YYYY-MM-DD') }))
+      const response = await ah.runAdminAction(action, { expiredMembership: '1', limit: -1 })
+      expect(response).toBeSuccessAction()
+      const { data } = response
+      expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: expiredMember.id })]))
+      expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: notExpiredMember.id })]))
+    })
+
     describe('filtering', () => {
       describe('q', () => {
         const STRING_FIELDS = ['firstName', 'username', 'middleName', 'lastName', 'accessId', 'cardId', 'country', 'city', 'postalCode', 'address']
         const FIELDS = {
           email: { matchValue: 'mail@acme.org', noMatchValue: 'snail@physics.org' },
           phone: { matchValue: '+359897823456', noMatchValue: '+359879876543' },
-          category: { matchValue: 'regular', noMatchValue: 'student' },
           ...(STRING_FIELDS.reduce((agg, fieldName) => ({
             ...agg,
             [fieldName]: {
