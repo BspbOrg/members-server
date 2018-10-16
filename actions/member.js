@@ -41,11 +41,7 @@ class List extends Action {
             }
             : {}
         ),
-        ...(category ? {
-          category: {
-            [Op.eq]: category
-          }
-        } : {}),
+        ...(category && { category }),
         ...(expiredMembership === '1' ? {
           membershipEndDate: {
             [Op.lte]: new Date()
