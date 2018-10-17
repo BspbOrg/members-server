@@ -1,9 +1,9 @@
 language: node_js
 node_js:
-- 8
+  - 8
 cache:
   directories:
-  - node_modules
+    - node_modules
 services:
   - postgresql
   - mysql
@@ -30,8 +30,8 @@ after_script:
 deploy:
   provider: heroku
   api_key:
-    secure: jZPjSBhoKgHfddlRJ+9UyMDRI/76l68ShWY7HqqZqmv/PSXdVnoc0d0xmCCMA8p9Cw5oP2iea0b8a3dK8VkqmghnCtmKBWdsWRKavgY5xjn5+bIiH5pTxI/SKGHwg4EAEcXW7VrR6VAFTJ2Ja8ypquOYNLY0VS814dFG5U+2cOhsgY5RTUyoF2dnK150L+fZNiL+67gvlDOrRI0sQzzXTyiExI4z0bYQ4KMKuVG5NS8ReBEyXkeIEfY/R3i3j95+qB4b5vpuHTsoNYgc8jGn/iHEgxhFvFX0h+UolohK1tWUrkqcdWpGtzQ98U3f07WxC2StDWowzNtzAgUCJ5nCS4syZCbhxrIE0dGKpHRvnkGmBztItXmnH9SJ/RacreIMtJvYLZpJAb9QYVw2ibsl19a0HFBNaQ1eA8MIdBR+XCKjXmCDJ9r4DQwBfr+qVur2G+qBS3Ticae2aj1qm6F7d5MeV9k/9vLoDTDOtZD9uuwXCadecupc8mqxWoHLMgZUPxzY39YmK8OwFXualh0LqfYf7Y5RzWG7hkwyMYhh0lWHSJr4IThDFnFf73QZIR/pvIwa74Se4TpG74Xg0vmp3F4fUqpizP5S3BS3FEigKAr+MmKrrs1K6EK51T7dIUGuTeMpf3nIJAdbA596hcuxa8k/6u8/K94mMS3uKBUYbpM=
-  app:
+    secure: sPukIrAEy2tI+93AnZl/QzGBVStfTRGFaEApLLvmnCgW2xsNHzvMj7fYeRMFkQasREKXhwG0tEwWeJqH7uPsWE7/Da2DQTLBrd6rEsaNljLWH5BeLEnHYCye+OiEBka+z53eG8ITs1wG/g7C8QGeXXUBsiG8+ZS9jRRRbNAJ/uF5oDLQlX+/VhSuSXjvs5LsvKVhfaIRhKleSFF7hu3iNeUZrG0RpVVbu/kGfyrMv94ikML9SP5LKuerY0Aqe46EJxBbYcmaQsb3pcJfvsSU/pYKAtRSjyHV3fg4R823EbmC3r+P6yFCam3a2mOMUz74jMTMYJimfv44uW6q/6WfBz5m9ktyNGpqb0fmoKv65lEXMU6u47H2AOr9LvBw42Ff+UjTNMGBBqjrWSnL9aZi/FDE+Xnjo/FS1YRc64PH+imj7azs8rMuTRZf1uOPeDHU3E5icGvK0p1ts8z0fTZaQvJlqGQmHWskgixegXnzi9cWSEpSYts64MdBPo4T5amjzpjKOUsaVb7qteYzqFCeWzfgubSmgEmty6XQsAvYncghfzVvBEupU9J+Vq5ZDxypfjpljzGr+ddO7SVUWwlM8m+Awktcn3SrnKjTBpNGIJ8FOXIVw+iO0mQQgfPrDbAmzFEtc/FQ2lMPtwkdb0TD/pg/ceteEsS+EBWtgXjUFwg=
+  app: 
     master: bspb-members-staging
   on:
     repo: BspbOrg/members-server
@@ -40,3 +40,4 @@ deploy:
 env:
   global:
     secure: qlFEymOAYt0wuH4KZ7su6RN8V6C1uwEO1tbkCsVbWTpAjWwaPsA1rmeYKQA5Oy9wJ8HHkYCpD8bAY3PoVoyCza2GfQjs3A24/Sm5Gb/bOt2K3ajcrsQnny7U+LYI5phbyuiuOQACQjYfFTh8QAZ4yITQaau/cSknC+y5lFV4wDEh0e/pe0bCEtAh0IYIpwcc2VhsJzUgqD6pvUzynO01xToY5wNa6OhwgPpIJ+vWL3drx0mlWlDTMfLHy4ugwBKsud2VXblht53rrKVgEvjo8LMxCORrCRLBDbAA3V8ZqPrebJhbXI/B2CjASIsptmKX5ESJDWDGCAaBRlyqPlSNxEnccyts6pXEfKIACC/q7+MRHO+wdG2j+zG3irs8t0sAcl6BPZfYy5agHN6bxoUSBr8ECvcQeRLPyJFOzEa56uQT8FSYJFPjxHhQf80XOHU+wvmvCwYMTWPWdj9zZRknbMdEUPSYsVvsBzevpP/Ct0werVqP9rRqqMG7ykL8MUPXVCPEgaqnFxvJo92EJySmt1fn3FaiN4gi0M/27GHwyAliN+eOl6vgsgawo4yn1+7UFPqmtDmDiWkKYRGgCc9ylbMP7CSi3LMuRKVGHmbA4eE+O/yM5n7IZN52crdoxURdr7r/7qC5PrJcup4eP5LCWpSW9PUilmZVe+mEnFnbX6Q=
+
