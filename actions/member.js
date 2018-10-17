@@ -19,11 +19,12 @@ class List extends Action {
       context: {},
       q: { formatter: q => q.split(/\s+/).filter(w => w), default: '' },
       category: {},
-      expiredMembership: {}
+      expiredMembership: {},
+      selection: {}
     }
   }
 
-  async run ({ params: { limit, offset, context, q, outputType, category, expiredMembership }, response }) {
+  async run ({ params: { limit, offset, context, q, outputType, category, expiredMembership, selection }, response }) {
     const query = {
       where: {
         ...(
@@ -45,6 +46,11 @@ class List extends Action {
         ...(expiredMembership === '1' ? {
           membershipEndDate: {
             [Op.lte]: new Date()
+          }
+        } : {}),
+        ...(selection ? {
+          id: {
+            [Op.in]: selection
           }
         } : {})
       },
