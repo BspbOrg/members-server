@@ -19,11 +19,12 @@ exports.list = class List extends Action {
       paymentType: {},
       minAmount: { formatter: parseFloat },
       maxAmount: { formatter: parseFloat },
-      billingMemberId: { formatter: parseInt }
+      billingMemberId: { formatter: parseInt },
+      selection: {}
     }
   }
 
-  async run ({ params: { offset, limit, memberId, context, fromDate, toDate, membershipType, paymentType, minAmount, maxAmount, billingMemberId }, response }) {
+  async run ({ params: { offset, limit, memberId, context, fromDate, toDate, membershipType, paymentType, minAmount, maxAmount, billingMemberId, selection }, response }) {
     const query = {
       where: {
         ...(fromDate || toDate ? {
@@ -46,6 +47,11 @@ exports.list = class List extends Action {
             { '$members->payment_members.memberId$': memberId },
             { billingMemberId: memberId }
           ]
+        } : {}),
+        ...(selection ? {
+          id: {
+            [Op.in]: selection
+          }
         } : {})
       },
       order: [['paymentDate', 'DESC']],
