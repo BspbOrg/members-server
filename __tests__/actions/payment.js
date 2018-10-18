@@ -449,4 +449,46 @@ describe('action payment', () => {
       expect(enqueueSpy).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({ id: 1 })]))
     })
   })
+
+  describe('ordering', async () => {
+    const action = 'payment:list'
+
+    let firstPayment
+    let secondPayment
+
+    beforeAll(async () => {
+      await ah.api.models.payment.destroy({ where: {}, force: true })
+      firstPayment = await ah.api.models.payment.create(generatePayment({ amount: 1, info: 'info' }))
+      secondPayment = await ah.api.models.payment.create(generatePayment({ amount: 9999, info: 'info' }))
+    })
+
+    afterAll(async () => {
+      await firstPayment.destroy({ force: true })
+      await secondPayment.destroy({ force: true })
+    })
+
+    test('should return ordered list of payments by single key ascending', async () => {
+      const response = await ah.runAdminAction(action, { order: 'amount', asc: 'true' })
+      const { data } = response
+      expect(data[0]).toEqual(expect.objectContaining({ id: firstPayment.id }))
+    })
+
+    test('should return ordered list of payments by single key descending', async () => {
+      const response = await ah.runAdminAction(action, { order: 'amount', asc: 'false' })
+      const { data } = response
+      expect(data[0]).toEqual(expect.objectContaining({ id: secondPayment.id }))
+    })
+
+    test('should return ordered list of payments by multi key ascending', async () => {
+      const response = await ah.runAdminAction(action, { order: 'info+amount', asc: 'true' })
+      const { data } = response
+      expect(data[0]).toEqual(expect.objectContaining({ id: firstPayment.id }))
+    })
+
+    test('should return ordered list of payments by multi key descending', async () => {
+      const response = await ah.runAdminAction(action, { order: 'info+amount', asc: 'false' })
+      const { data } = response
+      expect(data[0]).toEqual(expect.objectContaining({ id: secondPayment.id }))
+    })
+  })
 })
