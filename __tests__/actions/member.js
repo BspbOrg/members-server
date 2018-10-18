@@ -35,6 +35,45 @@ describe('action member', () => {
       ]))
     })
 
+    describe('ordering', async () => {
+      let firstMember
+      let secondMember
+
+      beforeAll(async () => {
+        firstMember = await ah.api.models.member.create(generateMember({ firstName: 'ABC_Name', lastName: 'Member' }))
+        secondMember = await ah.api.models.member.create(generateMember({ firstName: 'ZYX_Name', lastName: 'Member' }))
+      })
+
+      afterAll(async () => {
+        await firstMember.destroy({ force: true })
+        await secondMember.destroy({ force: true })
+      })
+
+      test('should return ordered list of members by single key ascending', async () => {
+        const response = await ah.runAdminAction(action, { order: 'firstName', asc: 'true' })
+        const { data } = response
+        expect(data[0]).toEqual(expect.objectContaining({ firstName: firstMember.firstName }))
+      })
+
+      test('should return ordered list of members by single key descending', async () => {
+        const response = await ah.runAdminAction(action, { order: 'firstName', asc: 'false' })
+        const { data } = response
+        expect(data[0]).toEqual(expect.objectContaining({ firstName: secondMember.firstName }))
+      })
+
+      test('should return ordered list of members by multi key ascending', async () => {
+        const response = await ah.runAdminAction(action, { order: 'lastName+firstName', asc: 'true' })
+        const { data } = response
+        expect(data[0]).toEqual(expect.objectContaining({ firstName: firstMember.firstName }))
+      })
+
+      test('should return ordered list of members by multi key descending', async () => {
+        const response = await ah.runAdminAction(action, { order: 'lastName+firstName', asc: 'false' })
+        const { data } = response
+        expect(data[0]).toEqual(expect.objectContaining({ firstName: secondMember.firstName }))
+      })
+    })
+
     testPaging(action, 'member', () => {
       return generateMember({ firstName: 'TEMPORARY' })
     }, { firstName: 'TEMPORARY' })
