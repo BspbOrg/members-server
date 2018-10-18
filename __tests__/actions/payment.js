@@ -266,6 +266,22 @@ describe('action payment', () => {
           await member2.destroy({ force: true })
         }
       })
+
+      test('should match by given id selection', async () => {
+        const payment1 = await ah.api.models.payment.create(generatePayment())
+        const payment2 = await ah.api.models.payment.create(generatePayment())
+        const payment3 = await ah.api.models.payment.create(generatePayment())
+
+        const response = await ah.runAdminAction(action, { selection: [payment1.id, payment3.id], limit: -1 })
+        const { data } = response
+        expect(data.length).toEqual(2)
+        expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: payment1.id })]))
+        expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: payment3.id })]))
+
+        await payment1.destroy({ force: true })
+        await payment2.destroy({ force: true })
+        await payment3.destroy({ force: true })
+      })
     })
   })
 
