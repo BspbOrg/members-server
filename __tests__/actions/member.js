@@ -35,22 +35,6 @@ describe('action member', () => {
       ]))
     })
 
-    test('should match by given id array', async () => {
-      const member1 = await ah.api.models.member.create(generateMember())
-      const member2 = await ah.api.models.member.create(generateMember())
-      const member3 = await ah.api.models.member.create(generateMember())
-
-      const response = await ah.runAdminAction(action, { selection: [member1.id, member3.id], limit: -1 })
-      const { data } = response
-      expect(data.length).toEqual(2)
-      expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
-      expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member3.id })]))
-
-      await member1.destroy({ force: true })
-      await member2.destroy({ force: true })
-      await member3.destroy({ force: true })
-    })
-
     testPaging(action, 'member', () => {
       return generateMember({ firstName: 'TEMPORARY' })
     }, { firstName: 'TEMPORARY' })
@@ -141,6 +125,22 @@ describe('action member', () => {
             await testSearch({ memberMatch, memberNotMatch, q: ` ${field.matchValue} ${field.matchValue} ` })
           })
         })
+      })
+
+      test('should match by given id selection', async () => {
+        const member1 = await ah.api.models.member.create(generateMember())
+        const member2 = await ah.api.models.member.create(generateMember())
+        const member3 = await ah.api.models.member.create(generateMember())
+
+        const response = await ah.runAdminAction(action, { selection: [member1.id, member3.id], limit: -1 })
+        const { data } = response
+        expect(data.length).toEqual(2)
+        expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
+        expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member3.id })]))
+
+        await member1.destroy({ force: true })
+        await member2.destroy({ force: true })
+        await member3.destroy({ force: true })
       })
     })
   })
