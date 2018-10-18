@@ -20,11 +20,13 @@ class List extends Action {
       q: { formatter: q => q.split(/\s+/).filter(w => w), default: '' },
       category: {},
       expiredMembership: {},
-      selection: {}
+      selection: {},
+      order: {},
+      asc: {}
     }
   }
 
-  async run ({ params: { limit, offset, context, q, outputType, category, expiredMembership, selection }, response }) {
+  async run ({ params: { limit, offset, context, q, outputType, category, expiredMembership, selection, order, asc }, response }) {
     const query = {
       where: {
         ...(
@@ -55,8 +57,15 @@ class List extends Action {
         } : {})
       },
       ...(limit !== -1 ? { offset, limit } : {}),
-      include: ['familyMembers'],
-      order: [['firstName', 'ASC'], ['lastName', 'ASC'], ['cardId', 'ASC']]
+      include: ['familyMembers']
+    }
+    if (order != null) {
+      query.order = order.split('+').map(function (key) {
+        return [key, (asc === 'true' ? 'ASC' : 'DESC')]
+      })
+      // query.order = [[order, (asc === 'true' ? 'ASC' : 'DESC')]]
+    } else {
+      query.order = [['firstName', 'ASC'], ['lastName', 'ASC'], ['cardId', 'ASC']]
     }
     const res = await api.models.member.findAndCountAll(query)
     response.data = await Promise.all(res.rows.map(u => u.toJSON(context)))
