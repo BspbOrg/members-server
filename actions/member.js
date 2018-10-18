@@ -63,7 +63,6 @@ class List extends Action {
       query.order = order.split('+').map(function (key) {
         return [key, (asc === 'true' ? 'ASC' : 'DESC')]
       })
-      // query.order = [[order, (asc === 'true' ? 'ASC' : 'DESC')]]
     } else {
       query.order = [['firstName', 'ASC'], ['lastName', 'ASC'], ['cardId', 'ASC']]
     }

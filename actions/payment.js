@@ -20,11 +20,13 @@ exports.list = class List extends Action {
       minAmount: { formatter: parseFloat },
       maxAmount: { formatter: parseFloat },
       billingMemberId: { formatter: parseInt },
-      selection: {}
+      selection: {},
+      order: {},
+      asc: {}
     }
   }
 
-  async run ({ params: { offset, limit, memberId, context, fromDate, toDate, membershipType, paymentType, minAmount, maxAmount, billingMemberId, selection }, response }) {
+  async run ({ params: { offset, limit, memberId, context, fromDate, toDate, membershipType, paymentType, minAmount, maxAmount, billingMemberId, selection, order, asc }, response }) {
     const query = {
       where: {
         ...(fromDate || toDate ? {
@@ -54,8 +56,14 @@ exports.list = class List extends Action {
           }
         } : {})
       },
-      order: [['paymentDate', 'DESC']],
       ...(limit !== -1 && !memberId ? { offset, limit } : {})
+    }
+    if (order != null) {
+      query.order = order.split('+').map(function (key) {
+        return [key, (asc === 'true' ? 'ASC' : 'DESC')]
+      })
+    } else {
+      query.order = [['paymentDate', 'DESC']]
     }
     const res = await api.models.payment.scopeContext(context).findAndCountAll(query)
     if (limit !== -1 && memberId) {
