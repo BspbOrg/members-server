@@ -88,4 +88,35 @@ describe('task membership:recompute', () => {
     await run({ memberId: 1 })
     expect(spy).toHaveBeenCalledWith([1])
   })
+
+  test('should not send email to existing members', async () => {
+    const spy = jest.spyOn(ah.api.tasks.tasks['membership:recompute'], 'sendWelcomeMail')
+    await prepare({ memberId: 1, payments: [{ paymentDate: '2018-10-21' }] })
+    await run({ memberId: 1 })
+
+    expect(spy).toHaveBeenCalledTimes(0)
+  })
+
+  test('should send email to new members', async () => {
+    var member = null
+    try {
+      while (!member) {
+        member = await ah.api.models.member.create(generateMember({ cardId: null }))
+      }
+    } catch (err) {}
+
+    const spy = jest.spyOn(ah.api.tasks.tasks['membership:recompute'], 'sendWelcomeMail')
+    await ah.api.models.payment.create(
+      generatePayment(
+        {
+          billingMemberId: member.id,
+          members: [member.id],
+          paymentDate: '2018-10-21'
+        }
+      )
+    )
+    await run({ memberId: member.id })
+
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
 })
