@@ -21,9 +21,6 @@ describe('task SendMail:run', () => {
   beforeAll(ah.start)
   afterAll(ah.stop)
 
-  beforeEach(async () => {
-  })
-
   test('should send email', async () => {
     await run(params)
   })
