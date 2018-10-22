@@ -13,20 +13,24 @@ class List extends Action {
     super()
     this.name = 'member:list'
     this.description = 'List Members. Requires admin role'
-    this.middleware = ['auth.hasRole.admin', 'paging', 'outputFormat']
+    this.middleware = ['auth.hasRole.admin', 'paging', 'outputFormat', 'sorting']
     this.exportName = 'members'
     this.inputs = {
       context: {},
       q: { formatter: q => q.split(/\s+/).filter(w => w), default: '' },
       category: {},
       expiredMembership: {},
-      selection: {},
-      order: {},
-      asc: {}
+      selection: {}
     }
   }
 
-  async run ({ params: { limit, offset, context, q, outputType, category, expiredMembership, selection, order, asc }, response }) {
+  async run (
+    {
+      params: { limit, offset, context, q, outputType, category, expiredMembership, selection },
+      response,
+      sorting
+    }
+  ) {
     const query = {
       where: {
         ...(
@@ -56,15 +60,9 @@ class List extends Action {
           }
         } : {})
       },
+      order: sorting({ defaultValue: [['firstName', 'ASC'], ['lastName', 'ASC'], ['cardId', 'ASC']] }),
       ...(limit !== -1 ? { offset, limit } : {}),
       include: ['familyMembers']
-    }
-    if (order != null) {
-      query.order = order.split('+').map(function (key) {
-        return [key, (asc === 'true' ? 'ASC' : 'DESC')]
-      })
-    } else {
-      query.order = [['firstName', 'ASC'], ['lastName', 'ASC'], ['cardId', 'ASC']]
     }
     const res = await api.models.member.findAndCountAll(query)
     response.data = await Promise.all(res.rows.map(u => u.toJSON(context)))
