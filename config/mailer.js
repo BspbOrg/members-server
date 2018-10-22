@@ -13,7 +13,7 @@ exports.default = {
         }
       },
       mailOptions: {
-        from: 'postmaster@sandbox1f0fe78d52b84d7984c690f5c58fa75d.mailgun.org'
+        from: process.env.FROM_EMAIL || 'postmaster@sandbox1f0fe78d52b84d7984c690f5c58fa75d.mailgun.org'
       },
       templates: path.join(__dirname, '..', 'templates')
     }
