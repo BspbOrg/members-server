@@ -19,6 +19,7 @@ Object {
   "membershipFirstDate": null,
   "membershipStartDate": "2018-06-06",
   "middleName": "Populated",
+  "notifiedForExpiringDate": null,
   "originalSource": "fixtures",
   "phone": "+359890111222",
   "postalCode": "4000",

@@ -1,5 +1,6 @@
 const { api, Task } = require('actionhero')
 const addDays = require('date-fns/add_days')
+const format = require('date-fns/format')
 
 module.exports = class ExpirationReminder extends Task {
   constructor () {
@@ -13,8 +14,8 @@ module.exports = class ExpirationReminder extends Task {
     this.cursor = null
   }
   async run () {
-    var now = new Date()
-    var expiringDate = addDays(now, api.config.expirationReminder.daysBeforeExpiration)
+    const now = format(addDays(new Date(), api.config.expirationReminder.minDaysBeforeExpiration), 'YYYY-MM-DD')
+    const expiringDate = format(addDays(new Date(), api.config.expirationReminder.daysBeforeExpiration), 'YYYY-MM-DD')
     api.log('Check for members with expiring membership between ' + now + ' and ' + expiringDate, this.name)
     api.expirationReminder.processMemberships(now, expiringDate)
   }

@@ -146,6 +146,13 @@ class Member extends Model {
         validate: {
           isDate: true
         }
+      },
+      notifiedForExpiringDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+        validate: {
+          isDate: true
+        }
       }
     }, {
       sequelize,
