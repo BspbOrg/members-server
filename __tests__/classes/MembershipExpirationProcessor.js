@@ -123,7 +123,7 @@ describe('MembershipExpiration', () => {
     test('do not notify expiring members who are not billing member', async () => {
       const expirationProcessor = setup()
       const sendMailSpy = jest.spyOn(expirationProcessor, 'enqueueSendMail')
-      await ah.api.models.member.create(await generateMember({ id: 111 }))
+      await ah.api.models.member.create(await generateMember({ id: 111, membershipEndDate: addDays(fromDate, 27) }))
       await generateMemberAndPayment({
         memberOpts: {
           id: 11,
