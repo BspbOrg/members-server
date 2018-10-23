@@ -3,10 +3,8 @@ const { Op } = require('sequelize')
 module.exports = class MembershipExpirationProcessor {
   constructor ({ api, config }) {
     this.api = api
-    this.daysBeforeExpiration = config.daysBeforeExpiration
     this.emailTemplateName = config.emailTemplateName
     this.emailSubject = config.emailSubject
-    this.timeInDay = 1000 * 60 * 60 * 24
   }
 
   async processMemberships (fromDate, toDate) {
@@ -14,21 +12,33 @@ module.exports = class MembershipExpirationProcessor {
       return new Error('Provide time period!')
     }
 
-    var exipiringMemberships = await this.api.models.member.findAll({
+    const exipiringMemberships = await this.api.models.member.findAll({
       where: { membershipEndDate: { [Op.between]: [fromDate, toDate] } }
     })
 
-    var results = exipiringMemberships.map(async (member) => {
-      var payments = await this.api.models.payment.findAll({
+    const results = exipiringMemberships.map(async (member) => {
+      if (member.notifiedForExpiringDate === member.membershipEndDate) {
+        return
+      }
+      const payments = await this.api.models.payment.findAll({
+        limit: 1,
         order: [
           ['paymentDate', 'DESC']
         ],
-        where: { billingMemberId: { [Op.eq]: member.id } }
+        include: [{
+          model: this.api.models.member,
+          as: 'members',
+          through: {
+            where: { 'memberid': member.id }
+          }
+        }]
       })
 
-      if (payments && payments[0] && payments[0].paymentType !== 'group') {
+      const payment = payments[0]
+      if (payment && payment.billingMemberId === member.id && payment.paymentType !== 'group') {
         this.api.log('Sending mail to member.id: ' + member.id)
         await this.enqueueSendMail(member)
+        await member.update({ notifiedForExpiringDate: member.membershipEndDate })
       }
     })
 
@@ -43,7 +53,7 @@ module.exports = class MembershipExpirationProcessor {
           to: member.email,
           subject: this.emailSubject
         },
-        locals: { name: member.name }
+        locals: { name: member.name, membershipEndDate: member.membershipEndDate }
       })
   }
 }
