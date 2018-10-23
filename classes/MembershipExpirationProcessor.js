@@ -20,19 +20,8 @@ module.exports = class MembershipExpirationProcessor {
       if (member.notifiedForExpiringDate === member.membershipEndDate) {
         return
       }
-      const payments = await this.api.models.payment.findAll({
-        limit: 1,
-        order: [
-          ['paymentDate', 'DESC']
-        ],
-        include: [{
-          model: this.api.models.member,
-          as: 'members',
-          through: {
-            where: { 'memberid': member.id }
-          }
-        }]
-      })
+
+      const payments = await this.api.models.payment.scopeMember(member.id).findAll({ order: [['paymentDate', 'DESC']] })
 
       const payment = payments[0]
       if (payment && payment.billingMemberId === member.id && payment.paymentType !== 'group') {
