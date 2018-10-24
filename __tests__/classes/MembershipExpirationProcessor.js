@@ -5,6 +5,7 @@ const ah = require('../../test/ah-setup')
 const MembershipExpirationProcessor = require('../../classes/MembershipExpirationProcessor')
 const { generateMember, generatePayment } = require('../../test/generators')
 const addDays = require('date-fns/add_days')
+const subDays = require('date-fns/sub_days')
 
 const fromDate = new Date()
 
@@ -128,6 +129,98 @@ describe('MembershipExpiration', () => {
       await processor.processMemberships(fromDate, addDays(fromDate, 30))
 
       expect(sendMailSpy).not.toHaveBeenCalledWith(expect.objectContaining({ id: member.id }))
+    })
+
+    test('skip members who have no payments', async () => {
+      const { processor, sendMailSpy } = setup()
+
+      await ah.api.models.member.create(await generateMember({
+        membershipEndDate: addDays(fromDate, 27)
+      }))
+
+      await processor.processMemberships(fromDate, addDays(fromDate, 30))
+
+      expect(sendMailSpy).not.toHaveBeenCalled()
+    })
+
+    test('members with older regular payment and newer group payment -> no email', async () => {
+      const { processor, sendMailSpy } = setup()
+
+      const { member } = await generateMemberAndPayment({
+        memberOpts: {
+          membershipEndDate: addDays(fromDate, 27)
+        }
+      })
+
+      await ah.api.models.payment.create(generatePayment({
+        billingMemberId: member.id,
+        members: [member.id],
+        paymentDate: subDays(fromDate, 25),
+        paymentType: 'group'
+      }))
+
+      await processor.processMemberships(fromDate, addDays(fromDate, 30))
+
+      expect(sendMailSpy).not.toHaveBeenCalled()
+    })
+
+    test('members with newer regular payment and older group payment -> send ', async () => {
+      const { processor, sendMailSpy } = setup()
+
+      const { member } = await generateMemberAndPayment({
+        memberOpts: {
+          membershipEndDate: addDays(fromDate, 27)
+        },
+        paymentOps: {
+          paymentType: 'group'
+        }
+      })
+
+      await ah.api.models.payment.create(generatePayment({
+        billingMemberId: member.id,
+        members: [member.id],
+        paymentDate: subDays(fromDate, 25)
+      }))
+
+      await processor.processMemberships(fromDate, addDays(fromDate, 30))
+
+      expect(sendMailSpy).toHaveBeenCalledWith(expect.objectContaining({ id: member.id }))
+    })
+
+    test('members with family payment but also is billingMember -> send', async () => {
+      const { processor, sendMailSpy } = setup()
+
+      const familyMember = await ah.api.models.member.create(await generateMember({
+        membershipEndDate: addDays(fromDate, 27)
+      }))
+      const billingMember = await ah.api.models.member.create(await generateMember({
+        membershipEndDate: addDays(fromDate, 27)
+      }))
+      await billingMember.setFamilyMembers([familyMember])
+
+      await ah.api.models.payment.create(generatePayment({
+        billingMemberId: billingMember.id,
+        members: [billingMember.id, familyMember.id],
+        isFamilyPayment: true
+      }))
+
+      await processor.processMemberships(fromDate, addDays(fromDate, 30))
+
+      expect(sendMailSpy).toHaveBeenCalledWith(expect.objectContaining({ id: billingMember.id }))
+    })
+
+    test('members with expired membership (i.e. membershipEndDate < startDate) -> no email', async () => {
+      const { processor, sendMailSpy } = setup()
+
+      await generateMemberAndPayment({
+        memberOpts: {
+          membershipEndDate: subDays(fromDate, 27)
+        }
+      })
+
+      await processor.processMemberships(fromDate, addDays(fromDate, 30))
+
+      expect(sendMailSpy).not.toHaveBeenCalled()
     })
   })
 })
