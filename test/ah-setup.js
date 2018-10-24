@@ -31,8 +31,8 @@ const ah = module.exports = {
   adminConnection: undefined,
   userAuth: { email: 'user@bspb.org', password: 'secret' },
   adminAuth: { email: 'admin@bspb.org', password: 'secret' },
-  start: async () => {
-    api = ah.api = await actionhero.start()
+  start: async (config = {}) => {
+    api = ah.api = await actionhero.start({ configChanges: { ...config } })
     ah.userConnection = new ah.api.specHelper.Connection()
     ah.adminConnection = new ah.api.specHelper.Connection()
   },
