@@ -6,7 +6,6 @@ const MembershipExpirationProcessor = require('../../classes/MembershipExpiratio
 const { generateMember, generatePayment } = require('../../test/generators')
 const addDays = require('date-fns/add_days')
 
-const expectedError = new Error('Provide time period!')
 const fromDate = new Date()
 
 const setup = () => {
