@@ -25,12 +25,11 @@ module.exports = class MembershipExpirationProcessor {
     })
 
     const results = expiringMembership.map(async (member) => {
-      const payments = await this.api.models.payment.scopeMember(member.id).findAll({
+      const [payment] = await this.api.models.payment.scopeMember(member.id).findAll({
         order: [['paymentDate', 'DESC']]
       })
 
-      const payment = payments[0]
-      if (payment && payment.billingMemberId === member.id && payment.paymentType !== 'group') {
+      if (payment && payment.billingMemberId === member.id && payment.membershipType !== 'group') {
         this.api.log('Sending mail to member.id: ' + member.id)
         await this.enqueueSendMail(member)
         await member.update({ notifiedForExpiringDate: member.membershipEndDate })

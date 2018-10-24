@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MembershipExpiration processing memberships for expiration throw error when param fromDate is missing 1`] = `[Error: Provide time period!]`;
+
+exports[`MembershipExpiration processing memberships for expiration throw error when param toDate is missing 1`] = `[Error: Provide time period!]`;
