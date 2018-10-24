@@ -1,4 +1,4 @@
-const { Op } = require('sequelize')
+const { Op, col } = require('sequelize')
 
 module.exports = class MembershipExpirationProcessor {
   constructor ({ api, config }) {
@@ -13,15 +13,21 @@ module.exports = class MembershipExpirationProcessor {
     }
 
     const exipiringMemberships = await this.api.models.member.findAll({
-      where: { membershipEndDate: { [Op.between]: [fromDate, toDate] } }
+      where: {
+        membershipEndDate: { [Op.between]: [fromDate, toDate] },
+        notifiedForExpiringDate: {
+          [Op.or]: [
+            { [Op.eq]: null },
+            { [Op.ne]: col('membershipEndDate') }
+          ]
+        }
+      }
     })
 
     const results = exipiringMemberships.map(async (member) => {
-      if (member.notifiedForExpiringDate === member.membershipEndDate) {
-        return
-      }
-
-      const payments = await this.api.models.payment.scopeMember(member.id).findAll({ order: [['paymentDate', 'DESC']] })
+      const payments = await this.api.models.payment.scopeMember(member.id).findAll({
+        order: [['paymentDate', 'DESC']]
+      })
 
       const payment = payments[0]
       if (payment && payment.billingMemberId === member.id && payment.paymentType !== 'group') {
