@@ -12,7 +12,7 @@ module.exports = class MembershipExpirationProcessor {
       return new Error('Provide time period!')
     }
 
-    const exipiringMemberships = await this.api.models.member.findAll({
+    const expiringMembership = await this.api.models.member.findAll({
       where: {
         membershipEndDate: { [Op.between]: [fromDate, toDate] },
         notifiedForExpiringDate: {
@@ -24,7 +24,7 @@ module.exports = class MembershipExpirationProcessor {
       }
     })
 
-    const results = exipiringMemberships.map(async (member) => {
+    const results = expiringMembership.map(async (member) => {
       const payments = await this.api.models.payment.scopeMember(member.id).findAll({
         order: [['paymentDate', 'DESC']]
       })
