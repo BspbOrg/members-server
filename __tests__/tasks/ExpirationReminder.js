@@ -4,83 +4,84 @@
 
 const ah = require('../../test/ah-setup')
 const addDays = require('date-fns/add_days')
-const format = require('date-fns/format')
 
-const run = async () => (
-  ah.api.specHelper.runTask('expirationReminder')
-)
+const setup = async (config) => {
+  await ah.start(config)
+  ah.api.expirationReminder.processMemberships = jest.fn()
+  return ah.api.expirationReminder.processMemberships
+}
 
-describe('task expirationReminder:run', () => {
-  beforeAll(ah.start)
-  afterAll(ah.stop)
+const run = () => ah.api.specHelper.runTask('expirationReminder')
+
+describe('task expirationReminder', () => {
+  afterEach(async () => {
+    // need to wait a little, because quickly booting and shutting down actionhero leads to strange errors
+    await new Promise(resolve => setTimeout(resolve, 500))
+
+    await ah.stop()
+  })
 
   test('should start processMemberships', async () => {
-    const spy = jest.spyOn(ah.api.expirationReminder, 'processMemberships')
+    const mockProcess = await setup()
 
     await run()
 
-    expect(spy).toHaveBeenCalled()
+    expect(mockProcess).toHaveBeenCalled()
   })
 
-  test('should start processMemberships with correct from -to dates', async () => {
-    const spy = jest.spyOn(ah.api.expirationReminder, 'processMemberships')
-
-    const fromDate = format(addDays(new Date(), ah.api.config.expirationReminder.minDaysBeforeExpiration), 'YYYY-MM-DD')
-    const toDate = format(addDays(new Date(), ah.api.config.expirationReminder.daysBeforeExpiration), 'YYYY-MM-DD')
-
-    expect(spy).toHaveBeenCalledWith(fromDate, toDate)
-  })
-})
-
-describe('task expirationReminder:run validations', () => {
-  const expectedError = Error('Values for minDaysBeforeExpiration and daysBeforeExpiration should be numbers greater or equal to zero')
-  afterEach(ah.stop)
-
-  test('should validate minDaysBeforeExpiration for string values', async () => {
-    await ah.start({
-      expirationReminder: (api) => {
-        return {
-          minDaysBeforeExpiration: 'some string'
-        }
+  test('should pass correct from and to dates', async () => {
+    const mockProcess = await setup({
+      expirationReminder: {
+        minDaysBeforeExpiration: 10,
+        daysBeforeExpiration: 20
       }
     })
 
-    await expect(ah.api.specHelper.runTask('expirationReminder')).rejects.toEqual(expectedError)
+    const fromDate = addDays(new Date(), 10)
+    const toDate = addDays(new Date(), 20)
+
+    await run()
+
+    expect(mockProcess).toHaveBeenCalledWith(fromDate, toDate)
+  })
+
+  test('should validate minDaysBeforeExpiration for string values', async () => {
+    await setup({
+      expirationReminder: {
+        minDaysBeforeExpiration: 'some string'
+      }
+    })
+
+    await expect(run()).rejects.toMatchSnapshot()
   })
 
   test('should validate minDaysBeforeExpiration for negative values', async () => {
-    await ah.start({
-      expirationReminder: (api) => {
-        return {
-          minDaysBeforeExpiration: -2
-        }
+    await setup({
+      expirationReminder: {
+        minDaysBeforeExpiration: -2
       }
     })
 
-    await expect(ah.api.specHelper.runTask('expirationReminder')).rejects.toEqual(expectedError)
+    await expect(run()).rejects.toMatchSnapshot()
   })
 
   test('should validate daysBeforeExpiration for string values', async () => {
-    await ah.start({
-      expirationReminder: (api) => {
-        return {
-          daysBeforeExpiration: 'some string'
-        }
+    await setup({
+      expirationReminder: {
+        daysBeforeExpiration: 'some string'
       }
     })
 
-    await expect(ah.api.specHelper.runTask('expirationReminder')).rejects.toEqual(expectedError)
+    await expect(run()).rejects.toMatchSnapshot()
   })
 
   test('should validate daysBeforeExpiration for negative values', async () => {
-    await ah.start({
-      expirationReminder: (api) => {
-        return {
-          daysBeforeExpiration: -1
-        }
+    await setup({
+      expirationReminder: {
+        daysBeforeExpiration: -1
       }
     })
 
-    await expect(ah.api.specHelper.runTask('expirationReminder')).rejects.toEqual(expectedError)
+    await expect(run()).rejects.toMatchSnapshot()
   })
 })
