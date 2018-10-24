@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`task expirationReminder should validate daysBeforeExpiration for negative values 1`] = `[Error: Values for minDaysBeforeExpiration and daysBeforeExpiration should be numbers greater or equal to zero]`;
+
+exports[`task expirationReminder should validate daysBeforeExpiration for string values 1`] = `[Error: Values for minDaysBeforeExpiration and daysBeforeExpiration should be numbers greater or equal to zero]`;
+
+exports[`task expirationReminder should validate minDaysBeforeExpiration for negative values 1`] = `[Error: Values for minDaysBeforeExpiration and daysBeforeExpiration should be numbers greater or equal to zero]`;
+
+exports[`task expirationReminder should validate minDaysBeforeExpiration for string values 1`] = `[Error: Values for minDaysBeforeExpiration and daysBeforeExpiration should be numbers greater or equal to zero]`;
