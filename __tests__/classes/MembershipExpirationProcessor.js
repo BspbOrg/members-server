@@ -99,12 +99,12 @@ describe('MembershipExpiration', () => {
       expect(sendMailSpy).not.toHaveBeenCalled()
     })
 
-    test('skip members when payment.paymentType == "group" ', async () => {
+    test('skip members when group membership', async () => {
       const { processor, sendMailSpy } = setup()
 
       await generateMemberAndPayment({
         memberOpts: { membershipEndDate: addDays(fromDate, 27) },
-        paymentOps: { paymentType: 'group' }
+        paymentOps: { membershipType: 'group' }
       })
 
       await processor.processMemberships(fromDate, addDays(fromDate, 30))
@@ -143,20 +143,27 @@ describe('MembershipExpiration', () => {
       expect(sendMailSpy).not.toHaveBeenCalled()
     })
 
-    test('members with older regular payment and newer group payment -> no email', async () => {
+    test('skip members with older regular membership and newer group membership', async () => {
       const { processor, sendMailSpy } = setup()
 
-      const { member } = await generateMemberAndPayment({
-        memberOpts: {
-          membershipEndDate: addDays(fromDate, 27)
-        }
-      })
+      const member = await ah.api.models.member.create(generateMember({
+        membershipEndDate: addDays(fromDate, 27)
+      }))
 
+      // older payment
       await ah.api.models.payment.create(generatePayment({
         billingMemberId: member.id,
         members: [member.id],
-        paymentDate: subDays(fromDate, 25),
-        paymentType: 'group'
+        paymentDate: subDays(fromDate, 20),
+        membershipType: 'regular'
+      }))
+
+      // newer payment
+      await ah.api.models.payment.create(generatePayment({
+        billingMemberId: member.id,
+        members: [member.id],
+        paymentDate: subDays(fromDate, 10),
+        membershipType: 'group'
       }))
 
       await processor.processMemberships(fromDate, addDays(fromDate, 30))
@@ -164,22 +171,27 @@ describe('MembershipExpiration', () => {
       expect(sendMailSpy).not.toHaveBeenCalled()
     })
 
-    test('members with newer regular payment and older group payment -> send ', async () => {
+    test('notify members with newer regular membership and older group membership', async () => {
       const { processor, sendMailSpy } = setup()
 
-      const { member } = await generateMemberAndPayment({
-        memberOpts: {
-          membershipEndDate: addDays(fromDate, 27)
-        },
-        paymentOps: {
-          paymentType: 'group'
-        }
-      })
+      const member = await ah.api.models.member.create(generateMember({
+        membershipEndDate: addDays(fromDate, 27)
+      }))
 
+      // older payment
       await ah.api.models.payment.create(generatePayment({
         billingMemberId: member.id,
         members: [member.id],
-        paymentDate: subDays(fromDate, 25)
+        paymentDate: subDays(fromDate, 20),
+        membershipType: 'group'
+      }))
+
+      // newer payment
+      await ah.api.models.payment.create(generatePayment({
+        billingMemberId: member.id,
+        members: [member.id],
+        paymentDate: subDays(fromDate, 10),
+        membershipType: 'regular'
       }))
 
       await processor.processMemberships(fromDate, addDays(fromDate, 30))
@@ -187,7 +199,7 @@ describe('MembershipExpiration', () => {
       expect(sendMailSpy).toHaveBeenCalledWith(expect.objectContaining({ id: member.id }))
     })
 
-    test('members with family payment but also is billingMember -> send', async () => {
+    test('notify members with family membership but also are billingMember', async () => {
       const { processor, sendMailSpy } = setup()
 
       const familyMember = await ah.api.models.member.create(await generateMember({
@@ -201,7 +213,7 @@ describe('MembershipExpiration', () => {
       await ah.api.models.payment.create(generatePayment({
         billingMemberId: billingMember.id,
         members: [billingMember.id, familyMember.id],
-        isFamilyPayment: true
+        membershipType: 'family'
       }))
 
       await processor.processMemberships(fromDate, addDays(fromDate, 30))
@@ -209,12 +221,12 @@ describe('MembershipExpiration', () => {
       expect(sendMailSpy).toHaveBeenCalledWith(expect.objectContaining({ id: billingMember.id }))
     })
 
-    test('members with expired membership (i.e. membershipEndDate < startDate) -> no email', async () => {
+    test('skip members with expired membership', async () => {
       const { processor, sendMailSpy } = setup()
 
       await generateMemberAndPayment({
         memberOpts: {
-          membershipEndDate: subDays(fromDate, 27)
+          membershipEndDate: subDays(fromDate, 1)
         }
       })
 
@@ -226,13 +238,13 @@ describe('MembershipExpiration', () => {
     test('throw error when param fromDate is missing', async () => {
       const { processor } = setup()
 
-      await expect(processor.processMemberships(null, new Date())).rejects.toEqual(Error('Provide time period!'))
+      await expect(processor.processMemberships(null, new Date())).rejects.toMatchSnapshot()
     })
 
     test('throw error when param toDate is missing', async () => {
       const { processor } = setup()
 
-      await expect(processor.processMemberships(new Date(), null)).rejects.toEqual(Error('Provide time period!'))
+      await expect(processor.processMemberships(new Date(), null)).rejects.toMatchSnapshot()
     })
   })
 })
