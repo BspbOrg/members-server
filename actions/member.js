@@ -60,7 +60,7 @@ class List extends Action {
           }
         } : {})
       },
-      order: sorting({ defaultValue: [['firstName', 'ASC'], ['lastName', 'ASC'], ['cardId', 'ASC']] }),
+      order: sorting({ columns: ['firstName', 'lastName', 'cardId'], ascending: true }),
       ...(limit !== -1 ? { offset, limit } : {}),
       include: ['familyMembers']
     }

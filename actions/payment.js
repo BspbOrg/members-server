@@ -60,7 +60,7 @@ exports.list = class List extends Action {
           }
         } : {})
       },
-      order: sorting({ defaultValue: [['paymentDate', 'DESC']] }),
+      order: sorting({ columns: ['paymentDate'], ascending: true }),
       ...(limit !== -1 && !memberId ? { offset, limit } : {})
     }
     const res = await api.models.payment.scopeContext(context).findAndCountAll(query)

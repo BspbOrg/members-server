@@ -26,10 +26,10 @@ module.exports = class SortingInitializer extends Initializer {
           inputs.asc = { formatter: (p) => boolean(p), default: true }
         }
 
-        data.sorting = ({ defaultValue }) => {
+        data.sorting = (defaultValue) => {
           return sortingProcessor.generateSortingQuery({
-            sortingColumns: params.order,
-            asc: params.asc,
+            columns: params.order,
+            ascending: params.asc,
             defaultValue: defaultValue
           })
         }

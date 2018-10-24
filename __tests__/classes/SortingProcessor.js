@@ -6,28 +6,30 @@ const SortingProcessor = require('../../classes/SortingProcessor')
 
 describe('sorting processor', () => {
   const sortingProcessor = new SortingProcessor()
-  const defaultValue = [['id', 'ASC']]
+  const defaultValue = { columns: ['id'], ascending: true }
 
   test('should use default value if no sorting columns passed', () => {
-    expect(sortingProcessor.generateSortingQuery({ defaultValue })).toEqual(defaultValue)
+    expect(sortingProcessor.generateSortingQuery({ defaultValue })).toEqual([['id', 'ASC']])
   })
 
   test('should use sorting columns if passed as params', () => {
-    const sortingColumns = ['firstName', 'lastName']
-    const generatedSorting = sortingProcessor.generateSortingQuery({ sortingColumns, defaultValue })
-    expect(generatedSorting.length).toBe(2)
-    expect(generatedSorting[0]).toEqual(expect.arrayContaining(['firstName']))
-    expect(generatedSorting[1]).toEqual(expect.arrayContaining(['lastName']))
+    const columns = ['firstName', 'lastName']
+    const generatedSorting = sortingProcessor.generateSortingQuery({ columns, defaultValue })
+    expect(generatedSorting).toEqual(columns.map(c => ([c, expect.anything()])))
   })
 
   test('should use asc param if passed', () => {
-    const sortingColumns = ['id']
-    const asc = false
-    const generatedSorting = sortingProcessor.generateSortingQuery({ sortingColumns, asc, defaultValue })
-    expect(generatedSorting[0]).toEqual(expect.arrayContaining(['DESC']))
+    const columns = ['id']
+    const ascending = false
+    const generatedSorting = sortingProcessor.generateSortingQuery({ columns, ascending, defaultValue })
+    expect(generatedSorting[0]).toEqual([expect.anything(), 'DESC'])
   })
 
   test('should return empty sorting array if no columns and default value passed', () => {
+    expect(sortingProcessor.generateSortingQuery({})).toEqual([])
+  })
+
+  test('should return empty sorting array if no params passed', () => {
     expect(sortingProcessor.generateSortingQuery({})).toEqual([])
   })
 })

@@ -1,9 +1,15 @@
 module.exports = class SortingProcessor {
-  generateSortingQuery ({ sortingColumns, asc = true, defaultValue = [] }) {
-    if (sortingColumns && sortingColumns.length > 0) {
-      return sortingColumns.map(column => ([column, asc ? 'ASC' : 'DESC']))
-    } else {
-      return defaultValue
-    }
+  generateSortingQuery (
+    {
+      columns,
+      ascending = true,
+      defaultValue: {
+        columns: defaultColumns = [],
+        ascending: defaultAscending = true
+      } = {}
+    } = {}
+  ) {
+    let [c, a] = (columns && columns.length > 0) ? [columns, ascending] : [defaultColumns, defaultAscending]
+    return c.map(column => ([column, a ? 'ASC' : 'DESC']))
   }
 }
