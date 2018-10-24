@@ -49,8 +49,7 @@ class Payment extends Model {
       }
     }, {
       sequelize,
-      modelName: 'payment',
-      paranoid: true
+      modelName: 'payment'
     })
   }
 

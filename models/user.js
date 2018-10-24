@@ -66,7 +66,6 @@ class User extends Model {
     }, {
       sequelize,
       modelName: 'user',
-      paranoid: true,
       hooks: {
         beforeBulkCreate: User.beforeBulkCreate,
         beforeCreate: User.beforeCreate,

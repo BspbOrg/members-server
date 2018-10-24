@@ -5,7 +5,6 @@ Object {
   "amount": 15,
   "billingMemberId": 2,
   "createdAt": "skipped",
-  "deletedAt": null,
   "id": 1,
   "info": null,
   "members": Array [

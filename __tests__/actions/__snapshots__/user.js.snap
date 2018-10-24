@@ -3,7 +3,6 @@
 exports[`action user #me should respond with an admin profile when authenticated 1`] = `
 Object {
   "createdAt": "skipped",
-  "deletedAt": null,
   "email": "admin@bspb.org",
   "firstName": "Admin",
   "id": 2,
@@ -20,7 +19,6 @@ Object {
 exports[`action user #me should respond with an user profile when authenticated 1`] = `
 Object {
   "createdAt": "skipped",
-  "deletedAt": null,
   "email": "user@bspb.org",
   "firstName": "User",
   "id": 1,

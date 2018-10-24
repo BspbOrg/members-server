@@ -9,7 +9,6 @@ Object {
   "city": "Plovdiv",
   "country": "Bulgaria",
   "createdAt": "skipped",
-  "deletedAt": null,
   "email": "member@bspb.org",
   "familyMembers": Array [],
   "firstName": "Completely",

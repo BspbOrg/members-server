@@ -150,7 +150,6 @@ class Member extends Model {
     }, {
       sequelize,
       modelName: 'member',
-      paranoid: true,
       hooks: {}
     })
   }
