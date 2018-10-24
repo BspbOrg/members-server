@@ -222,5 +222,17 @@ describe('MembershipExpiration', () => {
 
       expect(sendMailSpy).not.toHaveBeenCalled()
     })
+
+    test('throw error when param fromDate is missing', async () => {
+      const { processor } = setup()
+
+      await expect(processor.processMemberships(null, new Date())).rejects.toEqual(Error('Provide time period!'))
+    })
+
+    test('throw error when param toDate is missing', async () => {
+      const { processor } = setup()
+
+      await expect(processor.processMemberships(new Date(), null)).rejects.toEqual(Error('Provide time period!'))
+    })
   })
 })

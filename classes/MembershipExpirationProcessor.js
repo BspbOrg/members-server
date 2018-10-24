@@ -9,7 +9,7 @@ module.exports = class MembershipExpirationProcessor {
 
   async processMemberships (fromDate, toDate) {
     if (!(fromDate && toDate)) {
-      return new Error('Provide time period!')
+      throw new Error('Provide time period!')
     }
 
     const expiringMembership = await this.api.models.member.findAll({
