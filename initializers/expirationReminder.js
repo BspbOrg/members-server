@@ -8,6 +8,12 @@ module.exports = class ExpirationReminderScheduler extends Initializer {
   }
 
   initialize () {
-    api.expirationReminder = new MembershipExpirationProcessor({ api, config: api.config.expirationReminder })
+    const config = {
+      minDays: api.config.expirationReminder.minDaysBeforeExpiration,
+      days: api.config.expirationReminder.daysBeforeExpiration,
+      emailTemplateName: api.config.expirationReminder.emailTemplateName,
+      emailSubject: api.config.expirationReminder.emailSubject
+    }
+    api.expirationReminder = new MembershipExpirationProcessor({ api, config: config })
   }
 }

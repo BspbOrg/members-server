@@ -1,4 +1,5 @@
 const addDays = require('date-fns/add_days')
+const subDays = require('date-fns/sub_days')
 const format = require('date-fns/format')
 const { Op, col } = require('sequelize')
 
@@ -58,13 +59,24 @@ module.exports = class MembershipExpirationProcessor {
   static daysValid (days) { return !(typeof days !== 'number' || days < 0) }
 
   async remindExpiring () {
-    if (!MembershipExpirationProcessor.daysValid(this.config.minDaysBeforeExpiration) || !MembershipExpirationProcessor.daysValid(this.config.daysBeforeExpiration)) {
+    if (!MembershipExpirationProcessor.daysValid(this.config.minDays) || !MembershipExpirationProcessor.daysValid(this.config.days)) {
       throw new Error('Values for minDaysBeforeExpiration and daysBeforeExpiration should be numbers greater or equal to zero')
     }
 
-    const now = addDays(new Date(), this.config.minDaysBeforeExpiration)
-    const expiringDate = addDays(new Date(), this.config.daysBeforeExpiration)
+    const now = addDays(new Date(), this.config.minDays)
+    const expiringDate = addDays(new Date(), this.config.days)
     this.api.log(`Checking for members with expiring membership between ${format(now, 'YYYY-MM-DD')} and ${format(expiringDate, 'YYYY-MM-DD')}`, 'info')
     await this.processMemberships(now, expiringDate)
+  }
+
+  async remindExpired () {
+    if (!MembershipExpirationProcessor.daysValid(this.config.minDays) || !MembershipExpirationProcessor.daysValid(this.config.days)) {
+      throw new Error('Values for minDaysAfterExpired and daysAfterExpired should be numbers greater or equal to zero')
+    }
+
+    const now = subDays(new Date(), this.config.minDays)
+    const earliestExpiringDate = subDays(new Date(), this.config.days)
+    this.api.log(`Checking for members with expired membership between ${format(earliestExpiringDate, 'YYYY-MM-DD')} and ${format(now, 'YYYY-MM-DD')}`, 'info')
+    await this.processMemberships(earliestExpiringDate, now)
   }
 }

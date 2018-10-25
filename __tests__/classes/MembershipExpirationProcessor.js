@@ -274,8 +274,8 @@ describe('MembershipExpiration', () => {
       const processor = new MembershipExpirationProcessor({
         api: ah.api,
         config: {
-          daysBeforeExpiration: 30,
-          minDaysBeforeExpiration: 7,
+          days: 30,
+          minDays: 7,
           ...configOverride
         }
       })
@@ -285,8 +285,8 @@ describe('MembershipExpiration', () => {
 
     test('should pass correct from and to dates', async () => {
       const { processor, mockProcess } = await setup({
-        minDaysBeforeExpiration: 10,
-        daysBeforeExpiration: 20
+        minDays: 10,
+        days: 20
       })
 
       const fromDate = addDays(new Date(), 10)
@@ -301,7 +301,7 @@ describe('MembershipExpiration', () => {
 
     test('should validate minDaysBeforeExpiration for string values', async () => {
       const { processor } = await setup({
-        minDaysBeforeExpiration: 'some string'
+        minDays: 'some string'
       })
 
       await expect(processor.remindExpiring()).rejects.toMatchSnapshot()
@@ -309,7 +309,7 @@ describe('MembershipExpiration', () => {
 
     test('should validate minDaysBeforeExpiration for negative values', async () => {
       const { processor } = await setup({
-        minDaysBeforeExpiration: -2
+        minDays: -2
       })
 
       await expect(processor.remindExpiring()).rejects.toMatchSnapshot()
@@ -317,7 +317,7 @@ describe('MembershipExpiration', () => {
 
     test('should validate daysBeforeExpiration for string values', async () => {
       const { processor } = await setup({
-        daysBeforeExpiration: 'some string'
+        days: 'some string'
       })
 
       await expect(processor.remindExpiring()).rejects.toMatchSnapshot()
@@ -325,7 +325,7 @@ describe('MembershipExpiration', () => {
 
     test('should validate daysBeforeExpiration for negative values', async () => {
       const { processor } = await setup({
-        daysBeforeExpiration: -1
+        days: -1
       })
 
       await expect(processor.remindExpiring()).rejects.toMatchSnapshot()
