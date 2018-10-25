@@ -10,12 +10,11 @@ const subDays = require('date-fns/sub_days')
 const fromDate = new Date()
 
 const generateMemberWithEmail = async (memberOpts = {}) => {
-  const member = await ah.api.models.member.create(generateMember({
-    ...memberOpts
-  }))
-  if (!member.email) {
-    await member.update({ email: `member.${member.id}@bspb.org` })
+  const generatedMember = generateMember({ ...memberOpts })
+  if (!generatedMember.email) {
+    generatedMember.email = `member.${generatedMember.cardId}@bspb.org`
   }
+  const member = await ah.api.models.member.create(generatedMember)
   return member
 }
 const generateMemberAndPayment = async ({ memberOpts = {}, paymentOps = {} }) => {
