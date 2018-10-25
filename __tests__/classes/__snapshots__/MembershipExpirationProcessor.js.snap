@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`MembershipExpiration #remindExpired should validate daysBeforeExpiration for negative values 1`] = `[Error: Values for minDaysAfterExpired and daysAfterExpired should be numbers greater or equal to zero]`;
+
+exports[`MembershipExpiration #remindExpired should validate daysBeforeExpiration for string values 1`] = `[Error: Values for minDaysAfterExpired and daysAfterExpired should be numbers greater or equal to zero]`;
+
+exports[`MembershipExpiration #remindExpired should validate minDaysBeforeExpiration for negative values 1`] = `[Error: Values for minDaysAfterExpired and daysAfterExpired should be numbers greater or equal to zero]`;
+
+exports[`MembershipExpiration #remindExpired should validate minDaysBeforeExpiration for string values 1`] = `[Error: Values for minDaysAfterExpired and daysAfterExpired should be numbers greater or equal to zero]`;
+
 exports[`MembershipExpiration #remindExpiring should validate daysBeforeExpiration for negative values 1`] = `[Error: Values for minDaysBeforeExpiration and daysBeforeExpiration should be numbers greater or equal to zero]`;
 
 exports[`MembershipExpiration #remindExpiring should validate daysBeforeExpiration for string values 1`] = `[Error: Values for minDaysBeforeExpiration and daysBeforeExpiration should be numbers greater or equal to zero]`;
@@ -8,6 +16,10 @@ exports[`MembershipExpiration #remindExpiring should validate minDaysBeforeExpir
 
 exports[`MembershipExpiration #remindExpiring should validate minDaysBeforeExpiration for string values 1`] = `[Error: Values for minDaysBeforeExpiration and daysBeforeExpiration should be numbers greater or equal to zero]`;
 
-exports[`MembershipExpiration processing memberships for expiration throw error when param fromDate is missing 1`] = `[Error: Provide time period!]`;
+exports[`MembershipExpiration processing memberships for notifiedForExpiredDate throw error when param fromDate is missing 1`] = `[Error: Provide time period!]`;
 
-exports[`MembershipExpiration processing memberships for expiration throw error when param toDate is missing 1`] = `[Error: Provide time period!]`;
+exports[`MembershipExpiration processing memberships for notifiedForExpiredDate throw error when param toDate is missing 1`] = `[Error: Provide time period!]`;
+
+exports[`MembershipExpiration processing memberships for notifiedForExpiringDate throw error when param fromDate is missing 1`] = `[Error: Provide time period!]`;
+
+exports[`MembershipExpiration processing memberships for notifiedForExpiringDate throw error when param toDate is missing 1`] = `[Error: Provide time period!]`;
