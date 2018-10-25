@@ -22,7 +22,15 @@ exports.test = {
     return {
       frequency: 1000 * 60 * 2,
       daysBeforeExpiration: 30,
-      minDaysBeforeExpiration: 5
+      minDaysBeforeExpiration: 5,
+      emailTemplateName: 'aboutToExpire',
+      emailSubject: 'Your membership is expiring',
+
+      expiredReminderFrequency: 1000 * 60 * 2,
+      daysAfterExpired: 5,
+      minDaysAfterExpired: 2,
+      expiredMembershipEmailTemplate: 'expiredMembership',
+      expiredMembershipEmailSubject: 'Your membership have expired'
     }
   }
 }

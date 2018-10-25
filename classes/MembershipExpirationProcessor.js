@@ -6,27 +6,29 @@ const { Op, col } = require('sequelize')
 module.exports = class MembershipExpirationProcessor {
   constructor ({ api, config }) {
     this.api = api
-    this.config = config
+    this.config = { ...config }
     this.emailTemplateName = config.emailTemplateName
     this.emailSubject = config.emailSubject
   }
 
-  async processMemberships (fromDate, toDate) {
+  async processMemberships (fromDate, toDate, memberCheckFlagFieldName) {
     if (!(fromDate && toDate)) {
       throw new Error('Provide time period!')
     }
 
+    const whereClause = {
+      membershipEndDate: { [Op.between]: [fromDate, toDate] },
+      email: { [Op.ne]: null }
+    }
+    whereClause[memberCheckFlagFieldName] = {
+      [Op.or]: [
+        { [Op.eq]: null },
+        { [Op.ne]: col('membershipEndDate') }
+      ]
+    }
+    // Well ... this is ugly
     const expiringMembership = await this.api.models.member.findAll({
-      where: {
-        membershipEndDate: { [Op.between]: [fromDate, toDate] },
-        notifiedForExpiringDate: {
-          [Op.or]: [
-            { [Op.eq]: null },
-            { [Op.ne]: col('membershipEndDate') }
-          ]
-        },
-        email: { [Op.ne]: null }
-      }
+      where: whereClause
     })
 
     const results = expiringMembership.map(async (member) => {
@@ -37,7 +39,11 @@ module.exports = class MembershipExpirationProcessor {
       if (payment && payment.billingMemberId === member.id && payment.membershipType !== 'group') {
         this.api.log('Sending mail to member.id: ' + member.id)
         await this.enqueueSendMail(member)
-        await member.update({ notifiedForExpiringDate: member.membershipEndDate })
+        const flagUpdateObj = {}
+        Object.defineProperty(flagUpdateObj, memberCheckFlagFieldName, {
+          value: member.membershipEndDate, writable: true, enumerable: true
+        })
+        await member.update(flagUpdateObj)
       }
     })
 
@@ -66,7 +72,7 @@ module.exports = class MembershipExpirationProcessor {
     const now = addDays(new Date(), this.config.minDays)
     const expiringDate = addDays(new Date(), this.config.days)
     this.api.log(`Checking for members with expiring membership between ${format(now, 'YYYY-MM-DD')} and ${format(expiringDate, 'YYYY-MM-DD')}`, 'info')
-    await this.processMemberships(now, expiringDate)
+    await this.processMemberships(now, expiringDate, 'notifiedForExpiringDate')
   }
 
   async remindExpired () {

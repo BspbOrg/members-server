@@ -153,6 +153,13 @@ class Member extends Model {
         validate: {
           isDate: true
         }
+      },
+      notifiedForExpiredDate: {
+        type: DataTypes.DATEONLY,
+        allowNull: true,
+        validate: {
+          isDate: true
+        }
       }
     }, {
       sequelize,
