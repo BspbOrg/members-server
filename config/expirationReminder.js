@@ -6,7 +6,13 @@ exports.default = {
       daysBeforeExpiration: process.env.CHECK_FOR_EXPIRING_MEMBERSHIPS_DAYS_BEFORE || 30,
       minDaysBeforeExpiration: process.env.CHECK_FOR_EXPIRING_MEMBERSHIPS_MIN_DAYS_BEFORE || 5,
       emailTemplateName: 'aboutToExpire',
-      emailSubject: ''
+      emailSubject: '',
+
+      expiredReminderFrequency: process.env.CHECK_FOR_EXPIRED_MEMBERSHIP_PERIOD || 0,
+      daysAfterExpired: process.env.CHECK_FOR_EXPIRED_MEMBERSHIP_DAYS_AFTER || 5,
+      minDaysAfterExpired: process.env.CHECK_FOR_EXPIRED_MEMBERSHIPS_MIN_DAYS_AFTER || 2,
+      expiredMembershipEmailTemplate: 'expiredMembership',
+      expiredMembershipEmailSubject: ''
     }
   }
 }
