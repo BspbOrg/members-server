@@ -9,10 +9,17 @@ const subDays = require('date-fns/sub_days')
 
 const fromDate = new Date()
 
-const generateMemberAndPayment = async ({ memberOpts = {}, paymentOps = {} }) => {
+const generateMemberWithEmail = async (memberOpts = {}) => {
   const member = await ah.api.models.member.create(generateMember({
     ...memberOpts
   }))
+  if (!member.email) {
+    await member.update({ email: `member.${member.id}@bspb.org` })
+  }
+  return member
+}
+const generateMemberAndPayment = async ({ memberOpts = {}, paymentOps = {} }) => {
+  const member = await generateMemberWithEmail(memberOpts)
   const payment = await ah.api.models.payment.create(generatePayment({
     billingMemberId: member.id,
     members: [member.id],
@@ -116,12 +123,12 @@ describe('MembershipExpiration', () => {
     test('skip members who are not billing member', async () => {
       const { processor, sendMailSpy } = setup()
 
-      const member = await ah.api.models.member.create(await generateMember({
+      const member = await generateMemberWithEmail({
         membershipEndDate: addDays(fromDate, 27)
-      }))
-      const billingMember = await ah.api.models.member.create(await generateMember({
+      })
+      const billingMember = await generateMemberWithEmail({
         membershipEndDate: addDays(fromDate, 27)
-      }))
+      })
       await ah.api.models.payment.create(generatePayment({
         billingMemberId: billingMember.id,
         members: [billingMember.id, member.id]
@@ -135,9 +142,9 @@ describe('MembershipExpiration', () => {
     test('skip members who have no payments', async () => {
       const { processor, sendMailSpy } = setup()
 
-      await ah.api.models.member.create(await generateMember({
+      await generateMemberWithEmail({
         membershipEndDate: addDays(fromDate, 27)
-      }))
+      })
 
       await processor.processMemberships(fromDate, addDays(fromDate, 30))
 
@@ -147,9 +154,9 @@ describe('MembershipExpiration', () => {
     test('skip members with older regular membership and newer group membership', async () => {
       const { processor, sendMailSpy } = setup()
 
-      const member = await ah.api.models.member.create(generateMember({
+      const member = await generateMemberWithEmail({
         membershipEndDate: addDays(fromDate, 27)
-      }))
+      })
 
       // older payment
       await ah.api.models.payment.create(generatePayment({
@@ -175,9 +182,9 @@ describe('MembershipExpiration', () => {
     test('notify members with newer regular membership and older group membership', async () => {
       const { processor, sendMailSpy } = setup()
 
-      const member = await ah.api.models.member.create(generateMember({
+      const member = await generateMemberWithEmail({
         membershipEndDate: addDays(fromDate, 27)
-      }))
+      })
 
       // older payment
       await ah.api.models.payment.create(generatePayment({
@@ -203,12 +210,12 @@ describe('MembershipExpiration', () => {
     test('notify members with family membership but also are billingMember', async () => {
       const { processor, sendMailSpy } = setup()
 
-      const familyMember = await ah.api.models.member.create(await generateMember({
+      const familyMember = await generateMemberWithEmail({
         membershipEndDate: addDays(fromDate, 27)
-      }))
-      const billingMember = await ah.api.models.member.create(await generateMember({
+      })
+      const billingMember = await generateMemberWithEmail({
         membershipEndDate: addDays(fromDate, 27)
-      }))
+      })
       await billingMember.setFamilyMembers([familyMember])
 
       await ah.api.models.payment.create(generatePayment({
@@ -234,6 +241,20 @@ describe('MembershipExpiration', () => {
       await processor.processMemberships(fromDate, addDays(fromDate, 30))
 
       expect(sendMailSpy).not.toHaveBeenCalled()
+    })
+
+    test('do not try notify expiring member without member.email', async () => {
+      const { processor, sendMailSpy } = setup()
+
+      const { member } = await generateMemberAndPayment({
+        memberOpts: { membershipEndDate: addDays(fromDate, 27) }
+      })
+
+      await member.update({ email: null })
+
+      await processor.processMemberships(fromDate, addDays(fromDate, 30))
+
+      expect(sendMailSpy).not.toBeCalled()
     })
 
     test('throw error when param fromDate is missing', async () => {

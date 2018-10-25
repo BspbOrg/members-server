@@ -23,7 +23,8 @@ module.exports = class MembershipExpirationProcessor {
             { [Op.eq]: null },
             { [Op.ne]: col('membershipEndDate') }
           ]
-        }
+        },
+        email: { [Op.ne]: null }
       }
     })
 
