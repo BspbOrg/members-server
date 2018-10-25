@@ -1,8 +1,11 @@
+const addDays = require('date-fns/add_days')
+const format = require('date-fns/format')
 const { Op, col } = require('sequelize')
 
 module.exports = class MembershipExpirationProcessor {
   constructor ({ api, config }) {
     this.api = api
+    this.config = config
     this.emailTemplateName = config.emailTemplateName
     this.emailSubject = config.emailSubject
   }
@@ -49,5 +52,18 @@ module.exports = class MembershipExpirationProcessor {
         },
         locals: { name: member.name, membershipEndDate: member.membershipEndDate }
       })
+  }
+
+  static daysValid (days) { return !(typeof days !== 'number' || days < 0) }
+
+  async remindExpiring () {
+    if (!MembershipExpirationProcessor.daysValid(this.config.minDaysBeforeExpiration) || !MembershipExpirationProcessor.daysValid(this.config.daysBeforeExpiration)) {
+      throw new Error('Values for minDaysBeforeExpiration and daysBeforeExpiration should be numbers greater or equal to zero')
+    }
+
+    const now = addDays(new Date(), this.config.minDaysBeforeExpiration)
+    const expiringDate = addDays(new Date(), this.config.daysBeforeExpiration)
+    this.api.log(`Checking for members with expiring membership between ${format(now, 'YYYY-MM-DD')} and ${format(expiringDate, 'YYYY-MM-DD')}`, 'info')
+    await this.processMemberships(now, expiringDate)
   }
 }

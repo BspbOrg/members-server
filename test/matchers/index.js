@@ -1,5 +1,6 @@
 module.exports = {
   toBeFailedAction: require('./toBeActionResult')(false),
   toBeSuccessAction: require('./toBeActionResult')(true),
-  toBeDate: require('./toBeDate')
+  toBeDate: require('./toBeDate'),
+  toBeSameDay: require('./toBeSameDay')
 }

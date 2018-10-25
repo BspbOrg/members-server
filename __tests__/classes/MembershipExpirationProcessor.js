@@ -9,18 +9,6 @@ const subDays = require('date-fns/sub_days')
 
 const fromDate = new Date()
 
-const setup = () => {
-  const processor = new MembershipExpirationProcessor({
-    api: ah.api,
-    config: {
-      daysBeforeExpiration: 30,
-      emailTemplateName: ''
-    }
-  })
-  const sendMailSpy = jest.spyOn(processor, 'enqueueSendMail')
-  return { processor, sendMailSpy }
-}
-
 const generateMemberAndPayment = async ({ memberOpts = {}, paymentOps = {} }) => {
   const member = await ah.api.models.member.create(generateMember({
     ...memberOpts
@@ -36,12 +24,25 @@ const generateMemberAndPayment = async ({ memberOpts = {}, paymentOps = {} }) =>
 describe('MembershipExpiration', () => {
   beforeAll(ah.start)
   afterAll(ah.stop)
-  beforeEach(async () => {
-    await ah.api.models.payment.destroy({ where: {}, force: true })
-    await ah.api.models.member.destroy({ where: {}, force: true })
-  })
 
   describe('processing memberships for expiration', () => {
+    const setup = () => {
+      const processor = new MembershipExpirationProcessor({
+        api: ah.api,
+        config: {
+          daysBeforeExpiration: 30,
+          emailTemplateName: ''
+        }
+      })
+      const sendMailSpy = jest.spyOn(processor, 'enqueueSendMail')
+      return { processor, sendMailSpy }
+    }
+
+    beforeEach(async () => {
+      await ah.api.models.payment.destroy({ where: {}, force: true })
+      await ah.api.models.member.destroy({ where: {}, force: true })
+    })
+
     test('notify expiring member with email', async () => {
       const { processor, sendMailSpy } = setup()
 
@@ -245,6 +246,69 @@ describe('MembershipExpiration', () => {
       const { processor } = setup()
 
       await expect(processor.processMemberships(new Date(), null)).rejects.toMatchSnapshot()
+    })
+  })
+
+  describe('#remindExpiring', () => {
+    const setup = (configOverride) => {
+      const processor = new MembershipExpirationProcessor({
+        api: ah.api,
+        config: {
+          daysBeforeExpiration: 30,
+          minDaysBeforeExpiration: 7,
+          ...configOverride
+        }
+      })
+      const mockProcess = processor.processMemberships = jest.fn()
+      return { processor, mockProcess }
+    }
+
+    test('should pass correct from and to dates', async () => {
+      const { processor, mockProcess } = await setup({
+        minDaysBeforeExpiration: 10,
+        daysBeforeExpiration: 20
+      })
+
+      const fromDate = addDays(new Date(), 10)
+      const toDate = addDays(new Date(), 20)
+
+      await processor.remindExpiring()
+
+      expect(mockProcess).toHaveBeenCalled()
+      expect(mockProcess.mock.calls[0][0]).toBeSameDay(fromDate)
+      expect(mockProcess.mock.calls[0][1]).toBeSameDay(toDate)
+    })
+
+    test('should validate minDaysBeforeExpiration for string values', async () => {
+      const { processor } = await setup({
+        minDaysBeforeExpiration: 'some string'
+      })
+
+      await expect(processor.remindExpiring()).rejects.toMatchSnapshot()
+    })
+
+    test('should validate minDaysBeforeExpiration for negative values', async () => {
+      const { processor } = await setup({
+        minDaysBeforeExpiration: -2
+      })
+
+      await expect(processor.remindExpiring()).rejects.toMatchSnapshot()
+    })
+
+    test('should validate daysBeforeExpiration for string values', async () => {
+      const { processor } = await setup({
+        daysBeforeExpiration: 'some string'
+      })
+
+      await expect(processor.remindExpiring()).rejects.toMatchSnapshot()
+    })
+
+    test('should validate daysBeforeExpiration for negative values', async () => {
+      const { processor } = await setup({
+        daysBeforeExpiration: -1
+      })
+
+      await expect(processor.remindExpiring()).rejects.toMatchSnapshot()
     })
   })
 })
