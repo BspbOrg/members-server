@@ -90,6 +90,23 @@ describe('MembershipExpiration', () => {
         expect(member[memberCheckFlagFieldName]).toEqual(membershipEndDate)
       })
 
+      test('skip already notified', async () => {
+        const { processor, sendMailSpy } = setup()
+
+        const membershipEndDate = addDays(fromDate, 27)
+
+        await generateMemberAndPayment({
+          memberOpts: {
+            membershipEndDate,
+            [memberCheckFlagFieldName]: membershipEndDate
+          }
+        })
+
+        await processor.processMemberships(fromDate, addDays(fromDate, 30), memberCheckFlagFieldName)
+
+        expect(sendMailSpy).not.toHaveBeenCalled()
+      })
+
       test('skip members when group membership', async () => {
         const { processor, sendMailSpy } = setup()
 
@@ -156,24 +173,6 @@ describe('MembershipExpiration', () => {
           paymentDate: subDays(fromDate, 10),
           membershipType: 'group'
         }))
-
-        await processor.processMemberships(fromDate, addDays(fromDate, 30), memberCheckFlagFieldName)
-
-        expect(sendMailSpy).not.toHaveBeenCalled()
-      })
-
-      test('skip already notified', async () => {
-        const { processor, sendMailSpy } = setup()
-
-        const membershipEndDate = addDays(fromDate, 27)
-        const memberOpts = { membershipEndDate }
-        Object.defineProperty(memberOpts, memberCheckFlagFieldName, {
-          value: membershipEndDate, writable: true, enumerable: true
-        })
-
-        await generateMemberAndPayment({
-          memberOpts: memberOpts
-        })
 
         await processor.processMemberships(fromDate, addDays(fromDate, 30), memberCheckFlagFieldName)
 
