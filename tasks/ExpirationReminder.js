@@ -5,12 +5,12 @@ module.exports = class ExpirationReminder extends Task {
     super()
     this.name = 'expirationReminder'
     this.description = 'Sends reminder email to members for expiration'
-    this.frequency = api.config.expirationReminder.frequency
+    this.frequency = api.config.membership.expiringReminder.frequency
     this.queue = '*'
     this.middleware = []
   }
 
   async run () {
-    await api.expirationReminder.remindExpiring()
+    await api.membership.sendReminderToExpiring()
   }
 }

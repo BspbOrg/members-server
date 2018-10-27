@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.addColumn('members', 'notifiedForExpiredDate', { type: DataTypes.DATEONLY, allowNull: true })
+    await queryInterface.addColumn('members', 'notifiedForExpiredDate', DataTypes.DATEONLY)
   },
 
   down: async (queryInterface, DataTypes) => {

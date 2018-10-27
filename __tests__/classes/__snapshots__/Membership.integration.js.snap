@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Membership integration #sendNoticeToExpired should validate maxDays for negative values 1`] = `[Error: Invalid value for maxDays. Must be a positive number]`;
+
+exports[`Membership integration #sendNoticeToExpired should validate maxDays for string values 1`] = `[Error: Invalid value for maxDays. Must be a positive number]`;
+
+exports[`Membership integration #sendNoticeToExpired should validate minDays for negative values 1`] = `[Error: Invalid value for minDays. Must be a positive number]`;
+
+exports[`Membership integration #sendNoticeToExpired should validate minDays for string values 1`] = `[Error: Invalid value for minDays. Must be a positive number]`;
+
+exports[`Membership integration #sendReminderToExpiring should validate maxDays for negative values 1`] = `[Error: Invalid value for maxDays. Must be a positive number]`;
+
+exports[`Membership integration #sendReminderToExpiring should validate maxDays for string values 1`] = `[Error: Invalid value for maxDays. Must be a positive number]`;
+
+exports[`Membership integration #sendReminderToExpiring should validate minDays for negative values 1`] = `[Error: Invalid value for minDays. Must be a positive number]`;
+
+exports[`Membership integration #sendReminderToExpiring should validate minDays for string values 1`] = `[Error: Invalid value for minDays. Must be a positive number]`;
+
+exports[`Membership integration processing memberships for notifiedForExpiredDate throw error when param fromDate is missing 1`] = `[Error: Missing fromDate]`;
+
+exports[`Membership integration processing memberships for notifiedForExpiredDate throw error when param memberCheckFlagFieldName is missing 1`] = `[Error: Missing memberCheckFlagFieldName]`;
+
+exports[`Membership integration processing memberships for notifiedForExpiredDate throw error when param toDate is missing 1`] = `[Error: Missing toDate]`;
+
+exports[`Membership integration processing memberships for notifiedForExpiringDate throw error when param fromDate is missing 1`] = `[Error: Missing fromDate]`;
+
+exports[`Membership integration processing memberships for notifiedForExpiringDate throw error when param memberCheckFlagFieldName is missing 1`] = `[Error: Missing memberCheckFlagFieldName]`;
+
+exports[`Membership integration processing memberships for notifiedForExpiringDate throw error when param toDate is missing 1`] = `[Error: Missing toDate]`;
