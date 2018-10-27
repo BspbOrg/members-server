@@ -5,21 +5,21 @@
 const ah = require('../../test/ah-setup')
 
 const run = async () => (
-  ah.api.specHelper.runTask('expiredReminder')
+  ah.api.specHelper.runTask('expiredNotice')
 )
 
-describe('task expiredReminder:run', () => {
+describe('task expiredNotice:run', () => {
   beforeAll(ah.start)
   afterAll(ah.stop)
 
   beforeEach(async () => {
   })
 
-  test('should start processMemberships', async () => {
-    ah.api.expiredReminder.remindExpired = jest.fn()
+  test('should start sendNoticeToExpired', async () => {
+    ah.api.membership.sendNoticeToExpired = jest.fn()
 
     await run()
 
-    expect(ah.api.expiredReminder.remindExpired).toHaveBeenCalled()
+    expect(ah.api.membership.sendNoticeToExpired).toHaveBeenCalled()
   })
 })

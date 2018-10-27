@@ -3,7 +3,7 @@ const { api, Task } = require('actionhero')
 module.exports = class ExpiredNotice extends Task {
   constructor () {
     super()
-    this.name = 'ExpiredNotice'
+    this.name = 'expiredNotice'
     this.description = 'Sends reminder email to members when membership have expired'
     this.frequency = api.config.membership.expiredNotice.frequency
     this.queue = '*'
