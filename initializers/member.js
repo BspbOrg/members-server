@@ -1,4 +1,5 @@
 const { Initializer, api } = require('actionhero')
+const Membership = require('../classes/Membership')
 
 async function resolveMember (memberId, data) {
   if (data.member) return
@@ -23,6 +24,8 @@ module.exports = class MemberInitializer extends Initializer {
   }
 
   async initialize () {
+    api.membership = new Membership({ api, config: api.config.membership })
+
     api.actions.addMiddleware({
       name: 'member.params',
       global: false,
