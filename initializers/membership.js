@@ -8,6 +8,6 @@ module.exports = class MembershipInitializer extends Initializer {
   }
 
   async initialize () {
-    api.membership = new Membership({ api })
+    api.membership = new Membership({ api, config: api.config.membership })
   }
 }

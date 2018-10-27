@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-/* global describe, test, expect, jest, beforeEach, afterEach */
+/* global jest, describe, test, expect, jest, beforeEach, afterEach, beforeAll, afterAll */
 
 const Membership = require('../../classes/Membership')
 const { generatePayment } = require('../../test/generators')
