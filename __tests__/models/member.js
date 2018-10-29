@@ -269,4 +269,30 @@ describe('model member', () => {
       })
     })
   })
+
+  describe('associations', () => {
+    test('familyMembers: on delete removes from parent', async () => {
+      const child = await ah.api.models.member.create(generateMember())
+      const parent = await ah.api.models.member.create(generateMember())
+      await parent.setFamilyMembers([child.id])
+
+      expect(await parent.getFamilyMembers()).toEqual([expect.objectContaining({ id: child.id })])
+
+      child.destroy({ force: true })
+
+      expect(await parent.getFamilyMembers()).toEqual([])
+    })
+
+    test('familyMasters: on delete removes from child', async () => {
+      const child = await ah.api.models.member.create(generateMember())
+      const parent = await ah.api.models.member.create(generateMember())
+      await parent.setFamilyMembers([child.id])
+
+      expect(await child.getFamilyMasters()).toEqual([expect.objectContaining({ id: parent.id })])
+
+      parent.destroy({ force: true })
+
+      expect(await child.getFamilyMasters()).toEqual([])
+    })
+  })
 })

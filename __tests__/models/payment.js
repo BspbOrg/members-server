@@ -138,4 +138,27 @@ describe('model payment', () => {
       expect(payments).toEqual(expect.arrayContaining([expect.objectContaining({ id: payment2.id })]))
     })
   })
+
+  describe('associations', () => {
+    test('billingMember: on delete sets to null', async () => {
+      const member = await ah.api.models.member.create(generateMember())
+      const payment = await ah.api.models.payment.create(generatePayment({ billingMemberId: member.id }))
+
+      expect(await payment.getBillingMember()).toEqual(expect.objectContaining({ id: member.id }))
+      await member.destroy({ force: true })
+      expect(await payment.getBillingMember()).toBe(null)
+    })
+
+    test('members: on delete removes from payment', async () => {
+      const member = await ah.api.models.member.create(generateMember())
+      const payment = await ah.api.models.payment.create(generatePayment({
+        billingMemberId: member.id,
+        members: [member.id]
+      }))
+
+      expect(await payment.getMembers()).toEqual([expect.objectContaining({ id: member.id })])
+      await member.destroy({ force: true })
+      expect(await payment.getMembers()).toEqual([])
+    })
+  })
 })
