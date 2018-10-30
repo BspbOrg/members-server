@@ -8,8 +8,6 @@ module.exports = class SendMail extends Task {
     this.frequency = 0
     this.queue = '*'
     this.middleware = []
-
-    this.cursor = null
   }
 
   async run (data) {

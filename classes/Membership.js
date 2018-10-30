@@ -85,7 +85,11 @@ module.exports = class Membership {
 
   async sendReminder (config, fromDate, toDate, field) {
     const members = await this.findExpiringPayingMembers(fromDate, toDate, field)
-    await this.enqueueEmail(members, { subject: config.emailSubject, from: config.emailFrom })
+    await this.enqueueEmail(members, {
+      subject: config.emailSubject,
+      from: config.emailFrom,
+      template: config.templateName
+    })
     return Promise.all(members.map(async (member) => member.updateAttributes({ [field]: member.membershipEndDate })))
   }
 
