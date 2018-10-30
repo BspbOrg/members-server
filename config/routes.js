@@ -26,9 +26,10 @@ exports['default'] = {
         { path: '/user/:userId', action: 'user:update' },
         { path: '/import/member', action: 'import:member' },
         { path: '/import/payment', action: 'import:payment' },
-        { path: '/import/family', action: 'import:family' }
+        { path: '/import/family', action: 'import:family' },
         // { path: '/session/:email/resetpw', action: 'user:lost' },
         // { path: '/session/:email/resetpw2', action: 'user:reset' }
+        { path: '/sendReminder', action: 'member:sendReminder' }
       ],
 
       put: [

@@ -187,8 +187,30 @@ class Create extends Show {
   }
 }
 
+class SendReminder extends Action {
+  constructor () {
+    super()
+    this.name = 'member:sendReminder'
+    this.description = 'Send reminder email to a member'
+    this.middleware = ['auth.hasRole.admin', 'member.params']
+    this.inputs = { memberId: { required: true } }
+  }
+
+  async run ({ member, response }) {
+    response.success = false
+    const config = api.config.membership.expiringReminder
+    await api.membership.enqueueEmail([member], {
+      subject: config.emailSubject,
+      from: config.emailFrom,
+      template: config.templateName
+    })
+    response.success = true
+  }
+}
+
 exports.list = List
 exports.destroy = Destroy
 exports.show = Show
 exports.update = Update
 exports.create = Create
+exports.reminder = SendReminder
