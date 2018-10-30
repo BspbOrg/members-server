@@ -8,9 +8,11 @@ exports.default = {
       // If membership expires in less than this number of days it will NOT send reminder
       minDays: process.env.EXPIRING_REMINDER_MIN_DAYS || 5,
       // Email template to use
-      templateName: process.env.EXPIRING_REMINDER_TEMPLATE || 'expiringReminder',
+      templateName: process.env.EXPIRING_REMINDER_TEMPLATE || 'membership/expiringReminder',
       // Email subject
-      emailSubject: process.env.EXPIRING_REMINDER_SUBJECT || 'Membership expiration reminder'
+      emailSubject: process.env.EXPIRING_REMINDER_SUBJECT || 'Изтичащо членство',
+      // Email from
+      emailFrom: process.env.EXPIRING_REMINDER_FROM || 'no-reply@bspb.org'
     },
     expiredNotice: {
       // Time period (in days) between two checks for expired memberships.
@@ -20,9 +22,11 @@ exports.default = {
       // If membership expired in less than this number of days it will NOT send reminder
       minDays: process.env.EXPIRED_NOTICE_MIN_DAYS || 0,
       // Email template to use
-      templateName: process.env.EXPIRED_NOTICE_TEMPLATE || 'expiredNotification',
+      templateName: process.env.EXPIRED_NOTICE_TEMPLATE || 'membership/expiredNotification',
       // Email subject
-      emailSubject: process.env.EXPIRED_NOTICE_SUBJECT || 'Membership expired notification'
+      emailSubject: process.env.EXPIRED_NOTICE_SUBJECT || 'Изтекло членство',
+      // Email from
+      emailFrom: process.env.EXPIRED_NOTICE_FROM || 'no-reply@bspb.org'
     }
   }
 }

@@ -1,8 +1,9 @@
 const { Initializer, api } = require('actionhero')
 const nodemailer = require('nodemailer')
 const Email = require('email-templates')
-const path = require('path')
 const Promise = require('bluebird')
+const format = require('date-fns/format')
+const locale = require('date-fns/locale/bg')
 
 module.exports = class MailerInit extends Initializer {
   constructor () {
@@ -24,17 +25,18 @@ module.exports = class MailerInit extends Initializer {
 
       options.mail = { ...config.mailOptions, ...options.mail }
 
-      const templateDir = path.join(config.templates, options.template)
-
       const template = new Email({
         views: {
-          root: templateDir,
+          root: config.templates,
           options: {
             extension: 'ejs'
           }
         }
       })
-      const emailHtml = await template.render(options.template, options.locals)
+      const emailHtml = await template.render(options.template, {
+        formatDate: date => format(date, 'Do MMMM YYYY', { locale }),
+        ...options.locals
+      })
       options.mail.html = emailHtml
 
       api.log('Sending mail', 'debug', this.name)
