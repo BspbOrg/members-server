@@ -1,0 +1,31 @@
+<%- include('header', {
+    preheader: `Вашето годишно членството в БДЗП изтече на ${formatDate(membershipEndDate)}.`,
+    hero: `СКЪПИ ПРИЯТЕЛИ,`
+}) %>
+<tr>
+    <td bgcolor="#ffffff" align="left"
+        style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+        <p style="margin: 0;">
+            Вашето годишно членство в БДЗП изтече на <%= formatDate(membershipEndDate) %>.
+            Бъдете с нас и през следващата година!
+        </p>
+    </td>
+</tr>
+<tr>
+    <td bgcolor="#ffffff" align="left"
+        style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
+        <p style="margin: 0;">
+            Ако искате да продължите да ни подкрепяте, може да платите членския си внос, сега.
+            Това става лесно и удобно.
+            Трябва само да посетите страницата birds.bg, в частта ѝ
+            <% if (username) { %>
+                ПОДНОВЯВАНЕ НА ЧЛЕНСТВОТО
+            <% } else { %>
+                СТАНИ ЧЛЕН НА БДЗП
+            <% } %>
+            .
+        </p>
+    </td>
+</tr>
+
+<%- include('footer', {username}) %>

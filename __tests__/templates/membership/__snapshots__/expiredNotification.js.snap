@@ -1,0 +1,631 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`template: expiredNotification renders for registered 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv=\\"Content-Type\\" content=\\"text/html; charset=utf-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <style type=\\"text/css\\">
+@media screen {
+  @font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+  }
+
+  @font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+  }
+
+  @font-face {
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+  }
+
+  @font-face {
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 700;
+    src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+  }
+}
+@media screen and (max-width: 600px) {
+  h1 {
+    font-size: 32px !important;
+    line-height: 32px !important;
+  }
+}
+</style>
+</head>
+<body style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; background-color: #f4f4f4; height: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important;\\">
+
+<!-- HIDDEN PREHEADER TEXT -->
+<div style=\\"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\\">Вашето годишно членството в БДЗП изтече на 1-ви ноември 2018.</div>
+
+<table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse !important;\\">
+    <!-- LOGO -->
+    <tr>
+        <td bgcolor=\\"#0088CC\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;\\">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align=\\"center\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" width=\\"600\\">
+                <tr>
+                    <td align=\\"center\\" valign=\\"top\\" width=\\"600\\">
+            <![endif]-->
+            <table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 600px; border-collapse: collapse !important;\\">
+                <tr>
+                    <td align=\\"center\\" valign=\\"top\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 40px 10px 40px 10px;\\">
+                        <a href=\\"https://birds.bg\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;\\">
+                            <img alt=\\"Българско дружество за защита на птиците\\" src=\\"https://members.bspb.org/images/logo-email.png\\" width=\\"160\\" height=\\"104\\" style=\\"-ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; width: 160px; max-width: 104px; min-width: 160px; font-family: 'Lato', Helvetica, Arial, sans-serif; color: #ffffff; font-size: 18px;\\" border=\\"0\\">
+                        </a>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+    <!-- HERO -->
+    <tr>
+        <td bgcolor=\\"#0088CC\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 10px 0px 10px;\\">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align=\\"center\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" width=\\"600\\">
+                <tr>
+                    <td align=\\"center\\" valign=\\"top\\" width=\\"600\\">
+            <![endif]-->
+            <table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 600px; border-collapse: collapse !important;\\">
+                <tr>
+                    <td bgcolor=\\"#ffffff\\" align=\\"center\\" valign=\\"top\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\\">
+                        <h1 style=\\"font-size: 48px; font-weight: 400; margin: 0;\\">СКЪПИ ПРИЯТЕЛИ,</h1>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+    <!-- COPY BLOCK -->
+    <tr>
+        <td bgcolor=\\"#f4f4f4\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 10px 0px 10px;\\">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align=\\"center\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" width=\\"600\\">
+                <tr>
+                    <td align=\\"center\\" valign=\\"top\\" width=\\"600\\">
+            <![endif]-->
+            <table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 600px; border-collapse: collapse !important;\\">
+                <!-- COPY -->
+
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">
+            Вашето годишно членство в БДЗП изтече на 1-ви ноември 2018.
+            Бъдете с нас и през следващата година!
+        </p>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">
+            Ако искате да продължите да ни подкрепяте, може да платите членския си внос, сега.
+            Това става лесно и удобно.
+            Трябва само да посетите страницата birds.bg, в частта ѝ
+            
+                ПОДНОВЯВАНЕ НА ЧЛЕНСТВОТО
+            
+            .
+        </p>
+    </td>
+</tr>
+
+<!-- BULLETPROOF BUTTON -->
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;\\">
+        <table width=\\"100%\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse !important;\\">
+            <tr>
+                <td bgcolor=\\"#ffffff\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 60px 30px;\\">
+                    <table border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse !important;\\">
+                        <tr>
+                            <td align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 3px;\\" bgcolor=\\"#0088CC\\"><a href=\\"http://bspb.org/bg/become-a-member.html?type=existing&login_username=username\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #0088CC; display: inline-block;\\">
+                                    
+                                        ПОДНОВЯВАНЕ НА ЧЛЕНСТВОТО
+                                    
+                                </a></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+<!-- COPY -->
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">Ако това не работи, копирайте и отворете връзката в браузера:</p>
+    </td>
+</tr>
+<!-- COPY -->
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\"><a href=\\"http://bspb.org/bg/become-a-member.html?type=existing&login_username=username\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #0088CC;\\">http://bspb.org/bg/become-a-member.html?type=existing&login_username=username</a>
+        </p>
+    </td>
+</tr>
+
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">
+            Ако вече имате достъп до онлайн платформата ни за членове, може да платите членския си внос
+            по следните начини:
+        </p>
+        <ul>
+            <li>Онлайн с банкова карта през вашия профил;</li>
+            <li>По банков път:<br>
+                Сдружение Българско дружество за защита на птиците,<br>
+                IBAN: BG55<span style=\\"margin-left: 5px\\"></span>RZBB<span style=\\"margin-left: 5px\\"></span>9155<span style=\\"margin-left: 5px\\"></span>1060<span style=\\"margin-left: 5px\\"></span>1073<span style=\\"margin-left: 5px\\"></span>29,<br>
+                BIC: RZBB<span style=\\"margin-left: 5px\\"></span>BGSF;
+            </li>
+            <li>През ePay.bg, като използвате дебитна/кредитна карта или ePay.</li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0; font-weight: 700;\\">
+            Категориите годишен членски внос са:
+        </p>
+        <ul>
+            <li>Индивидуално членство – 10 лв. за 12 месеца;</li>
+            <li>За ученици до 18 г. и пенсионери – 7 лв. за 12 месеца;</li>
+            <li>Семейно членство – 15 лв. за 12 месеца.</li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0; font-weight: 700;\\">
+            Да членуваш в БДЗП означава, че:
+        </p>
+        <ul>
+            <li>търсиш близка връзка с природата за теб и твоите близки;</li>
+            <li>загрижен си за птиците и значимите за тях места;</li>
+            <li>имаш активна гражданска позиция и я отстояваш;</li>
+            <li>вярваш, че заедно можем да върнем изчезващите птици в България.</li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">Надяваме се да продължим заедно!</p>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">С уважение,<br>Екипът на БДЗП</p>
+    </td>
+</tr>
+</table>
+<!--[if (gte mso 9)|(IE)]>
+</td>
+</tr>
+</table>
+<![endif]-->
+</td>
+</tr>
+<!-- SUPPORT CALLOUT -->
+<tr>
+    <td bgcolor=\\"#f4f4f4\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 30px 10px 0px 10px;\\">
+        <!--[if (gte mso 9)|(IE)]>
+        <table align=\\"center\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" width=\\"600\\">
+            <tr>
+                <td align=\\"center\\" valign=\\"top\\" width=\\"600\\">
+        <![endif]-->
+        <table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 600px; border-collapse: collapse !important;\\">
+            <!-- HEADLINE -->
+            <tr>
+                <td bgcolor=\\"#FFECD1\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+                    <h2 style=\\"font-size: 20px; font-weight: 400; color: #111111; margin: 0;\\">Имате нужда от
+                        помощ?</h2>
+                    <p style=\\"margin: 0;\\"><a href=\\"http://bspb.org/bg/contacts.html\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #0088CC;\\">Тук сме,
+                            готови да поговорим</a></p>
+                </td>
+            </tr>
+        </table>
+        <!--[if (gte mso 9)|(IE)]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+    </td>
+</tr>
+<!-- FOOTER -->
+<tr>
+    <td bgcolor=\\"#f4f4f4\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 10px 0px 10px;\\">
+        <!--[if (gte mso 9)|(IE)]>
+        <table align=\\"center\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" width=\\"600\\">
+            <tr>
+                <td align=\\"center\\" valign=\\"top\\" width=\\"600\\">
+        <![endif]-->
+        <table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 600px; border-collapse: collapse !important;\\">
+            <!-- NAVIGATION -->
+            <tr>
+                <td bgcolor=\\"#f4f4f4\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 30px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;\\">
+                    <p style=\\"margin: 0;\\">
+                        <a href=\\"https://www.facebook.com/BSPBirds\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">Facebook</a>
+                        -
+                        <a href=\\"https://www.instagram.com/bspbirds/\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">Instagram</a>
+                        -
+                        <a href=\\"https://twitter.com/BSPB_BirdLife\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">Twitter</a>
+                        -
+                        <a href=\\"http://bspb.org\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">Web</a>
+                    </p>
+                </td>
+            </tr>
+            <!-- PERMISSION REMINDER -->
+            <tr>
+                <td bgcolor=\\"#f4f4f4\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;\\">
+                    <p style=\\"margin: 0;\\">Получавате това съобщение защото членувате в <a href=\\"http://bspb.org\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">БДЗП</a>.
+                    </p>
+                </td>
+            </tr>
+            <!-- UNSUBSCRIBE -->
+            <tr>
+                <td bgcolor=\\"#f4f4f4\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;\\">
+                    <p style=\\"margin: 0;\\">Ако тези имейли са досадни, можете да прекъснете получаването им от <a href=\\"http://bspb.org\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">вашия
+                            профил</a>.
+                    </p>
+                </td>
+            </tr>
+            <!-- ADDRESS -->
+            <tr>
+                <td bgcolor=\\"#f4f4f4\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;\\">
+                    <p style=\\"margin: 0;\\">БДЗП<br>ж.к. Яворов бл. 71, вх. 4, ет. 1, ап. 1<br>София 1111</p>
+                </td>
+            </tr>
+        </table>
+        <!--[if (gte mso 9)|(IE)]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+    </td>
+</tr>
+</table>
+
+</body>
+</html>
+
+"
+`;
+
+exports[`template: expiredNotification renders for unregistered 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv=\\"Content-Type\\" content=\\"text/html; charset=utf-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\">
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <style type=\\"text/css\\">
+@media screen {
+  @font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'), local('Lato-Regular'), url(https://fonts.gstatic.com/s/lato/v11/qIIYRU-oROkIk8vfvxw6QvesZW2xOQ-xsNqO47m55DA.woff) format('woff');
+  }
+
+  @font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Lato Bold'), local('Lato-Bold'), url(https://fonts.gstatic.com/s/lato/v11/qdgUG4U09HnJwhYI-uK18wLUuEpTyoUstqEm5AMlJo4.woff) format('woff');
+  }
+
+  @font-face {
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Lato Italic'), local('Lato-Italic'), url(https://fonts.gstatic.com/s/lato/v11/RYyZNoeFgb0l7W3Vu1aSWOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+  }
+
+  @font-face {
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 700;
+    src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(https://fonts.gstatic.com/s/lato/v11/HkF_qI1x_noxlxhrhMQYELO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+  }
+}
+@media screen and (max-width: 600px) {
+  h1 {
+    font-size: 32px !important;
+    line-height: 32px !important;
+  }
+}
+</style>
+</head>
+<body style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; background-color: #f4f4f4; height: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important;\\">
+
+<!-- HIDDEN PREHEADER TEXT -->
+<div style=\\"display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Lato', Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;\\">Вашето годишно членството в БДЗП изтече на 1-ви ноември 2018.</div>
+
+<table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse !important;\\">
+    <!-- LOGO -->
+    <tr>
+        <td bgcolor=\\"#0088CC\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;\\">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align=\\"center\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" width=\\"600\\">
+                <tr>
+                    <td align=\\"center\\" valign=\\"top\\" width=\\"600\\">
+            <![endif]-->
+            <table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 600px; border-collapse: collapse !important;\\">
+                <tr>
+                    <td align=\\"center\\" valign=\\"top\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 40px 10px 40px 10px;\\">
+                        <a href=\\"https://birds.bg\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;\\">
+                            <img alt=\\"Българско дружество за защита на птиците\\" src=\\"https://members.bspb.org/images/logo-email.png\\" width=\\"160\\" height=\\"104\\" style=\\"-ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; width: 160px; max-width: 104px; min-width: 160px; font-family: 'Lato', Helvetica, Arial, sans-serif; color: #ffffff; font-size: 18px;\\" border=\\"0\\">
+                        </a>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+    <!-- HERO -->
+    <tr>
+        <td bgcolor=\\"#0088CC\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 10px 0px 10px;\\">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align=\\"center\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" width=\\"600\\">
+                <tr>
+                    <td align=\\"center\\" valign=\\"top\\" width=\\"600\\">
+            <![endif]-->
+            <table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 600px; border-collapse: collapse !important;\\">
+                <tr>
+                    <td bgcolor=\\"#ffffff\\" align=\\"center\\" valign=\\"top\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 40px 20px 20px 20px; border-radius: 4px 4px 0px 0px; color: #111111; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 48px; font-weight: 400; letter-spacing: 4px; line-height: 48px;\\">
+                        <h1 style=\\"font-size: 48px; font-weight: 400; margin: 0;\\">СКЪПИ ПРИЯТЕЛИ,</h1>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+    <!-- COPY BLOCK -->
+    <tr>
+        <td bgcolor=\\"#f4f4f4\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 10px 0px 10px;\\">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align=\\"center\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" width=\\"600\\">
+                <tr>
+                    <td align=\\"center\\" valign=\\"top\\" width=\\"600\\">
+            <![endif]-->
+            <table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 600px; border-collapse: collapse !important;\\">
+                <!-- COPY -->
+
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">
+            Вашето годишно членство в БДЗП изтече на 1-ви ноември 2018.
+            Бъдете с нас и през следващата година!
+        </p>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">
+            Ако искате да продължите да ни подкрепяте, може да платите членския си внос, сега.
+            Това става лесно и удобно.
+            Трябва само да посетите страницата birds.bg, в частта ѝ
+            
+                СТАНИ ЧЛЕН НА БДЗП
+            
+            .
+        </p>
+    </td>
+</tr>
+
+<!-- BULLETPROOF BUTTON -->
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt;\\">
+        <table width=\\"100%\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse !important;\\">
+            <tr>
+                <td bgcolor=\\"#ffffff\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 60px 30px;\\">
+                    <table border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse !important;\\">
+                        <tr>
+                            <td align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-radius: 3px;\\" bgcolor=\\"#0088CC\\"><a href=\\"http://bspb.org/bg/become-a-member.html\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #0088CC; display: inline-block;\\">
+                                    
+                                        СТАНИ ЧЛЕН НА БДЗП
+                                    
+                                </a></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+<!-- COPY -->
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">Ако това не работи, копирайте и отворете връзката в браузера:</p>
+    </td>
+</tr>
+<!-- COPY -->
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\"><a href=\\"http://bspb.org/bg/become-a-member.html\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #0088CC;\\">http://bspb.org/bg/become-a-member.html</a>
+        </p>
+    </td>
+</tr>
+
+    <tr>
+        <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+            <p style=\\"margin: 0;\\">Ако
+                все още нямате парола, моля, регистрирайте се, това ще ви отнеме само няколко минути.
+            </p>
+        </td>
+    </tr>
+
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">
+            Ако вече имате достъп до онлайн платформата ни за членове, може да платите членския си внос
+            по следните начини:
+        </p>
+        <ul>
+            <li>Онлайн с банкова карта през вашия профил;</li>
+            <li>По банков път:<br>
+                Сдружение Българско дружество за защита на птиците,<br>
+                IBAN: BG55<span style=\\"margin-left: 5px\\"></span>RZBB<span style=\\"margin-left: 5px\\"></span>9155<span style=\\"margin-left: 5px\\"></span>1060<span style=\\"margin-left: 5px\\"></span>1073<span style=\\"margin-left: 5px\\"></span>29,<br>
+                BIC: RZBB<span style=\\"margin-left: 5px\\"></span>BGSF;
+            </li>
+            <li>През ePay.bg, като използвате дебитна/кредитна карта или ePay.</li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0; font-weight: 700;\\">
+            Категориите годишен членски внос са:
+        </p>
+        <ul>
+            <li>Индивидуално членство – 10 лв. за 12 месеца;</li>
+            <li>За ученици до 18 г. и пенсионери – 7 лв. за 12 месеца;</li>
+            <li>Семейно членство – 15 лв. за 12 месеца.</li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0; font-weight: 700;\\">
+            Да членуваш в БДЗП означава, че:
+        </p>
+        <ul>
+            <li>търсиш близка връзка с природата за теб и твоите близки;</li>
+            <li>загрижен си за птиците и значимите за тях места;</li>
+            <li>имаш активна гражданска позиция и я отстояваш;</li>
+            <li>вярваш, че заедно можем да върнем изчезващите птици в България.</li>
+        </ul>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 700; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">Надяваме се да продължим заедно!</p>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 40px 30px; border-radius: 0px 0px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">С уважение,<br>Екипът на БДЗП</p>
+    </td>
+</tr>
+</table>
+<!--[if (gte mso 9)|(IE)]>
+</td>
+</tr>
+</table>
+<![endif]-->
+</td>
+</tr>
+<!-- SUPPORT CALLOUT -->
+<tr>
+    <td bgcolor=\\"#f4f4f4\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 30px 10px 0px 10px;\\">
+        <!--[if (gte mso 9)|(IE)]>
+        <table align=\\"center\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" width=\\"600\\">
+            <tr>
+                <td align=\\"center\\" valign=\\"top\\" width=\\"600\\">
+        <![endif]-->
+        <table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 600px; border-collapse: collapse !important;\\">
+            <!-- HEADLINE -->
+            <tr>
+                <td bgcolor=\\"#FFECD1\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+                    <h2 style=\\"font-size: 20px; font-weight: 400; color: #111111; margin: 0;\\">Имате нужда от
+                        помощ?</h2>
+                    <p style=\\"margin: 0;\\"><a href=\\"http://bspb.org/bg/contacts.html\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #0088CC;\\">Тук сме,
+                            готови да поговорим</a></p>
+                </td>
+            </tr>
+        </table>
+        <!--[if (gte mso 9)|(IE)]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+    </td>
+</tr>
+<!-- FOOTER -->
+<tr>
+    <td bgcolor=\\"#f4f4f4\\" align=\\"center\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 10px 0px 10px;\\">
+        <!--[if (gte mso 9)|(IE)]>
+        <table align=\\"center\\" border=\\"0\\" cellspacing=\\"0\\" cellpadding=\\"0\\" width=\\"600\\">
+            <tr>
+                <td align=\\"center\\" valign=\\"top\\" width=\\"600\\">
+        <![endif]-->
+        <table border=\\"0\\" cellpadding=\\"0\\" cellspacing=\\"0\\" width=\\"100%\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; max-width: 600px; border-collapse: collapse !important;\\">
+            <!-- NAVIGATION -->
+            <tr>
+                <td bgcolor=\\"#f4f4f4\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 30px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;\\">
+                    <p style=\\"margin: 0;\\">
+                        <a href=\\"https://www.facebook.com/BSPBirds\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">Facebook</a>
+                        -
+                        <a href=\\"https://www.instagram.com/bspbirds/\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">Instagram</a>
+                        -
+                        <a href=\\"https://twitter.com/BSPB_BirdLife\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">Twitter</a>
+                        -
+                        <a href=\\"http://bspb.org\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">Web</a>
+                    </p>
+                </td>
+            </tr>
+            <!-- PERMISSION REMINDER -->
+            <tr>
+                <td bgcolor=\\"#f4f4f4\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;\\">
+                    <p style=\\"margin: 0;\\">Получавате това съобщение защото членувате в <a href=\\"http://bspb.org\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">БДЗП</a>.
+                    </p>
+                </td>
+            </tr>
+            <!-- UNSUBSCRIBE -->
+            <tr>
+                <td bgcolor=\\"#f4f4f4\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;\\">
+                    <p style=\\"margin: 0;\\">Ако тези имейли са досадни, можете да прекъснете получаването им от <a href=\\"http://bspb.org\\" target=\\"_blank\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; color: #111111; font-weight: 700;\\">вашия
+                            профил</a>.
+                    </p>
+                </td>
+            </tr>
+            <!-- ADDRESS -->
+            <tr>
+                <td bgcolor=\\"#f4f4f4\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 0px 30px 30px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 400; line-height: 18px;\\">
+                    <p style=\\"margin: 0;\\">БДЗП<br>ж.к. Яворов бл. 71, вх. 4, ет. 1, ап. 1<br>София 1111</p>
+                </td>
+            </tr>
+        </table>
+        <!--[if (gte mso 9)|(IE)]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+    </td>
+</tr>
+</table>
+
+</body>
+</html>
+
+"
+`;
