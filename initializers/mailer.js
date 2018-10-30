@@ -16,14 +16,14 @@ module.exports = class MailerInit extends Initializer {
 
   async initialize () {
     api.mailer = {}
-    api.mailer.send = async (options) => {
+    api.mailer.send = async ({ mail, template: templateName, locals }) => {
       const config = api.config.mailer
 
-      if (!(options.mail && options.template && options.locals)) {
+      if (!(mail && templateName && locals)) {
         return new Error('Invalid options. Must contain template, mail, and locals property')
       }
 
-      options.mail = { ...config.mailOptions, ...options.mail }
+      const mailOptions = { ...config.mailOptions, ...mail }
 
       const template = new Email({
         views: {
@@ -33,14 +33,14 @@ module.exports = class MailerInit extends Initializer {
           }
         }
       })
-      const emailHtml = await template.render(options.template, {
+      const emailHtml = await template.render(templateName, {
         formatDate: date => format(date, 'Do MMMM YYYY', { locale }),
-        ...options.locals
+        ...locals
       })
-      options.mail.html = emailHtml
+      mailOptions.html = emailHtml
 
       api.log('Sending mail', 'debug', this.name)
-      return api.mailer.transport.sendMail(options.mail)
+      return api.mailer.transport.sendMail(mailOptions)
     }
     api.log('I initialized', 'debug', this.name)
   }
