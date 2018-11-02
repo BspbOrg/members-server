@@ -168,7 +168,7 @@ class Member extends Model {
     })
   }
 
-  static associate ({ member }) {
+  static associate ({ member, payment }) {
     member.belongsToMany(member, {
       as: 'familyMembers',
       through: 'member_families'
@@ -179,6 +179,7 @@ class Member extends Model {
       foreignKey: 'familyMemberId',
       otherKey: 'memberId'
     })
+    member.belongsToMany(payment, { as: 'payments', through: 'payment_members' })
   }
 
   static loadScopes ({ member }) {
