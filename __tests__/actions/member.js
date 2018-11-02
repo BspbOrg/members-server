@@ -5,7 +5,7 @@
 const ah = require('../../test/ah-setup')
 const { snapshot, testActionPermissions, testFieldChange, testPaging } = require('../../test/helpers')
 const { assign } = Object
-const { generateMember } = require('../../test/generators')
+const { generateMember, generatePayment } = require('../../test/generators')
 const format = require('date-fns/format')
 const addDays = require('date-fns/add_days')
 const subDays = require('date-fns/sub_days')
@@ -77,26 +77,6 @@ describe('action member', () => {
     testPaging(action, 'member', () => {
       return generateMember({ firstName: 'TEMPORARY' })
     }, { firstName: 'TEMPORARY' })
-
-    test(`should match by category`, async () => {
-      const regularMember = await ah.api.models.member.create(generateMember({ category: 'regular' }))
-      const studentMember = await ah.api.models.member.create(generateMember({ category: 'student' }))
-      const response = await ah.runAdminAction(action, { category: 'student', limit: -1 })
-      expect(response).toBeSuccessAction()
-      const { data } = response
-      expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: studentMember.id })]))
-      expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: regularMember.id })]))
-    })
-
-    test(`should match by expired membership`, async () => {
-      const notExpiredMember = await ah.api.models.member.create(generateMember({ membershipEndDate: format(addDays(new Date(), 2), 'YYYY-MM-DD') }))
-      const expiredMember = await ah.api.models.member.create(generateMember({ membershipEndDate: format(subDays(new Date(), 2), 'YYYY-MM-DD') }))
-      const response = await ah.runAdminAction(action, { expiredMembership: '1', limit: -1 })
-      expect(response).toBeSuccessAction()
-      const { data } = response
-      expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: expiredMember.id })]))
-      expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: notExpiredMember.id })]))
-    })
 
     describe('filtering', () => {
       describe('q', () => {
@@ -180,6 +160,140 @@ describe('action member', () => {
         await member1.destroy({ force: true })
         await member2.destroy({ force: true })
         await member3.destroy({ force: true })
+      })
+
+      test(`should match by category`, async () => {
+        const regularMember = await ah.api.models.member.create(generateMember({ category: 'regular' }))
+        const studentMember = await ah.api.models.member.create(generateMember({ category: 'student' }))
+        const response = await ah.runAdminAction(action, { category: 'student', limit: -1 })
+        expect(response).toBeSuccessAction()
+        const { data } = response
+        expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: studentMember.id })]))
+        expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: regularMember.id })]))
+      })
+
+      test(`should match by expired membership`, async () => {
+        const notExpiredMember = await ah.api.models.member.create(generateMember({ membershipEndDate: format(addDays(new Date(), 2), 'YYYY-MM-DD') }))
+        const expiredMember = await ah.api.models.member.create(generateMember({ membershipEndDate: format(subDays(new Date(), 2), 'YYYY-MM-DD') }))
+        const response = await ah.runAdminAction(action, { expiredMembership: '1', limit: -1 })
+        expect(response).toBeSuccessAction()
+        const { data } = response
+        expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: expiredMember.id })]))
+        expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: notExpiredMember.id })]))
+      })
+
+      describe(`payment date`, () => {
+        let member1, member2, member3
+
+        beforeEach(async () => {
+          member1 = await ah.api.models.member.create(generateMember())
+          member2 = await ah.api.models.member.create(generateMember())
+          member3 = await ah.api.models.member.create(generateMember())
+        })
+
+        afterEach(async () => {
+          await member1.destroy({ force: true })
+          await member2.destroy({ force: true })
+          await member3.destroy({ force: true })
+        })
+
+        test(`should match only members with payment date later than given fromDate`, async () => {
+          await ah.api.models.payment.create(generatePayment({
+            paymentDate: '2000-01-05',
+            members: [member1.id]
+          }))
+          await ah.api.models.payment.create(generatePayment({
+            paymentDate: '2000-01-10',
+            members: [member2.id]
+          }))
+
+          const response = await ah.runAdminAction(action, { paymentFromDate: '2000-01-07' })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member2.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
+        })
+
+        test(`should match only members with payment date earlier than given toDate`, async () => {
+          await ah.api.models.payment.create(generatePayment({
+            paymentDate: '2000-01-05',
+            members: [member1.id]
+          }))
+          await ah.api.models.payment.create(generatePayment({
+            paymentDate: '2000-01-10',
+            members: [member2.id]
+          }))
+
+          const response = await ah.runAdminAction(action, { paymentToDate: '2000-01-07' })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: member2.id })]))
+        })
+
+        test(`should match members with payment date equal to fromDate`, async () => {
+          await ah.api.models.payment.create(generatePayment({
+            paymentDate: '2000-01-05',
+            members: [member1.id]
+          }))
+
+          const response = await ah.runAdminAction(action, { paymentFromDate: '2000-01-05' })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
+        })
+
+        test(`should match members with payment date equal to toDate`, async () => {
+          await ah.api.models.payment.create(generatePayment({
+            paymentDate: '2000-01-05',
+            members: [member1.id]
+          }))
+
+          const response = await ah.runAdminAction(action, { paymentToDate: '2000-01-05' })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
+        })
+
+        test(`should match only members with payment date between from and to dates`, async () => {
+          await ah.api.models.payment.create(generatePayment({
+            paymentDate: '2000-01-05',
+            members: [member1.id]
+          }))
+          await ah.api.models.payment.create(generatePayment({
+            paymentDate: '2000-01-10',
+            members: [member2.id]
+          }))
+
+          const response = await ah.runAdminAction(action, {
+            paymentFromDate: '2000-01-03',
+            paymentToDate: '2000-01-07'
+          })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
+          expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: member2.id })]))
+        })
+
+        test(`should match all members related to a payment in the given interval`, async () => {
+          await ah.api.models.payment.create(generatePayment({
+            paymentDate: '2000-01-05',
+            members: [member1.id, member3.id]
+          }))
+          await ah.api.models.payment.create(generatePayment({
+            paymentDate: '2000-01-10',
+            members: [member2.id]
+          }))
+
+          const response = await ah.runAdminAction(action, {
+            paymentFromDate: '2000-01-03',
+            paymentToDate: '2000-01-07'
+          })
+          expect(response).toBeSuccessAction()
+          const { data } = response
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member1.id })]))
+          expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: member3.id })]))
+        })
       })
     })
   })
