@@ -41,9 +41,11 @@ module.exports = class OutputFormatInitializer extends Initializer {
             responseHeaders.push(['content-type', 'text/csv; charset=utf-8'])
             responseHeaders.push(['content-disposition', `attachment; filename="${filename}"`])
             toRender = false
-            connection.sendMessage(csvStringify(data, {
+            // start with BOM to clue ms excel that the file is utf8 encoded
+            connection.sendMessage('\ufeff' + csvStringify(data, {
               delimiter: ';',
               header: true,
+              quotedString: true,
               formatters: {
                 date: value => formatDate(value, 'YYYY-MM-DD')
               }

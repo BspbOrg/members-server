@@ -219,11 +219,11 @@ class Member extends Model {
         }
       case 'card-print':
         return {
-          Number: this.cardId,
+          Number: `${this.cardId}`,
           FirstName: this.firstName,
           LastName: this.lastName,
           Name: `${this.firstName} ${this.lastName}`,
-          Valid: `Валидна до: ${formatDate(this.membershipEndDate, 'MMMM YYYY', { locale: bgLocale })}`
+          Valid: `Валидна до: ${formatDate(this.membershipEndDate, 'D MMMM YYYY', { locale: bgLocale })}`
         }
       default:
         return super.toJSON()
