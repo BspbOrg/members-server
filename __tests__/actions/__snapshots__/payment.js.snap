@@ -12,6 +12,7 @@ Object {
     2,
   ],
   "membershipType": "family",
+  "notes": null,
   "paymentDate": "2015-03-20",
   "paymentType": null,
   "referenceId": null,

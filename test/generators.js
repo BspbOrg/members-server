@@ -30,6 +30,7 @@ exports.generateMember = (opts) => {
     phone: (i % 11 === 0) ? `+35989911122${i % 9 + 1}` : null,
     category: (i % 3 === 0) ? 'student' : ((i % 3 === 1) ? 'regular' : 'retired'),
     membershipStartDate: format(addDays('2015-05-10', i + 1), 'YYYY-MM-DD'),
+    notes: 'notes ' + i,
     ...opts
   }
 }
@@ -44,6 +45,7 @@ exports.generatePayment = (overrideParams = {}, { addMembers = false } = {}) => 
     membershipType: (i % 2 === 0) ? `single` : 'family',
     billingMemberId: (i % 2) + 1,
     info: 'info ' + i,
+    notes: 'notes ' + i,
     ...(addMembers ? { members: [((i + 1) % 2) + 1] } : {}),
     ...overrideParams
   }

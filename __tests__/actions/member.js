@@ -80,7 +80,7 @@ describe('action member', () => {
 
     describe('filtering', () => {
       describe('q', () => {
-        const STRING_FIELDS = ['firstName', 'username', 'middleName', 'lastName', 'accessId', 'cardId', 'country', 'city', 'postalCode', 'address']
+        const STRING_FIELDS = ['firstName', 'username', 'middleName', 'lastName', 'accessId', 'cardId', 'country', 'city', 'postalCode', 'address', 'notes']
         const FIELDS = {
           email: { matchValue: 'mail@acme.org', noMatchValue: 'snail@physics.org' },
           phone: { matchValue: '+359897823456', noMatchValue: '+359879876543' },
@@ -377,7 +377,7 @@ describe('action member', () => {
 
     const fields = [
       'firstName', 'middleName', 'lastName', 'username', 'email', 'accessId', 'cardId',
-      'country', 'city', 'postalCode', 'address', 'phone', 'category', 'membershipStartDate'
+      'country', 'city', 'postalCode', 'address', 'phone', 'category', 'membershipStartDate', 'notes'
     ]
     fields.forEach(field =>
       testFieldChange(

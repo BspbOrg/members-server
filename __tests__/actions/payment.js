@@ -349,7 +349,7 @@ describe('action payment', () => {
     testActionPermissions(action, params, { guest: false, user: false, admin: true })
 
     const fields = [
-      'amount', 'paymentDate', 'membershipType', 'paymentType', 'billingMemberId', 'members', 'info'
+      'amount', 'paymentDate', 'membershipType', 'paymentType', 'billingMemberId', 'members', 'info', 'notes'
     ]
     fields.forEach(field =>
       testFieldChange(
