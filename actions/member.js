@@ -5,7 +5,7 @@ const { Op } = require('sequelize')
 
 const QUERY_FIELDS = [
   'username', 'firstName', 'middleName', 'lastName', 'email', 'phone', 'accessId', 'cardId', 'country',
-  'city', 'postalCode', 'address'
+  'city', 'postalCode', 'address', 'notes'
 ]
 
 class List extends Action {
@@ -153,7 +153,8 @@ class Update extends Show {
       familyMembers: {},
       membershipStartDate: {},
       membershipFirstDate: {},
-      context: {}
+      context: {},
+      notes: {}
     }
   }
 
@@ -190,7 +191,8 @@ class Create extends Show {
       familyMembers: {},
       membershipStartDate: {},
       membershipFirstDate: {},
-      context: {}
+      context: {},
+      notes: {}
     }
   }
 

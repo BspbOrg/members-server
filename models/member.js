@@ -160,6 +160,10 @@ class Member extends Model {
         validate: {
           isDate: true
         }
+      },
+      notes: {
+        type: DataTypes.STRING,
+        allowNull: true
       }
     }, {
       sequelize,

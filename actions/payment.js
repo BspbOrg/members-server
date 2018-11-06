@@ -120,7 +120,8 @@ exports.update = class Update extends Action {
       billingMemberId: {},
       members: {},
       info: {},
-      context: {}
+      context: {},
+      notes: {}
     }
   }
 
@@ -153,7 +154,8 @@ exports.create = class Create extends Action {
       billingMemberId: { required: true },
       members: {},
       info: {},
-      context: {}
+      context: {},
+      notes: {}
     }
   }
 

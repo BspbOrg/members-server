@@ -18,6 +18,7 @@ Object {
   "membershipFirstDate": null,
   "membershipStartDate": "2018-06-06",
   "middleName": "Populated",
+  "notes": null,
   "notifiedForExpiredDate": null,
   "notifiedForExpiringDate": null,
   "originalSource": "fixtures",

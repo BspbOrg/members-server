@@ -46,6 +46,10 @@ class Payment extends Model {
         type: DataTypes.STRING,
         allowNull: true,
         unique: 'compositeKeyReferenceCode'
+      },
+      notes: {
+        type: DataTypes.STRING,
+        allowNull: true
       }
     }, {
       sequelize,
