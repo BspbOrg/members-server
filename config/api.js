@@ -15,9 +15,9 @@ exports['default'] = {
       // A unique token to your application that servers will use to authenticate to each other
       serverToken: 'change-me',
       // the redis prefix for actionhero's cache objects
-      cachePrefix: 'actionhero:cache:',
+      cachePrefix: 'members:cache:',
       // the redis prefix for actionhero's cache/lock objects
-      lockPrefix: 'actionhero:lock:',
+      lockPrefix: 'members:lock:',
       // how long will a lock last before it exipres (ms)?
       lockDuration: 1000 * 10, // 10 seconds
       // Watch for changes in actions and tasks, and reload/restart them on the fly
@@ -39,7 +39,7 @@ exports['default'] = {
       // The default priority level given to middleware of all types (action, connection, say, and task)
       defaultMiddlewarePriority: 100,
       // Which channel to use on redis pub/sub for RPC communication
-      channel: 'actionhero',
+      channel: 'members',
       // How long to wait for an RPC call before considering it a failure
       rpcTimeout: 5000,
       // should CLI methods and help include internal ActionHero CLI methods?
@@ -90,7 +90,8 @@ exports.production = {
   general: (api) => {
     return {
       fileRequestLogLevel: 'debug',
-      developmentMode: false
+      developmentMode: false,
+      serverToken: process.env.SERVER_TOKEN
     }
   }
 }
