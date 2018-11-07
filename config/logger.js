@@ -33,7 +33,7 @@ exports['default'] = {
 
       return new (winston.transports.File)({
         filename: api.config.general.paths.log[0] + '/' + api.pids.title + '.log',
-        level: 'info',
+        level: process.env.LOG_LEVEL || 'info',
         timestamp: function () { return api.id + ' @ ' + new Date().toISOString() }
       })
     })
