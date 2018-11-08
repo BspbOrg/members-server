@@ -2,8 +2,8 @@
 
 module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.addColumn('members', 'notes', { type: DataTypes.STRING, allowNull: true })
-    await queryInterface.addColumn('payments', 'notes', { type: DataTypes.STRING, allowNull: true })
+    await queryInterface.addColumn('members', 'notes', { type: DataTypes.TEXT, allowNull: true })
+    await queryInterface.addColumn('payments', 'notes', { type: DataTypes.TEXT, allowNull: true })
   },
 
   down: async (queryInterface, DataTypes) => {

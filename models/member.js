@@ -162,7 +162,7 @@ class Member extends Model {
         }
       },
       notes: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true
       }
     }, {

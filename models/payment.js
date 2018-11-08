@@ -48,7 +48,7 @@ class Payment extends Model {
         unique: 'compositeKeyReferenceCode'
       },
       notes: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true
       }
     }, {
