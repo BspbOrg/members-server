@@ -91,7 +91,7 @@ module.exports = class IntegrationTool {
   async fetchPaymentMembers (paymentIds) {
     return this.perform(async conn => {
       const [rows] = await conn.query(`
-        SELECT h.id as paymentId, username 
+        SELECT h.id as paymentId, username, card
         FROM members m
         JOIN members_history h ON m.id = h.member_id
         WHERE h.id in (?)
@@ -120,14 +120,17 @@ module.exports = class IntegrationTool {
     )
     const successPayments = decodedPayments.filter(({ valid, success }) => valid && success)
     const paymentIds = successPayments.map(({ paymentId }) => paymentId)
-    const paymentUsernames = await this.fetchPaymentMembers(paymentIds)
-    const mapping = paymentUsernames.reduce((map, { paymentId, username }) => ({ ...map, [paymentId]: username }), {})
+    const paymentMembers = await this.fetchPaymentMembers(paymentIds)
+    const mapping = paymentMembers.reduce((map, { paymentId, username, card: cardId }) => ({
+      ...map,
+      [paymentId]: { username, cardId }
+    }), {})
     const payments = await Promise.all(successPayments.map(async ({ paymentId, amount, timestamp, type, terminalId, orderId }) => ({
       amount,
       paymentDate: timestamp,
       membershipType: await this.getMembershipTypeFromPaymentAmount(amount),
       paymentType: 'card',
-      username: mapping[paymentId],
+      ...mapping[paymentId],
       info: `${orderId}/${terminalId}/${type}`,
       referenceType: 'borica',
       referenceId: paymentId

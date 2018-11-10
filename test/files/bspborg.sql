@@ -45,7 +45,7 @@ CREATE TABLE `members` (
 --
 
 INSERT INTO `members` (`id`, `name`, `surname`, `family`, `egn`, `username`, `password`, `city`, `postcode`, `neighborhood`, `street`, `number`, `block`, `doorway`, `floor`, `apartment`, `home_phone`, `work_phone`, `mobile`, `email`, `website`, `date_created`, `type`, `lost_code`, `lost_date`, `parent_id`, `card`, `card_expiry`, `family_members`, `country`) VALUES
-(1, 'Тестов', 'Потребител', NULL, NULL, 'user1', NULL, NULL, NULL, '', NULL, NULL, 0, '', 0, 0, 0, 0, 0, NULL, '', '2018-09-17 00:00:00', 1, NULL, NULL, NULL, '', NULL, 1, NULL),
+(1, 'Тестов', 'Потребител', NULL, NULL, 'user1', NULL, NULL, NULL, '', NULL, NULL, 0, '', 0, 0, 0, 0, 0, NULL, '', '2018-09-17 00:00:00', 1, NULL, NULL, NULL, '123456', NULL, 1, NULL),
 (2, 'Тестер', '', 'Тестер', NULL, 'user2', NULL, NULL, NULL, '', NULL, NULL, 0, '', 0, 0, 0, 0, 0, NULL, '', '2018-09-17 00:00:00', 1, NULL, NULL, NULL, '', NULL, 1, NULL),
 (3, 'Testing', '', 'User', NULL, 'user3', NULL, NULL, NULL, '', NULL, NULL, 0, '', 0, 0, 0, 0, 0, NULL, '', '2018-09-17 00:00:00', 1, NULL, NULL, NULL, '', NULL, 1, NULL);
 

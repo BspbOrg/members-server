@@ -59,13 +59,18 @@ describe('integration', () => {
 
     describe('fetchPaymentMembers', () => {
       test('should resolve paymentId', async () => {
-        const [{ username }] = await ah.api.integration.fetchPaymentMembers(['1286'])
-        expect(username).toEqual('user1')
+        const [{ username }] = await ah.api.integration.fetchPaymentMembers(['1385'])
+        expect(username).toEqual('user3')
       })
 
       test('should skip invalid paymentId', async () => {
         const res = await ah.api.integration.fetchPaymentMembers(['NO ID'])
         expect(res).toEqual([])
+      })
+
+      test('should return card', async () => {
+        const [{ card }] = await ah.api.integration.fetchPaymentMembers(['1286'])
+        expect(card).toEqual('123456')
       })
     })
 

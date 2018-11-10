@@ -17,7 +17,7 @@ describe('task ImportBoricaPayments', () => {
 
   beforeEach(async () => {
     await ah.api.models.payment.truncate({ force: true })
-    member1 = await ah.api.models.member.create(generateMember({ username: 'user1' }))
+    member1 = await ah.api.models.member.create(generateMember({ username: 'user3' }))
   })
 
   afterEach(async () => {
@@ -42,6 +42,13 @@ describe('task ImportBoricaPayments', () => {
     await run()
     const countAfter = await ah.api.models.payment.count()
     expect(countAfter).toEqual(countBefore)
+  })
+
+  test('should match members by card id', async () => {
+    const member = await ah.api.models.member.create(generateMember({ cardId: '123456' }))
+    await run()
+    const payments = await member.getPayments()
+    expect(payments).toHaveLength(1)
   })
 
   test('should schedule membership recalculation', async () => {
