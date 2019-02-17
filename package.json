@@ -30,7 +30,7 @@
     ]
   },
   "dependencies": {
-    "actionhero": "19.0.4",
+    "actionhero": "19.1.2",
     "ah-cors-plugin": "^0.1.1",
     "ah-sequelize-plugin": "^1.0.3",
     "bcryptjs": "^2.4.3",
