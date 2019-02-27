@@ -17,7 +17,8 @@ module.exports = [
       address: 'Central square #1',
       phone: '+359890111222',
       category: 'regular',
-      membershipStartDate: '2018-06-06'
+      membershipStartDate: '2018-06-06',
+      cardIssued: 1
     }
   },
   {

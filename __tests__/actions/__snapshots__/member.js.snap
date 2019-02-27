@@ -5,6 +5,7 @@ Object {
   "accessId": "543210",
   "address": "Central square #1",
   "cardId": "12345",
+  "cardIssued": true,
   "category": "regular",
   "city": "Plovdiv",
   "country": "Bulgaria",
