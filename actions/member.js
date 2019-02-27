@@ -158,7 +158,8 @@ class Update extends Show {
       membershipStartDate: {},
       membershipFirstDate: {},
       context: {},
-      notes: {}
+      notes: {},
+      cardIssued: {}
     }
   }
 
@@ -196,7 +197,8 @@ class Create extends Show {
       membershipStartDate: {},
       membershipFirstDate: {},
       context: {},
-      notes: {}
+      notes: {},
+      cardIssued: {}
     }
   }
 

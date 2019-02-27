@@ -164,7 +164,8 @@ class Member extends Model {
       notes: {
         type: DataTypes.TEXT,
         allowNull: true
-      }
+      },
+      cardIssued: DataTypes.BOOLEAN
     }, {
       sequelize,
       modelName: 'member',
@@ -229,6 +230,11 @@ class Member extends Model {
           LastName: this.lastName,
           Name: `${this.firstName} ${this.lastName}`,
           Valid: `Валидна до: ${formatDate(this.membershipEndDate, 'D MMMM YYYY', { locale: bgLocale })}`
+        }
+      case 'export':
+        return {
+          ...super.toJSON(),
+          cardIssued: this.cardIssued == null ? '' : (this.cardIssued ? '1' : '0')
         }
       default:
         return super.toJSON()
