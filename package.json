@@ -34,7 +34,7 @@
     "ah-cors-plugin": "^0.1.1",
     "ah-sequelize-plugin": "^1.0.3",
     "bcryptjs": "^2.4.3",
-    "boolean": "^0.2.0",
+    "boolean": "^1.0.0",
     "csv-parser": "^2.0.0",
     "csv-stringify": "^4.0.1",
     "date-fns": "^1.29.0",
