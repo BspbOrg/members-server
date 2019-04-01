@@ -62,7 +62,7 @@
     "date-fns": "^1.29.0",
     "husky": "^1.1.2",
     "jest": "latest",
-    "jest-matcher-utils": "^23.0.0",
+    "jest-matcher-utils": "^24.6.0",
     "lint-staged": "^7.3.0",
     "sequelize-fixtures": "^0.8.0",
     "sqlite3": "^4.0.0",
