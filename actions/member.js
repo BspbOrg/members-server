@@ -19,7 +19,7 @@ class List extends Action {
       context: {},
       q: { formatter: q => q.split(/\s+/).filter(w => w), default: '' },
       category: {},
-      expiredMembership: {},
+      membership: {},
       selection: {},
       paymentFromDate: {},
       paymentToDate: {}
@@ -28,7 +28,7 @@ class List extends Action {
 
   async run (
     {
-      params: { limit, offset, context, q, outputType, category, expiredMembership, selection, paymentFromDate, paymentToDate },
+      params: { limit, offset, context, q, outputType, category, membership, selection, paymentFromDate, paymentToDate },
       response,
       sorting
     }
@@ -51,11 +51,15 @@ class List extends Action {
             : {}
         ),
         ...(category && { category }),
-        ...(expiredMembership === '1' ? {
+        ...(membership === 'active' ? {
           membershipEndDate: {
-            [Op.lte]: new Date()
+            [Op.gte]: new Date()
           }
-        } : {}),
+        } : (membership === 'expired' ? {
+          membershipEndDate: {
+            [Op.lt]: new Date()
+          }
+        } : {})),
         ...(selection ? {
           id: {
             [Op.in]: selection

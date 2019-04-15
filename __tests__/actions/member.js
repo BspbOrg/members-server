@@ -175,11 +175,21 @@ describe('action member', () => {
       test(`should match by expired membership`, async () => {
         const notExpiredMember = await ah.api.models.member.create(generateMember({ membershipEndDate: format(addDays(new Date(), 2), 'YYYY-MM-DD') }))
         const expiredMember = await ah.api.models.member.create(generateMember({ membershipEndDate: format(subDays(new Date(), 2), 'YYYY-MM-DD') }))
-        const response = await ah.runAdminAction(action, { expiredMembership: '1', limit: -1 })
+        const response = await ah.runAdminAction(action, { membership: 'expired', limit: -1 })
         expect(response).toBeSuccessAction()
         const { data } = response
         expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: expiredMember.id })]))
         expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: notExpiredMember.id })]))
+      })
+
+      test(`should match by active membership`, async () => {
+        const notExpiredMember = await ah.api.models.member.create(generateMember({ membershipEndDate: format(addDays(new Date(), 2), 'YYYY-MM-DD') }))
+        const expiredMember = await ah.api.models.member.create(generateMember({ membershipEndDate: format(subDays(new Date(), 2), 'YYYY-MM-DD') }))
+        const response = await ah.runAdminAction(action, { membership: 'active', limit: -1 })
+        expect(response).toBeSuccessAction()
+        const { data } = response
+        expect(data).toEqual(expect.arrayContaining([expect.objectContaining({ id: notExpiredMember.id })]))
+        expect(data).not.toEqual(expect.arrayContaining([expect.objectContaining({ id: expiredMember.id })]))
       })
 
       describe(`payment date`, () => {
