@@ -40,6 +40,14 @@ npm start
 ## To Test:
 `npm test`
 
+## To release
+```
+git checkout master
+git checkout .
+npm version <patch|minor|major>
+git push && git push --tags && git push origin master:production
+```
+
 ## License
 
 [AGPL-v3.0](LICENSE)
