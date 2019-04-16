@@ -196,6 +196,13 @@ exports[`template: expiringReminder renders for registered 1`] = `
 </tr>
 <tr>
     <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">
+            Благодарим ви, ако вече сте подновили членството си!
+        </p>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
         <p style=\\"margin: 0; font-weight: 700;\\">
             Да членуваш в БДЗП означава, че:
         </p>
@@ -511,6 +518,13 @@ exports[`template: expiringReminder renders for unregistered 1`] = `
             <li>За ученици до 18 г. и пенсионери – 7 лв. за 12 месеца;</li>
             <li>Семейно членство – 15 лв. за 12 месеца.</li>
         </ul>
+    </td>
+</tr>
+<tr>
+    <td bgcolor=\\"#ffffff\\" align=\\"left\\" style=\\"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;\\">
+        <p style=\\"margin: 0;\\">
+            Благодарим ви, ако вече сте подновили членството си!
+        </p>
     </td>
 </tr>
 <tr>
