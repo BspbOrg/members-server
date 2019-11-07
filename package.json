@@ -35,7 +35,7 @@
     "ah-sequelize-plugin": "^1.0.3",
     "bcryptjs": "^2.4.3",
     "boolean": "^1.0.0",
-    "csv-parser": "^2.0.0",
+    "csv-parser": "^2.3.2",
     "csv-stringify": "^4.0.1",
     "date-fns": "^1.29.0",
     "ejs": "^2.6.1",
