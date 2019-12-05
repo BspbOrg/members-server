@@ -65,7 +65,7 @@
     "jest-matcher-utils": "^23.0.0",
     "lint-staged": "^7.3.0",
     "sequelize-fixtures": "^0.8.0",
-    "sqlite3": "^4.0.0",
+    "sqlite3": "^4.1.1",
     "standard": "latest"
   },
   "scripts": {
