@@ -36,7 +36,7 @@
     "bcryptjs": "^2.4.3",
     "boolean": "^1.0.0",
     "csv-parser": "^2.0.0",
-    "csv-stringify": "^4.0.1",
+    "csv-stringify": "^5.4.1",
     "date-fns": "^1.29.0",
     "ejs": "^2.6.1",
     "email-templates": "^5.0.1",
