@@ -1,55 +1,55 @@
 <!-- BULLETPROOF BUTTON -->
-<tr>
-    <td bgcolor="#ffffff" align="left">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">
-                    <table border="0" cellspacing="0" cellpadding="0">
-                        <tr>
-                            <td align="center" style="border-radius: 3px;" bgcolor="#0088CC"><a
-                                        href="http://bspb.org/bg/become-a-member.html<% if (username) { %>?type=existing&login_username=<%= encodeURIComponent(username) %><% } %>"
-                                        target="_blank"
-                                        style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #0088CC; display: inline-block;">
-                                    <% if (username) { %>
-                                        ПОДНОВЯВАНЕ НА ЧЛЕНСТВОТО
-                                    <% } else { %>
-                                        СТАНИ ЧЛЕН НА БДЗП
-                                    <% } %>
-                                </a></td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </td>
-</tr>
-<!-- COPY -->
-<tr>
-    <td bgcolor="#ffffff" align="left"
-        style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-        <p style="margin: 0;">Ако това не работи, копирайте и отворете връзката в браузера:</p>
-    </td>
-</tr>
-<!-- COPY -->
-<tr>
-    <td bgcolor="#ffffff" align="left"
-        style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-        <p style="margin: 0;"><a
-                    href="http://bspb.org/bg/become-a-member.html<% if (username) { %>?type=existing&login_username=<%= encodeURIComponent(username) %><% } %>"
-                    target="_blank" style="color: #0088CC;">http://bspb.org/bg/become-a-member.html<% if (username) { %>?type=existing&login_username=<%= encodeURIComponent(username) %><% } %></a>
-        </p>
-    </td>
-</tr>
-<% if (!username) { %>
-    <tr>
-        <td bgcolor="#ffffff" align="left"
-            style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
-            <p style="margin: 0;">Ако
-                все още нямате парола, моля, регистрирайте се, това ще ви отнеме само няколко минути.
-            </p>
-        </td>
-    </tr>
-<% } %>
+<!--<tr>-->
+<!--    <td bgcolor="#ffffff" align="left">-->
+<!--        <table width="100%" border="0" cellspacing="0" cellpadding="0">-->
+<!--            <tr>-->
+<!--                <td bgcolor="#ffffff" align="center" style="padding: 20px 30px 60px 30px;">-->
+<!--                    <table border="0" cellspacing="0" cellpadding="0">-->
+<!--                        <tr>-->
+<!--                            <td align="center" style="border-radius: 3px;" bgcolor="#0088CC"><a-->
+<!--                                        href="http://bspb.org/bg/become-a-member.html<% if (username) { %>?type=existing&login_username=<%= encodeURIComponent(username) %><% } %>"-->
+<!--                                        target="_blank"-->
+<!--                                        style="font-size: 20px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 2px; border: 1px solid #0088CC; display: inline-block;">-->
+<!--                                    <% if (username) { %>-->
+<!--                                        ПОДНОВЯВАНЕ НА ЧЛЕНСТВОТО-->
+<!--                                    <% } else { %>-->
+<!--                                        СТАНИ ЧЛЕН НА БДЗП-->
+<!--                                    <% } %>-->
+<!--                                </a></td>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </table>-->
+<!--    </td>-->
+<!--</tr>-->
+<!--&lt;!&ndash; COPY &ndash;&gt;-->
+<!--<tr>-->
+<!--    <td bgcolor="#ffffff" align="left"-->
+<!--        style="padding: 0px 30px 0px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">-->
+<!--        <p style="margin: 0;">Ако това не работи, копирайте и отворете връзката в браузера:</p>-->
+<!--    </td>-->
+<!--</tr>-->
+<!--&lt;!&ndash; COPY &ndash;&gt;-->
+<!--<tr>-->
+<!--    <td bgcolor="#ffffff" align="left"-->
+<!--        style="padding: 20px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">-->
+<!--        <p style="margin: 0;"><a-->
+<!--                    href="http://bspb.org/bg/become-a-member.html<% if (username) { %>?type=existing&login_username=<%= encodeURIComponent(username) %><% } %>"-->
+<!--                    target="_blank" style="color: #0088CC;">http://bspb.org/bg/become-a-member.html<% if (username) { %>?type=existing&login_username=<%= encodeURIComponent(username) %><% } %></a>-->
+<!--        </p>-->
+<!--    </td>-->
+<!--</tr>-->
+<!--<% if (!username) { %>-->
+<!--    <tr>-->
+<!--        <td bgcolor="#ffffff" align="left"-->
+<!--            style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">-->
+<!--            <p style="margin: 0;">Ако-->
+<!--                все още нямате парола, моля, регистрирайте се, това ще ви отнеме само няколко минути.-->
+<!--            </p>-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--<% } %>-->
 <tr>
     <td bgcolor="#ffffff" align="left"
         style="padding: 20px 30px 40px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
@@ -58,13 +58,13 @@
             по следните начини:
         </p>
         <ul>
-            <li>Онлайн с банкова карта през вашия профил;</li>
             <li>По банков път:<br/>
                 Сдружение Българско дружество за защита на птиците,<br/>
                 IBAN: BG55<span style="margin-left: 5px"></span>RZBB<span style="margin-left: 5px"></span>9155<span style="margin-left: 5px"></span>1060<span style="margin-left: 5px"></span>1073<span style="margin-left: 5px"></span>29,<br/>
                 BIC: RZBB<span style="margin-left: 5px"></span>BGSF;
             </li>
-            <li>През ePay.bg, като използвате дебитна/кредитна карта или ePay.</li>
+            <li>През ePay.bg, като използвате дебитна/кредитна карта или ePay;</li>
+            <li>Или като посетите някой от нашите офиси – контакти <a href="https://bspb.org/%D0%BA%D0%BE%D0%BD%D1%82%D0%B0%D0%BA%D1%82%D0%B8/" target="_blank">ТУК</a></li>
         </ul>
     </td>
 </tr>
@@ -130,7 +130,7 @@
                     style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;">
                     <h2 style="font-size: 20px; font-weight: 400; color: #111111; margin: 0;">Имате нужда от
                         помощ?</h2>
-                    <p style="margin: 0;"><a href="http://bspb.org/bg/contacts.html" target="_blank"
+                    <p style="margin: 0;"><a href="https://bspb.org/%d0%ba%d0%be%d0%bd%d1%82%d0%b0%d0%ba%d1%82%d0%b8/" target="_blank"
                                              style="color: #0088CC;">Тук сме,
                             готови да поговорим</a></p>
                 </td>
