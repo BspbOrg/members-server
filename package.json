@@ -2,7 +2,7 @@
   "author": "Geno Roupsky <geno@roupsky.name>",
   "name": "bspb-members-server",
   "description": "Management system for BSPB members",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "engines": {
     "node": ">=8.0.0"
   },
