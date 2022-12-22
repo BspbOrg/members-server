@@ -43,7 +43,7 @@
     "email-validator": "^2.0.4",
     "event-stream": "^4.0.0",
     "google-libphonenumber": "^3.1.8",
-    "ioredis": "latest",
+    "ioredis": "^4.6.2",
     "lodash.omit": "^4.5.0",
     "mysql": "^2.16.0",
     "mysql2": "^1.6.1",
@@ -56,16 +56,16 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.38.0",
     "sequelize-cli": "^5.0.0",
-    "ws": "latest"
+    "ws": "^6.2.0"
   },
   "devDependencies": {
     "husky": "^1.1.2",
-    "jest": "latest",
+    "jest": "^24.5.0",
     "jest-matcher-utils": "^23.0.0",
     "lint-staged": "^7.3.0",
     "sequelize-fixtures": "^0.8.0",
     "sqlite3": "^4.0.0",
-    "standard": "latest"
+    "standard": "^12.0.1"
   },
   "scripts": {
     "precommit": "lint-staged",
